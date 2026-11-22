@@ -1,0 +1,79 @@
+MY PROJECT MANAGEMENT v35 (35.0.0) -- CHANGE REQUEST MANAGEMENT
+Release: 22-Nov-2026, Qatar. Previous app: v34.
+
+REQUIRED IIS + SQL UPDATE
+1. Back up deployed files AND the full SQL database. Stop MyProjectManagement pool.
+2. In SSMS run database/Database-ChangeRequests-v35.sql against MyProjectManagement.
+   The script creates ChangeRequests and ChangeRequestDocuments (Word BLOBs),
+   reporting views and missing CR role permissions/templates. It can be rerun;
+   existing explicit permission choices are retained. Default pool grants target
+   IIS APPPOOL\MyProjectManagement if that database user exists. A different
+   service identity needs equivalent grants from your database administrator.
+3. Copy CONTENTS of this package's publish folder into the existing folder:
+   C:\inetpub\wwwroot\MyProjectManagement-IIS-SQLServer2022-2025\publish
+   Retain appsettings*.json, web.config, Keys and external authentication keys.
+   The update ZIP excludes runtime configuration and authentication keys.
+4. Restart the pool, sign in, Ctrl+F5. Confirm Version 35.
+   Upgrading from before v31 also needs its HoursOnly report patch; the included
+   cumulative Database-Upgrade-v35.sql covers the full dependency chain.
+   Full setup is for a fresh database only, not a routine update.
+
+ONE-TIME WORKFLOW SETUP
+Administration > Role master / Role permissions: review Create/revise CR,
+Review CR as PM, Approve CR as CTO, View all CR within project scope.
+The migration seeds CTO (base Project manager) and Team lead (base Project lead)
+role templates when missing. Create the actual CTO/team profiles and company
+email logins in User master / SQL Server & accounts. Roles alone are not logins.
+Set each project's Project Manager. PM must have CR PM review permission.
+Initiator, PM and CTO must be three different active people. Custom roles can be
+mapped with the corresponding explicit permissions.
+
+OPERATING THE WORKFLOW
+Projects & Planning > Change requests. Create draft with project, title, expected
+change, revision reason and numbered points. The PM comes from Project Master;
+select the CTO approver. Save, upload Word, then submit to PM.
+Only assigned current-stage approvers may decide. PM approval advances to CTO;
+CTO approval marks this exact revision Technically feasible / ready for client.
+Both may request Amendment, Clarification or Meeting, with comments against P1/P2
+change points or D1/D2 Word preview paragraphs. Meeting requests record a proposed
+date; schedule the confirmed appointment separately through Meetings.
+Submitted revisions are locked. Initiator uses New revision / client feedback,
+changes the draft, uploads revised Word and restarts PM then CTO approvals.
+Previous revisions/documents/decisions remain available through the revision list.
+Awaiting my review is an in-app inbox; it refreshes around every 15 seconds while
+open and does not replace forms under editing. No email/WhatsApp is sent by CR.
+
+WORD DOCUMENTS
+.docx and legacy .doc, up to 5 MB/file; maximum 20 uploads per revision, 100
+revisions/request. .docx preview is read-only extracted text with paragraph IDs;
+formatting/images/tracked changes are not reproduced. Maximum text preview is
+2000 paragraphs / 5000 characters each. Legacy .doc is download-only in Word.
+The original document is always downloadable by authorized staff. The latest draft
+upload is the submission document; submitted Word files cannot be replaced.
+After approval use Download approved Rn for client. It downloads that approved
+revision's current Word file, not a later unapproved draft.
+This is technical feasibility approval, not client/commercial acceptance.
+Documents are stored in SQL Server varbinary data, not public wwwroot paths.
+Every preview/download checks login/workspace/request access. No public client
+file-sharing link or embedded Word editor is added.
+
+BACKUP / REPORTING / ROLLBACK
+Full SQL backups include CR metadata, audit/revisions and Word BLOBs. Ordinary
+workspace JSON backup/import does NOT include these separate CR tables or files.
+Plan SQL backup/storage for attachments. CR metadata has optimistic version checks;
+stale updates are rejected instead of overwriting another reviewer decision.
+Reporting views: vwChangeRequestRegister (all revisions) and
+vwChangeRequestApprovals (decision/point/paragraph comments and proposed meetings).
+The register lists the latest 200 accessible requests and current revision states.
+No CR delete action is provided. Preserve project records needed for future edits.
+v34 remains archived. Use a paired application/database backup for full rollback;
+forward SQL scripts are not undo scripts. Keep IIS configuration/authentication keys.
+
+DOCUMENTATION / CHECKS
+Updated manual chapters 21-22 explain workflow, role setup, data and backup.
+Change-Request-Workflow-v35.pdf and change-request-flow.html are included.
+.NET release build, workflow/permission/revision/Word tests, frontend form retention
+and account-isolation checks passed. Live SQL Server 2022 setup/rerun and real
+HTTPS company-login tests covered document privacy, preview/download, PM-to-CTO
+ordering, draft locking, clarification/new revision, client feedback and stale
+updates. Live browser visual checks were unavailable; verify on your IIS site.

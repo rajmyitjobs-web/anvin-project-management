@@ -1,0 +1,40 @@
+MY PROJECT MANAGEMENT v27 (27.0.0) -- PROJECT MANAGER AND MODULE TEAMS
+Release: 21-Nov-2026, Qatar. Previous app: v26.
+
+1. Back up site files and SQL database. Stop MyProjectManagement application pool.
+2. Copy the CONTENTS of this package's publish folder into your existing folder:
+   C:\inetpub\wwwroot\MyProjectManagement-IIS-SQLServer2022-2025\publish
+   The update excludes appsettings*.json and web.config; retain your existing
+   configuration, Keys folder and any configured external key directory.
+3. Restart the pool. Sign in and press Ctrl+F5. Confirm Version 27.
+
+PROJECT MASTER
+New Project and Edit Project Plan now have separate required Project Manager
+and Project In-charge fields. For each module choose a primary in-charge and
+check any additional allocated people. The primary is always included in the
+saved team, even if its additional-person checkbox is unchecked.
+Old project module owners remain the primary owners. Legacy manager fields are
+not silently populated in storage: select a manager when editing the plan.
+The module-only editor can change teams but cannot change project management.
+Role permissions control editing; allocation gives visibility, not extra rights.
+Company overrides, existing task allocations and recorded hours are retained.
+Daily allocation remains the place to schedule actual tasks for these people.
+
+DATABASE
+No table migration is required: projectManager and moduleTeams are saved in
+existing WorkspaceRecords.Payload JSON. Optional Database-Module-Teams-v27.sql
+adds dbo.vwProjectModuleTeams, one row per project/module/allocated person,
+including manager, in-charge and primary indicator. Legacy owners are included.
+Run it in SSMS against MyProjectManagement if you want the reporting view.
+Database-Upgrade-v27.sql is the cumulative upgrade including v25 collation fixes.
+Database-Full-Setup-v27.sql is for a fresh database only.
+
+ROLLBACK
+v26 remains archived. Restore the paired site/database backup for a complete
+rollback; forward SQL scripts do not undo later changes. Keep configuration
+and authentication keys. An older UI does not display the additional team fields.
+
+VALIDATION
+Windows-target .NET build; frontend creation/editing and company inheritance;
+API team/manager validation and permission checks; SQL syntax and live SQL Server
+2022 setup/view checks passed. Customer IIS deployment must be checked locally.

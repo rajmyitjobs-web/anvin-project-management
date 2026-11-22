@@ -1,0 +1,1 @@
+{"version": "36.0.0", "label": "v36", "previous_application": "v35", "required_database_patch": "v35", "date": "2026-11-22", "features": "Project Plan and Activity Master Excel/CSV templates, row validation/preview, duplicate checks and atomic imports"}

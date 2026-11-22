@@ -1,0 +1,70 @@
+MY PROJECT MANAGEMENT v26 (26.0.0) -- PROJECT MODULE CONSULTANTS / IN-CHARGE
+Release date: 21-Nov-2026, Qatar. Previous app: v24; previous SQL repair: v25.
+
+UPDATE EXISTING IIS APPLICATION
+1. Back up the site/publish folder and database.
+2. Stop the MyProjectManagement application pool.
+3. Copy the CONTENTS of this ZIP's publish folder into:
+   C:\inetpub\wwwroot\MyProjectManagement-IIS-SQLServer2022-2025\publish
+   Replace matching DLLs and web files. Do not create publish\publish.
+   This UPDATE excludes appsettings*.json and web.config. Preserve your existing
+   connection settings, environment variables and DataProtection/Keys.
+4. Start the pool. Open the same HTTPS address and press Ctrl+F5.
+5. Confirm Version 26 in the header / database banner. /api/health returns 26.0.0.
+Do not reset the database or initialize the owner again.
+
+SQL
+No new table or data migration is required for project/module ownership. The existing
+project JSON modules map is reused. If v25 SQL repair is already installed, the app
+update is sufficient for this feature.
+Optional: run database/Database-Module-Owners-v26.sql to add the read-only reporting
+view dbo.vwProjectModuleConsultants. It exposes project in-charge and module consultant
+names for SQL reporting, without changing project records.
+If earlier SQL setup is incomplete, Database-Upgrade-v26.sql is the cumulative upgrade,
+including v25 collation fixes and the optional reporting view. Fresh installations use
+Database-Full-Setup-v26.sql and the full installation ZIP.
+
+CREATE PROJECT
+- Project in charge is required.
+- Select the project modules, then choose a consultant / in-charge for EACH selected
+  module in the Module-wise consultant / in-charge table.
+- Use project in-charge for unassigned modules is an explicit convenience button;
+  individual module selections can still be changed afterwards.
+- A missing module owner keeps the form open and prevents saving.
+- Office projects without ERP modules use General and require its in-charge.
+- The initial company inherits the selected module owners.
+
+EDIT PROJECT MASTER
+Open the project, then Edit project plan or Edit project module owners.
+- Existing module assignments load into the form. Active new modules may be added.
+- Existing modules are retained to protect project history.
+- By default, edits change PROJECT defaults and preserve all existing company maps.
+- To propagate defaults, explicitly select Also update matching company defaults and
+  add newly selected modules to companies. Existing company overrides with a different
+  owner are preserved. Company assignments matching the old project default update.
+- Existing tasks, daily allocated employees, actual hours and completion history are
+  not reassigned by this project-default change.
+
+COMPANIES / PERMISSIONS
+New company forms inherit the project's module consultant defaults. Company-specific
+changes do not overwrite existing project defaults. Newly introduced company modules
+can populate a missing project default. General is supported for Office projects.
+Manage project plans controls the full project editor. Change module ownership can
+reassign existing module defaults through the dedicated module editor without enabling
+unrelated plan fields. Only active staff can receive new assignments; an unchanged
+historical inactive assignment is retained until deliberately replaced.
+
+VERSION / ROLLBACK
+v26 files are immutable numbered artifacts; v24 application and v25 SQL repair archives
+remain available. Keep your site/database backup. These assignment fields already
+existed before v26, so a reviewed app-only rollback can retain the current data and
+fixed SQL views. Restore a database backup only when intentionally reverting records;
+that would remove later work. Ask for the target version when requesting rollback.
+
+VALIDATION
+Windows x64 framework-dependent .NET 10 build and backend policy checks passed.
+DOM tests cover required fields, distinct owners, preserved company overrides, explicit
+propagation, company inheritance and v26 display. AMC, timesheet, module-save, login
+and role-master regression checks passed. Complete v26 SQL setup and the optional
+reporting view were executed on an isolated SQL Server 2022 CI_AS database, including
+populated module/lead name checks. Windows IIS/browser verification remains pending.

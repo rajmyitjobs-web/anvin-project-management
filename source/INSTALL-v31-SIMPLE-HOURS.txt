@@ -1,0 +1,62 @@
+MY PROJECT MANAGEMENT v31 (31.0.0) -- ACTIVITY DATE AND HOURS
+Release: 22-Nov-2026, Qatar. Previous app: v30.
+
+REQUIRED IIS + SQL UPDATE
+1. Back up site files and database; stop MyProjectManagement application pool.
+2. In SSMS run database/Database-HoursOnly-v31.sql against MyProjectManagement.
+   This is REQUIRED for SQL timesheets, billing, PSR and AMC reports to recognize
+   new direct-hour entries. No tables are added and no existing data is rewritten.
+3. Copy CONTENTS of this ZIP's publish folder into your existing publish folder:
+   C:\inetpub\wwwroot\MyProjectManagement-IIS-SQLServer2022-2025\publish
+   Keep appsettings*.json, web.config, Keys and external authentication key folder.
+   The update ZIP excludes runtime configuration and keys.
+4. Restart the pool, sign in, Ctrl+F5. Confirm Version 31.
+
+DAILY ALLOCATION
+One Activity date and Planned hours replace the date/time range inputs.
+Choose project/company/module/activity, people, onsite/offsite and client/internal.
+Decimal hours accepted: 1.5 = 1 hour 30 minutes; 7.5 = 7 hours 30 minutes.
+Planned hours must be above 0 and at most 24 per allocation. Each person receives
+an allocation. The optional project-plan task can still be selected.
+Existing plan baseline dates stay on the task; new tasks derive both dates from
+the single activity date. Edit allocation can change pending date/hours if the
+role has rescheduling permission. Reported work retains its allocation date.
+
+UPDATE ACTUAL
+One Activity date and Actual hours replace start/end dates, clock times, breaks
+and half-day-unit entry. Enter NET hours, excluding breaks. Planned hours preload
+when no actual report exists; saved actuals take priority. Review, enter outcome,
+set status and save. Enter 0 for status only. Completed work requires >0 hours.
+Future actual work is blocked. Project dates aggregate from recorded work dates.
+Employee timesheets retain every person's hours. Team attendance requires Yes/No
+for each person's client-hour deduction. Internal work never deducts client hours.
+Authorized manager corrections, audit history, completion and follow-up notes stay
+available. Plan another session using a new daily allocation after confirmation.
+Existing confirmed follow-up bookings are retained.
+
+DATES, CALENDAR AND HISTORY
+Date fields in new-entry dialogs default to today's Qatar date and remain editable.
+Saved record dates are retained in edit dialogs; report date-range filters retain
+chosen ranges. Weekly drafts default to today within the selected week; explicitly
+choosing another week uses that week. Review optional dates before saving.
+Hours-only daily allocations appear as date-based calendar entries and export as
+all-day ICS events with hours in the title; they do not reserve a clock-time slot.
+Weekly visit worksheets and explicitly scheduled meetings retain their clock times.
+Old timed/session-based entries keep their stored history and computed hours.
+Saving an edit with direct hours gives that numeric value priority; zero is an
+explicit zero, not a fallback to old clock times. Old values remain in history.
+
+DATABASE / ROLLBACK
+Numeric plannedHours / actualHours use the existing allocation JSON storage.
+The required patch alters three reporting views without changing output contracts.
+The cumulative Database-Upgrade-v31.sql includes prior patches; full setup is for
+fresh databases only. Do not run full setup as a routine update.
+v30 is archived. Older releases do not understand direct-hour records. Use a paired
+site/database backup for complete rollback and retain configuration/keys.
+
+VERIFICATION
+Windows-target .NET build; API validation, hours limits, unauthorized correction,
+calendar and AMC checks; frontend dates/simplified forms/team billing/timesheets;
+live SQL Server 2022 fresh setup and patch rerun, direct hours, client deductions,
+PSR boundaries, legacy timed values, numeric zero and AMC visit evidence passed.
+Verify on your own IIS deployment after installation.

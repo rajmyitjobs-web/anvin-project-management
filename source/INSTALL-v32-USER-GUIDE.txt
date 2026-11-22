@@ -1,0 +1,44 @@
+MY PROJECT MANAGEMENT v32 (32.0.0) -- USER MANUAL AND PROCESS FLOW
+Release: 22-Nov-2026, Qatar. Previous app: v31.
+
+INSTALL IN IIS
+1. Back up application files and SQL database, then stop MyProjectManagement pool.
+2. If already on v31 with its SQL patch installed, no further SQL change is needed.
+   If upgrading from v30 or earlier, apply database/Database-HoursOnly-v31.sql
+   against MyProjectManagement (or the cumulative Database-Upgrade-v32.sql).
+3. Copy the CONTENTS of this package's publish folder into the existing folder:
+   C:\inetpub\wwwroot\MyProjectManagement-IIS-SQLServer2022-2025\publish
+   Preserve appsettings*.json, web.config, Keys and external key storage.
+   The update package excludes runtime configuration and authentication keys.
+4. Restart pool, sign in and Ctrl+F5. Confirm Version 32.
+
+OPEN THE MANUAL
+In the sidebar choose User manual & process flow. All roles can read the manual.
+The page has an embedded guide plus PDF, Word, process-flow and full-guide links.
+Documentation contains operating examples only, not current company data.
+The same files are included under documentation/ in this ZIP and publish/wwwroot/
+manual/. Open documentation/index.html locally or read the PDFs / Word files.
+
+INCLUDED GUIDE
+18 sections / 11-page PDF: daily workflow; role rights and login; masters;
+project/company/module setup; baseline/budget; daily allocation; weekly/calendar/
+WhatsApp; actual hours and client deduction; status handling; shared-session
+example; SQL storage; dashboard formulas; report dates/sources; SQL report map;
+AMC compliance; troubleshooting; backups and version control.
+Process-Flow-v32.pdf is a one-page vector process diagram. Word copies are editable.
+New guide navigation does not grant access to business data or change role rights.
+
+PACKAGE FILES
+User-Manual-v32.pdf / User-Manual-v32.docx
+Process-Flow-v32.pdf / Process-Flow-v32.docx
+index.html / process-flow.html / manual-content.json
+Database-Upgrade-v32.sql and Database-Full-Setup-v32.sql contain the prior v31
+schema/reporting patch plus a v32 label. Use full setup only for a fresh database.
+
+VALIDATION / ROLLBACK
+.NET Windows-target release build and in-app owner/consultant navigation tests
+passed. All 18 PDF sections, Word tables, download links and the single-page flow
+were checked. Representative manual/flow pages were visually inspected.
+v31 is archived. Preserve paired app/database backups and authentication keys.
+No business data/schema is changed by the v32 documentation feature.
+Verify the installation on your own IIS server after updating.

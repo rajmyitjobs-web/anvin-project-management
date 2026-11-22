@@ -1,0 +1,42 @@
+MY PROJECT MANAGEMENT v30 (30.0.0) -- ACTUAL ENTRY FROM DAILY ALLOCATION
+Release: 21-Nov-2026, Qatar. Previous app: v29.
+
+IIS UPDATE
+1. Back up files/database and stop MyProjectManagement application pool.
+2. Copy CONTENTS of this ZIP's publish folder into your existing publish folder:
+   C:\inetpub\wwwroot\MyProjectManagement-IIS-SQLServer2022-2025\publish
+   Keep appsettings*.json, web.config, Keys and external authentication key folder.
+   The update ZIP excludes runtime configuration and keys.
+3. Restart pool, sign in, Ctrl+F5. Confirm Version 30.
+
+UPDATE ACTUAL
+Daily allocations > Update actual loads the allocation work date, planned start,
+end and break as editable actual suggestions when this allocation has no saved
+actual report. Activity start/finish dates default to the allocation date if no
+existing activity actual dates are present. Total hours calculate automatically.
+Review the values, change anything required, enter an outcome/remarks, and Save.
+Status remains as currently recorded; loading times does not mark work Completed.
+Future actual work remains blocked by existing validation.
+Opening or cancelling does NOT change actual records, client hours or timesheets.
+Saved actuals take precedence, including zero-hour reports and sessions entered
+without clock times. Reopening never replaces saved actuals with planned times.
+Authorized project managers can use the same defaults for employee actual entry.
+Users without actual-time permission retain read-only actual fields.
+For progress/follow-up only, click Status-only update to clear suggested hours.
+For rescheduling only, clear suggested actual hours with that button first, then
+change the planned schedule fields and save. The existing calendar sync applies.
+Half-day session units remain zero for new entries; clock times take priority.
+Team client-deduction questions and existing correction permissions remain active.
+
+DATABASE / ROLLBACK
+No database migration is required. Existing JSON allocation fields are reused.
+Optional Database-Actual-Defaults-Check-v30.sql is a read-only schema check.
+Database-Upgrade-v30.sql and Database-Full-Setup-v30.sql retain the v29 schema
+for cumulative upgrades/fresh installations; do not use full setup as an update.
+v29 remains archived. For complete rollback restore a paired site/database backup
+and keep configuration and authentication keys.
+
+VERIFICATION
+Windows-target .NET build, API policy/SQL syntax checks and frontend defaults,
+save/cancel, existing actuals, units, zero-hour and reschedule checks passed.
+Verify the deployed update on your own IIS server after installation.

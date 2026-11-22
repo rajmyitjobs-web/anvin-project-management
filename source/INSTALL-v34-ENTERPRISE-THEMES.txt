@@ -1,0 +1,42 @@
+MY PROJECT MANAGEMENT v34 (34.0.0) -- ENTERPRISE WORKSPACE THEMES
+Release: 22-Nov-2026, Qatar. Previous saved app: v33 (grouped menus).
+
+IIS UPDATE
+1. Back up files/database; stop MyProjectManagement application pool.
+2. If the v31 reporting patch is installed, no additional SQL change is required.
+   Otherwise use database/Database-HoursOnly-v31.sql or Database-Upgrade-v34.sql.
+3. Copy CONTENTS of this package's publish folder into the existing folder:
+   C:\inetpub\wwwroot\MyProjectManagement-IIS-SQLServer2022-2025\publish
+   Keep appsettings*.json, web.config, Keys and external authentication keys.
+   The update excludes runtime configuration and authentication keys.
+4. Restart the pool, sign in, Ctrl+F5. Confirm Version 34.
+
+NEW DESIGN
+Default: Midnight Blue. Navy command sidebar, blue actions and cool neutral panels.
+Light Workspace: white sidebar, indigo actions and bright office workspace.
+Charcoal & Amber: charcoal sidebar, amber actions and warm neutral data panels.
+All three use light data surfaces; they are distinct workspace palettes, not a
+full dark-mode switch. The control centre uses a consolidated KPI ribbon and
+project register. Tables, forms, dialogs, buttons, branding and sign-in are restyled.
+System fonts work without an external Google font download.
+
+CHOOSE A THEME
+Top bar theme button, or Appearance & Help > Appearance. Review the three sample
+cards and press Use this theme. Comfortable/Compact changes table spacing.
+Preferences are local to this browser, using mpm-ui-theme-v1 / mpm-ui-density-v1.
+Changing theme does not save company data or change permissions, work records,
+actual hours or billing. Another browser/device can use a different preference.
+Existing grouped navigation is retained. Print/PDF documents keep their own design.
+The updated manual has chapter 20 explaining appearance choices.
+
+DATABASE / ROLLBACK
+No schema change after v31. Cumulative/fresh v34 scripts retain the numeric-hours
+reporting patch; full setup is for fresh databases only.
+v33 grouped-menu package and v32 earlier package remain archived. Keep paired
+site/database backups and authentication configuration/keys for full rollback.
+
+VERIFICATION
+.NET Windows-target publish, CSS parsing, three-theme/density preference tests,
+owner/employee access, unchanged data/no workspace saves, navigation and control-
+centre layout structure checks passed. Live browser screenshot checks were not
+available in the build environment. Review desktop/mobile layout on your IIS site.

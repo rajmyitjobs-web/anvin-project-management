@@ -1,0 +1,781 @@
+[
+  {
+    "id": "start",
+    "title": "1. Start here: the daily operating cycle",
+    "paras": [
+      "My Project Management v36 | User manual, process flow and dashboard/report data guide | 22 November 2026 | Qatar time.",
+      "The application follows Customer > Project > Companies > Modules > Activities > Daily allocations > Actual hours > Timesheets and reports. The daily activity entry uses one Activity Date and Hours. One man-day is 8 hours; a half-day session equivalent is 4 hours. Enter net decimal hours: 1.5 means 1 hour 30 minutes, not 1 hour 50 minutes.",
+      "For a first setup, the workspace owner completes masters, users and permissions before the project manager creates projects. Each morning, the manager reviews pending work and allocates the day. Each consultant reports actual hours and remarks. The manager reviews client deductions, follow-ups and reports.",
+      "This manual describes the IIS / SQL Server edition. Hosted preview or browser-local demo data is separate from your live company database. Sign in at the company IIS address to work on shared company records."
+    ],
+    "headers": [],
+    "rows": []
+  },
+  {
+    "id": "flow",
+    "title": "2. Process flow and hand-offs",
+    "paras": [],
+    "headers": [
+      "Step",
+      "Responsible person",
+      "Action and next result"
+    ],
+    "rows": [
+      [
+        "1. Configure masters",
+        "Workspace owner / permitted administrator",
+        "Create roles and permissions, team profiles and email logins, customers, modules, activity types and activities."
+      ],
+      [
+        "2. Create project",
+        "Project manager",
+        "Select customer and stage/type, code/name, manager, in-charge, module checkboxes, primary/additional people, company count and names."
+      ],
+      [
+        "3. Build company plan",
+        "Project manager / lead with rights",
+        "Review company modules, consultants, baseline activities, effort budget and go-live dates. Configure AMC contract where applicable."
+      ],
+      [
+        "4. Plan and allocate",
+        "Project manager / permitted lead",
+        "Create daily hours-only allocations or prepare weekly visits. A weekly worksheet creates daily allocations; it is not a second actual-entry register."
+      ],
+      [
+        "5. Notify team",
+        "Allocator",
+        "Review the individual WhatsApp message or full-team daily report and send it in WhatsApp. Sharing is user initiated."
+      ],
+      [
+        "6. Perform and report",
+        "Allocated employee / authorized manager",
+        "Open Update actual, review Activity Date and hours, enter remarks, status and client deduction Yes/No where needed; save."
+      ],
+      [
+        "7. Decide next action",
+        "Employee and project manager",
+        "Completed: review company/go-live readiness. More sessions, waiting or open: record a clear note; allocate a later visit when the client confirms."
+      ],
+      [
+        "8. Review delivery",
+        "Project manager",
+        "Check timesheets, client-hour budget, pending work, AMC visits/hours and project risks. Correct entries only with the proper role rights."
+      ],
+      [
+        "9. Report and close",
+        "Project manager",
+        "Generate date-range project/PSR reports, review notes and export. Confirm each company/module go-live separately; completing tasks alone does not mark all companies Live."
+      ]
+    ]
+  },
+  {
+    "id": "roles",
+    "title": "3. Roles, login and permissions",
+    "paras": [
+      "Use your company email/password login. A team profile and a sign-in account are related but different: adding a name to Team management does not itself prove that a usable login has been created. Use User master / SQL Server & accounts as available to the workspace owner to create or manage company accounts.",
+      "Workspace owners control role configuration. Role master defines roles such as Project manager, Project lead and Consultant; Role permissions defines their allowed actions. Custom roles can inherit a base role. The actual permission matrix is authoritative; a job title or being named Project Manager does not grant every permission automatically.",
+      "Project assignment gives scope/visibility. Project manager, in-charge, module membership and task participation can give project access, but task and actual-entry visibility still follow the account permissions. An employee with partial access can see incomplete project totals. Use an authorized account with full project visibility for a complete client report."
+    ],
+    "headers": [
+      "Need",
+      "Permission / rule"
+    ],
+    "rows": [
+      [
+        "Create a project",
+        "Create projects"
+      ],
+      [
+        "Edit project scope, companies and baseline",
+        "Manage project plans and companies, within project scope"
+      ],
+      [
+        "Allocate work",
+        "Assign tasks, within project scope"
+      ],
+      [
+        "Change pending date / planned hours",
+        "Reschedule allocations; reported allocation date is protected"
+      ],
+      [
+        "Report own actual work",
+        "Update tasks plus allocation ownership"
+      ],
+      [
+        "Update another employee actual",
+        "Correct actual times, within project scope, together with Update tasks"
+      ],
+      [
+        "Correct client deduction",
+        "Manage client hours; correction is audited"
+      ],
+      [
+        "Change master lists",
+        "Corresponding master permission; some catalogs require workspace-wide visibility"
+      ],
+      [
+        "Export reports",
+        "Export reports, plus access to the underlying records"
+      ],
+      [
+        "View AMC compliance",
+        "View AMC compliance"
+      ]
+    ]
+  },
+  {
+    "id": "masters",
+    "title": "4. Set up master data",
+    "paras": [],
+    "headers": [
+      "Master",
+      "What to enter",
+      "How it affects work"
+    ],
+    "rows": [
+      [
+        "Customer master",
+        "Unique code, name and active status",
+        "Selected in Project Master. One customer can have multiple projects; a project can contain multiple implementation companies."
+      ],
+      [
+        "Role master / permissions",
+        "Role name/code, base role, active status and allowed actions",
+        "Controls visibility, edits, corrections, scheduling and exports."
+      ],
+      [
+        "Team / User master",
+        "Employee profile, role, active status, email and WhatsApp; create company login separately",
+        "Allocations use employee IDs. Maintain numbers in the expected international format before WhatsApp sharing."
+      ],
+      [
+        "Module master",
+        "Code, module name, description, active status",
+        "Select modules by checkbox in projects and configure module people/company plans. Deactivate instead of deleting history."
+      ],
+      [
+        "Activity types",
+        "New Implementation / AMC / Warranty / Office, or active configured types",
+        "Project stage/type selects the activity list for new allocations. Existing work retains its recorded type when the project stage changes."
+      ],
+      [
+        "Activity master",
+        "Type, code, name, description, active status",
+        "Only active matching-type activities are offered for new work. Codes are unique; names are unique within a type. Activity type is fixed after creation."
+      ],
+      [
+        "Code capacities",
+        "Project code: up to 50 characters. Activity code/name: up to 140 characters",
+        "Capacity is a maximum, not a required padded length. Keep codes meaningful and unique."
+      ]
+    ]
+  },
+  {
+    "id": "project",
+    "title": "5. Create and expand a project",
+    "paras": [
+      "Open Projects > create a new project. Choose the customer and stage/type; enter the project code, name, contact, industry, Project Manager and Project In-charge. Review start and target go-live dates. New-entry date fields default to today and are editable.",
+      "Select module checkboxes. Each selected module needs a primary in-charge; tick additional people where several consultants will work on it. Project-level module assignments are defaults, not automatic daily tasks.",
+      "Enter Number of companies (normally 1 to 100) and real company names. Saving creates company records with the selected module defaults. Company names must be unique within the project. Review each company card afterwards.",
+      "To expand later, open the project and choose Edit project / modules / company count. Increase the company count and/or check additional modules at any project stage. Existing modules remain selected. Count cannot be reduced below existing company records, to protect their plans and history.",
+      "The default option adds newly selected modules to existing companies without replacing consultant overrides. A live company receiving a new module becomes Not ready for the additional scope; existing actual go-live dates and module history are retained. New companies inherit current project defaults. The separate matching-default option is opt-in for owner changes.",
+      "Changing project defaults does not reallocate existing daily work. Edit the allocation itself when a different employee must perform a task. Company-specific names, consultants and go-live fields are maintained through Edit / go-live on the company card."
+    ],
+    "headers": [],
+    "rows": []
+  },
+  {
+    "id": "planning",
+    "title": "6. Plan companies, activities and budgets",
+    "paras": [
+      "Within a project, review each company and its modules. Use Add activity to build a dated baseline, or apply an implementation template and then review every generated activity, consultant and date. Baseline start/finish dates remain useful in Project plan even though Daily Allocation uses one activity date.",
+      "An activity has one primary task owner and may contain multiple daily allocations to different employees. Do not confuse task ownership with the person on each allocation. Baseline effort is stored in half-day session equivalents: planned hours / 4 for new hours-only tasks.",
+      "Use the project client implementation budget to enter contracted man-days and classify any legacy session hours. Budget hours = contracted man-days x 8. A project with no budget shows Not set; setting a budget does not create or approve work.",
+      "Keep company/module go-live status and actual dates under review. A project is treated as completed only when it has activities, task-count progress is 100%, and all configured companies are marked Live. A report does not itself change go-live status."
+    ],
+    "headers": [],
+    "rows": []
+  },
+  {
+    "id": "daily",
+    "title": "7. Allocate daily work: one date and hours",
+    "paras": [
+      "Open Daily allocations and choose Create task & allocate. Select project, company, module and activity. The type comes from the project for new work. Optionally select a matching existing planned activity instead of creating another task.",
+      "Enter Activity Date and Planned Hours. Choose onsite/offsite, client/internal and one or more employees. Add clear instructions and save. Each employee receives an allocation. For a shared session, planned hours apply to each selected employee.",
+      "Hours must be above 0 and at most 24 per allocation. Enter net hours excluding breaks. No start/end clock time is required. A new task derives its baseline start/finish from this one activity date; existing task baselines are preserved.",
+      "To change pending work, use Edit allocation. Rescheduling rights are required to change date or planned hours. Once work is reported, retain the original allocation date and add another allocation for a later visit. Editing an allocation does not move another employee allocation automatically.",
+      "Daily cards and the work table use allocation date, which may differ from actual work date. A changed actual work date will therefore appear in a different timesheet period without moving the original planned allocation."
+    ],
+    "headers": [],
+    "rows": []
+  },
+  {
+    "id": "weekly",
+    "title": "8. Weekly visits, calendar and WhatsApp",
+    "paras": [
+      "Use Weekly visit worksheet to select employee, customer, project, matching activity, optional planned task, date, times, onsite/offsite and notes. The weekly worksheet retains clock scheduling; the simplified daily form does not require it. Saving the worksheet creates the canonical daily allocations.",
+      "New weekly rows default to today when today is in the selected week; choosing another week uses that week. Review the selected week before saving. Daily allocations are the place to complete remaining instructions and actual reporting.",
+      "Hours-only daily allocations appear as date-based calendar entries and export as all-day ICS events with the hours in the title. They do not reserve a clock-time slot. Existing timed visits and meetings keep their original scheduled times. Use the calendar and weekly plan to review dates; use Daily allocations to edit allocation records.",
+      "Use the WhatsApp action on an individual allocation to prepare a message and employee link. Review and send it yourself in WhatsApp. The team report can be downloaded/copied and attached to a group. The application does not silently send WhatsApp messages.",
+      "The link must use an IIS address reachable by the consultant. localhost works only on the computer hosting IIS. Sharing a link does not create an account or grant access. The employee must use their company login and have the correct role/project access."
+    ],
+    "headers": [],
+    "rows": []
+  },
+  {
+    "id": "actual",
+    "title": "9. Report actual activity",
+    "paras": [
+      "Open Daily allocations, Team/My dashboard, or a timesheet row and choose Update actual. The simplified form has Activity Date, Actual Hours, Status, Completion %, Outcome/remarks and client-deduction choice. An AMC onsite activity may also show a visit checkbox.",
+      "When no actual report exists, planned hours are loaded for review. Saved actual hours and date take priority when reopening. Opening or cancelling the form never records hours. Review the date/hours, enter what was actually delivered and save.",
+      "Enter 0 for a status-only update. Completed work requires positive actual hours and an outcome. Future actual work is blocked. More sessions, awaiting confirmation and open updates require a clear follow-up note. Use another daily allocation to schedule the next confirmed visit.",
+      "For a team session, each employee must choose whether their own client-tagged hours deduct from the client. Internal work never deducts from the client. All positive employee hours still appear in timesheets, regardless of deduction. An authorized manager can correct actuals or deductions; audit history records the updater.",
+      "Task-level actual start/finish dates are derived from recorded work dates. If one employee completes a shared activity while other allocations remain incomplete, the activity can remain In progress. Allocation status and overall activity status are intentionally distinct.",
+      "Old clock/session entries remain readable. Direct numeric hours take priority when an entry is saved in the new form; an explicit numeric zero overrides old clock values. Existing timing fields are not used to invent another visit or duplicate actual hours."
+    ],
+    "headers": [],
+    "rows": []
+  },
+  {
+    "id": "statuses",
+    "title": "10. Status handling and client follow-up",
+    "paras": [],
+    "headers": [
+      "Status",
+      "Use when",
+      "Next action"
+    ],
+    "rows": [
+      [
+        "To do / Planned",
+        "Work has not yet been reported; Planned is the allocation equivalent",
+        "Review instructions and perform work on the allocated date."
+      ],
+      [
+        "In progress",
+        "Work is under way or some team allocations remain incomplete",
+        "Report actual effort and current completion; review remaining scope."
+      ],
+      [
+        "Completed",
+        "This allocation/activity has finished",
+        "Enter positive actual hours and outcome; manager checks remaining team/company work."
+      ],
+      [
+        "More sessions needed",
+        "Additional delivery is needed",
+        "Explain what remains; allocate a new visit once agreed."
+      ],
+      [
+        "Awaiting client confirmation",
+        "The next date depends on client confirmation",
+        "Record who will confirm and what is pending; manager follows up."
+      ],
+      [
+        "Open - update manager later",
+        "Work remains open without a confirmed next appointment",
+        "Record a clear note; manager reviews open follow-ups."
+      ],
+      [
+        "Not ready / Ready / Live / On hold",
+        "Company or module go-live state, separate from task status",
+        "Update the company/module go-live record and actual dates as appropriate."
+      ]
+    ]
+  },
+  {
+    "id": "example",
+    "title": "11. Worked example: two consultants, one session",
+    "paras": [
+      "Finance training is allocated to Aisha and Daniel for 4 hours each. They both report 3 actual hours. Aisha selects Yes for client deduction; Daniel selects No. Both entries are Client-tagged.",
+      "Timesheets show Aisha 3 + Daniel 3 = 6 employee hours. Client deduction is 3 hours, not 6. Client non-deducted hours are 3. An 80-hour client budget has 77 hours remaining. Client man-days consumed are 3 / 8 = 0.375 (displayed with report rounding).",
+      "If the same shared onsite visit qualifies for an AMC contract and both required people attend, visit hours are counted once using the maximum attendee hours: 3 hours, not 6. If the contract requires 4 hours per visit, this visit is short even though employee timesheets total 6 hours.",
+      "Planned hours, employee actual hours, client deduction and AMC visit hours answer different questions. Do not expect them to be equal."
+    ],
+    "headers": [],
+    "rows": []
+  },
+  {
+    "id": "data",
+    "title": "12. Where application data is stored and loaded from",
+    "paras": [
+      "In the live SQL edition, records are stored in the configured MyProjectManagement SQL Server database. The browser loads an authorized workspace snapshot through the application API, then renders dashboards and reports from those records. Refreshes are checked periodically (normally around 10 seconds in this build). A failed save is not evidence that SQL stored the change.",
+      "SQL reporting views read the same canonical JSON records; they are not separate manually maintained ledgers. In the browser preview/local mode, data lives in browser storage instead, so clearing/changing browsers can affect demo records. Use the live SQL edition for shared team data."
+    ],
+    "headers": [
+      "Storage object",
+      "Contents",
+      "Used by"
+    ],
+    "rows": [
+      [
+        "dbo.Workspaces.SettingsJson",
+        "Customer, module, activity, activity-type and role/permission catalogs",
+        "Master forms, lookup lists, permission checks, report labels"
+      ],
+      [
+        "dbo.TeamMembers.Payload",
+        "Employee IDs, names, role, active state, contact/WhatsApp profile",
+        "Assignments, employee names, role mapping and team views"
+      ],
+      [
+        "dbo.AppUsers",
+        "Company sign-in account information and team-member linkage",
+        "Authentication; adding a team name alone is not a usable login"
+      ],
+      [
+        "dbo.WorkspaceRecords: kind project",
+        "Project code/name, customer, stage, manager/in-charge, module teams, companies/go-live, client budget, AMC contract, period PSR notes",
+        "Project cards, company tracking, scope, budgets, AMC and PSR"
+      ],
+      [
+        "dbo.WorkspaceRecords: kind task",
+        "Baseline activity/owner/type, task status/completion, allocations, actual hours, outcome and audit histories; legacy sessions",
+        "Daily allocations, timesheets, task progress, performance and effort reports"
+      ],
+      [
+        "dbo.WorkspaceRecords: kind meeting",
+        "Scheduled meetings, follow-ups and allocation-derived calendar events",
+        "Calendar and weekly/daily scheduling"
+      ],
+      [
+        "dbo.WorkspaceRecords: kind activity",
+        "Audit-style activity log entries",
+        "Activity log; not the Activity master catalog"
+      ]
+    ]
+  },
+  {
+    "id": "dashboards",
+    "title": "13. Dashboard loading and calculations",
+    "paras": [],
+    "headers": [
+      "Screen / metric",
+      "Loaded from",
+      "Filter / calculation / important limit"
+    ],
+    "rows": [
+      [
+        "Overview: active/completed projects",
+        "Visible projects, task statuses and company go-live",
+        "Completed requires tasks, 100% completed task count and all companies Live. Overview active projects excludes those completed projects."
+      ],
+      [
+        "Overview / PSR project percentage",
+        "Project activity tasks",
+        "Rounded completed task count / total task count x 100. This is not hours consumed or an estimate of billable completion."
+      ],
+      [
+        "Overview risk",
+        "Current task follow-up/status, task planned finish and company planned go-live",
+        "Flags additional-session/waiting/open statuses or overdue incomplete tasks / not-live companies. Suggested operational risk is not a historical risk snapshot."
+      ],
+      [
+        "Company/module progress / plan progress",
+        "Company/module tasks, completion %, planned session equivalents",
+        "Weighted completion = sum(planned effort x task completion %) / sum(planned effort). Completed tasks count as 100%; equal-weight fallback if no planned effort. This can differ from project task-count percentage."
+      ],
+      [
+        "Team / My dashboard",
+        "Daily allocations plus a primary-owner task row when no allocation exists for that owner",
+        "Pending means not Completed. Overdue means pending and its work/due date is before today. Today uses work/due date; follow-up includes waiting/open/more-session statuses. Items are work rows, not unique projects."
+      ],
+      [
+        "Team dashboard planned/actual hours",
+        "Visible allocation rows and unscheduled-owner task rows",
+        "Allocations use their employee hours. Unscheduled-owner rows use task baseline effort and task actual effort; do not treat all ownership rows as independent employee time."
+      ],
+      [
+        "Daily allocations cards",
+        "Allocations selected by allocation date, employee/status and project/company/module cohort",
+        "Planned hours sum each allocation; actual hours sum reported values on those selected allocation rows. Client deduction includes only Client-tagged actuals with deduction not No."
+      ],
+      [
+        "Project hour position",
+        "All visible project tasks, allocations and legacy sessions",
+        "Budget = man-days x 8. Client used = client-deductible actuals. Remaining = budget minus client used. Baseline planned hours and allocated hours are separate totals; the project position is not limited to the selected daily date."
+      ],
+      [
+        "Performance ownership table",
+        "Project-plan tasks selected by task baseline overlap, primary owner, status and project/company/module",
+        "Planned effort uses baseline sessions; actual session equivalents = all contributor hours on owned tasks / 4. On-time compares task actual finish to planned finish. This table is activity ownership, not individual employee timesheets."
+      ],
+      [
+        "Actual hours by allocated employee",
+        "Allocations on the selected task cohort",
+        "Sums each employee allocation hours. Date filtering follows the selected task cohort, not an independent actual-work-date range. Use Employee timesheets for a strict actual-date period."
+      ]
+    ]
+  },
+  {
+    "id": "reports",
+    "title": "14. Report loading, dates and sources",
+    "paras": [],
+    "headers": [
+      "Report",
+      "Date basis / source",
+      "Output and limits"
+    ],
+    "rows": [
+      [
+        "Employee timesheets",
+        "Saved positive allocation actualHours; actualWorkDate, falling back to allocation date",
+        "One employee/allocation row. Excel includes work date, employee, project code/name, type, activity code/name, notes and hours. Zero-hour entries are excluded. Legacy session-only history is not added as employee daily rows."
+      ],
+      [
+        "Employee daily totals",
+        "Same date-filtered employee timesheet rows",
+        "Sum employee hours, client deduction, internal hours and client-not-deducted hours. Corrections update the same allocation rather than adding duplicate timesheet entries."
+      ],
+      [
+        "Project reports / summaries",
+        "Planned hours by allocation date; actual hours by actual work date; includes dated legacy sessions",
+        "Inclusive From/To filters plus project, recorded type and work mode. Groups by project/type/activity/mode. A row may carry planned hours only or actual hours only when the dates differ. Legacy mode can be Unclassified."
+      ],
+      [
+        "Activity status during period",
+        "Tasks with period work, overlapping baseline, or qualifying current history per report filters",
+        "Status/completion/follow-up displayed are current values. Selected dates do not reconstruct what the status used to be."
+      ],
+      [
+        "PSR",
+        "One project, inclusive From/To; actual work by actual date; overlapping plans / next sessions",
+        "Recent activities and employee period hours; current task-count percentage/status; manager notes saved for the exact date pair. Client man-days = cumulative client-deductible hours through To / 8, not only hours inside From/To."
+      ],
+      [
+        "PSR exports",
+        "Same visible project and selected dates",
+        "Print/save PDF follows the client report layout. Excel includes summary, actual entries and period risks/plans. Risk status may be manager-entered or a suggestion from visible current period tasks; review before sharing."
+      ],
+      [
+        "AMC monitoring",
+        "AMC project contract cycle dates, required people/visits and onsite allocation evidence",
+        "Counts qualifying shared visits and session hours once, separately from employee time and client billing. Shows missing visits/hours and weekly scheduling suggestions."
+      ],
+      [
+        "Full-team daily report",
+        "Daily allocation date and records accessible to an account with full-team export rights",
+        "Exports/copies allocated team work for WhatsApp. This is not a strict actual-work-date timesheet period report."
+      ],
+      [
+        "Project plan / performance export",
+        "Current plan task cohort and baseline dates",
+        "Baseline/actual effort and task dates; completed on-time uses dated finished tasks. Neither waiting time nor extra sessions automatically means poor employee performance."
+      ]
+    ]
+  },
+  {
+    "id": "sqlmap",
+    "title": "15. SQL reporting map for administrators",
+    "paras": [
+      "Use the application for ordinary editing. Direct SQL changes can bypass validation, relationships, audit and permissions; an administrator should take a backup and understand the JSON model before any repair. Never share SQL credentials with consultants.",
+      "The v31 numeric-hours reporting patch remains required in v36. New allocation JSON uses plannedHours and actualHours; numeric zero is authoritative. Older entries fall back to stored clock times/breaks, then legacy half-day units. SQL views preserve those rules. v36 adds documentation and does not require another schema change."
+    ],
+    "headers": [
+      "SQL object",
+      "Data read / purpose"
+    ],
+    "rows": [
+      [
+        "dbo.vwDailyAllocations",
+        "Task allocation JSON; planned/actual hours and dates; direct hours or legacy clock fallback"
+      ],
+      [
+        "dbo.vwTimesheetEntries",
+        "Task allocations plus legacy sessions; common source for period effort reports"
+      ],
+      [
+        "dbo.vwAllocationWorkforce / dbo.vwTimesheetBilling",
+        "Deduction choice, billing confirmation/audit and client-deductible hours; preserves all employee actual hours"
+      ],
+      [
+        "dbo.vwEmployeeDailyTimesheets / dbo.vwEmployeeTimesheetTotals",
+        "Positive actual daily allocations, employee/master labels and employee/day totals"
+      ],
+      [
+        "dbo.vwProjectMaster / dbo.vwCustomerMaster / dbo.vwActivityMaster",
+        "Master IDs, names, codes and current project stage"
+      ],
+      [
+        "dbo.vwWeeklySiteVisits",
+        "Weekly-plan-linked allocation rows; not a separate actual ledger"
+      ],
+      [
+        "dbo.vwAmcContracts / dbo.vwAmcAllocationEvidence / dbo.vwAmcCycleCompliance",
+        "Contract cycles, onsite shared-visit evidence and compliance calculations"
+      ],
+      [
+        "dbo.uspProjectStatusReport",
+        "Workspace/date/project/type/mode-filtered reporting"
+      ],
+      [
+        "dbo.uspProjectPSR",
+        "Workspace + one project + inclusive dates; header/metrics, recent work, period tasks and exact-period notes"
+      ],
+      [
+        "dbo.vwProjectModuleConsultants / dbo.vwProjectModuleTeams",
+        "Primary module owner, additional people and project management assignments; optional views introduced in v26/v27"
+      ],
+      [
+        "dbo.vwProjectScopeSummary",
+        "Actual number of company records and selected project modules; optional view from v29"
+      ]
+    ]
+  },
+  {
+    "id": "amc",
+    "title": "16. AMC process and alerts",
+    "paras": [
+      "For an AMC-stage project enter contract start/end, cycle (daily, alternate days, weekly, monthly, quarterly, six-monthly or yearly), visits per cycle, hours per visit and required staff. Review the suggested weekly visits before creating allocations.",
+      "Only onsite allocation evidence within the contract/cycle is used for compliance. A shared session is grouped by its AMC visit link or team group; independent hours-only allocations use their own visit keys. Per-visit credited hours use the maximum attendee hours, not the sum of employee timesheets.",
+      "Qualification requires the required people and sufficient per-visit hours. A short visit can contribute attended hours while still failing the qualifying-visit target. Closed-cycle visit/hour gaps create overdue alerts; future cycles should be reviewed for missing scheduling.",
+      "Employee timesheets and client deductions remain separate. Marking No for client deduction does not remove the employee hours, and does not automatically invalidate a legitimate onsite AMC visit. Offsite/internal support may still be employee work without being an onsite compliance visit."
+    ],
+    "headers": [],
+    "rows": []
+  },
+  {
+    "id": "checks",
+    "title": "17. Daily checks and troubleshooting",
+    "paras": [],
+    "headers": [
+      "Symptom / check",
+      "What to inspect"
+    ],
+    "rows": [
+      [
+        "Allocation is missing",
+        "Selected allocation date, project/company/module, employee/status filters and role/project scope. Confirm that save succeeded in the live shared workspace."
+      ],
+      [
+        "Timesheet is missing",
+        "Positive saved actual hours, actual work date, employee filter and access rights. Opening Update actual or allocating planned hours does not create a timesheet."
+      ],
+      [
+        "Client total differs from employee total",
+        "Client/Internal tag, each person deduction Yes/No, legacy classification and cumulative versus period scope. Team hours are not automatically a client charge."
+      ],
+      [
+        "Progress percentages differ",
+        "Project percentage counts completed tasks; plan/company progress weights task completion by planned effort. Neither equals budget consumption."
+      ],
+      [
+        "Task remains In progress after completion",
+        "Other daily allocations may remain incomplete. Check each person allocation and separate company/module go-live."
+      ],
+      [
+        "AMC visit is missing or short",
+        "Contract/cycle dates, onsite mode, visit mark, group/visit key, required attendees and hours per visit."
+      ],
+      [
+        "Report is incomplete",
+        "Use the correct date basis and a fully authorized account. SQL workspace/project parameters and browser filters must refer to the same project. A partial-access login sees partial data."
+      ],
+      [
+        "Cannot save / another save pending",
+        "Read the displayed error, wait for current shared save or resolve the conflict, confirm the current version, then retry. Avoid opening parallel edits in several tabs."
+      ],
+      [
+        "401 or login problem",
+        "Company email/login status, credentials, session and IIS address. A database permission repair does not fix invalid sign-in credentials."
+      ],
+      [
+        "App works but SQL reports show wrong numeric hours",
+        "Confirm the v31 HoursOnly reporting patch was applied to the same database used by IIS."
+      ],
+      [
+        "WhatsApp link cannot open",
+        "Use a reachable company IIS URL, not localhost or a local file path. Confirm the employee company account and permissions."
+      ],
+      [
+        "Data differs in another browser",
+        "Check live SQL sign-in versus demo/browser storage and the selected workspace. Browser demo data is not the SQL database."
+      ]
+    ]
+  },
+  {
+    "id": "admin",
+    "title": "18. Administration, backups and release control",
+    "paras": [
+      "Keep the application version, database patch history and a backup together. Verify the displayed version after an IIS update. Back up both SQL data and the deployed site before upgrading; retain appsettings configuration, web.config and the authentication key directory.",
+      "For v36, install the updated application and guide. There is no additional SQL schema change over v35. If upgrading from an earlier version, use the cumulative v36 upgrade to include the v31 numeric-hours reporting and v35 change-request prerequisites.",
+      "Preserve the existing IIS configuration and keys when replacing publish contents. Restart the application pool and hard-refresh the browser. Do not run a fresh-database setup script as a routine update. Complete rollback uses the paired application/database backup; old application versions may not understand direct-hour entries.",
+      "The full manual and process-flow PDFs/Word files in this release contain examples and operating instructions only, with no live company records or credentials. Users can open User manual & process flow in the application; the online and PDF/Word versions contain the same guide content."
+    ],
+    "headers": [],
+    "rows": []
+  },
+  {
+    "id": "navigation",
+    "title": "19. Find forms by purpose",
+    "paras": [
+      "The sidebar uses collapsible headings. Open a heading to see its forms. The group containing the current screen opens automatically. Only existing menu items allowed for your login are grouped; this does not grant additional permissions. Empty headings are hidden. Expand/collapse choices are remembered during the current page session.",
+      "If an older manual refers directly to a screen name, open the corresponding group below. The form names and business records are unchanged."
+    ],
+    "headers": [
+      "Group",
+      "Forms / screens"
+    ],
+    "rows": [
+      [
+        "Dashboards",
+        "Overview; Team dashboards or My dashboard"
+      ],
+      [
+        "Masters & Setup",
+        "Customer master; Module master; Activity types; Activity master"
+      ],
+      [
+        "Projects & Planning",
+        "Projects; Project plan; Weekly site visits; Meetings; Change requests"
+      ],
+      [
+        "Daily Work",
+        "Daily allocations; Task status / My tasks; Timesheets"
+      ],
+      [
+        "Reports & Performance",
+        "Project reports; PSR report; Performance; AMC monitoring"
+      ],
+      [
+        "Administration",
+        "Team management; User master; Role master; Role permissions; SQL Server & accounts / Database & sign-in; Activity log"
+      ],
+      [
+        "Appearance & Help",
+        "Appearance; User manual & process flow"
+      ]
+    ]
+  },
+  {
+    "id": "appearance",
+    "title": "20. Choose an enterprise theme",
+    "paras": [
+      "Open Appearance & Help > Appearance, or use the theme button in the top bar. Choose Midnight Blue, Light Workspace or Charcoal & Amber. The default is Midnight Blue. Each theme applies to navigation, dashboard panels, tables, forms and dialogs.",
+      "Midnight Blue uses a navy navigation rail and blue actions. Light Workspace uses a white sidebar and indigo controls. Charcoal & Amber uses a charcoal sidebar and amber actions. All three retain light data surfaces for readable forms and reports.",
+      "Choose Comfortable or Compact table spacing. Theme and spacing are saved only in this browser preferences. They do not change shared company data, employee permissions, saved actuals or report calculations. Another device can use another theme. Clearing browser storage resets the preference.",
+      "PDF/Word manuals and printed PSR reports keep their own document design. v36 also introduces a consolidated dashboard KPI ribbon, a project-register layout, sharper table and input borders, and local system fonts. No Google font download is required for the application theme."
+    ],
+    "headers": [],
+    "rows": []
+  },
+  {
+    "id": "change-requests",
+    "title": "21. Change requests: technical feasibility and revisions",
+    "paras": [
+      "Open Projects & Planning > Change requests. The workflow is Initiator draft > Project Manager feasibility review > CTO review > Technically feasible and ready to share with the client. Consultants, project leads and team leads can initiate requests when their configured role permits and they have project access.",
+      "Before first use the administrator runs the REQUIRED v35 SQL migration. It adds ChangeRequests and ChangeRequestDocuments tables and seeds missing CR permissions plus CTO and Team lead role templates. Create the actual CTO employee profile and company login, assign role rights, and confirm Project Manager in each project. The initiator, assigned PM and CTO must be different active people.",
+      "Create a draft with project, CTO approver, title, expected change, revision reason and numbered change points. PM comes from Project Master. Each non-empty line becomes P1, P2, etc. Save the draft, then upload its Word file and submit. A Word document is required for every submitted revision.",
+      "Word uploads support .docx and .doc up to 5 MB each. Uploads are retained, with the latest document designated for submission. Submitted documents cannot be replaced. The app gives a read-only .docx text preview with D1, D2 paragraph references; formatting, images and Word tracked changes are not reproduced. Legacy .doc files must be downloaded and opened in Word. Use original-file download for complete formatting. Text previews show at most 2000 non-empty paragraphs, with up to 5000 characters in each paragraph.",
+      "The assigned PM reviews the exact revision and chooses Approve, Amendment, Clarification or Meeting. Comments can refer to numbered points or D paragraph references. Amendment/clarification/meeting needs an explanation. A meeting request records a proposed date; confirm and create the actual appointment through Meetings. It does not silently book a calendar slot.",
+      "PM approval sends the revision to its assigned CTO. CTO has the same decision choices. CTO cannot approve before PM. Both approvals are required for Technically feasible. Use Awaiting my review to find your inbox; the register checks for updates around every 15 seconds while open, but does not replace a form while it is being edited.",
+      "Returned/meeting-requested revisions are read only. The initiator creates a new revision, explains the amendment, edits the points, uploads the revised Word file and submits again to PM. Client feedback after technical approval follows the same new-revision process. Approval is never copied to a new revision.",
+      "Technically feasible means this exact revision is ready to share, not that the client or commercial terms are approved. Download that approved revision Word file and send it through your normal process. The app does not send email or WhatsApp automatically, and its private document URLs are not public client links.",
+      "Revision history retains points, documents, reviewer decisions, point/paragraph comments, proposed meetings and audit timestamps. The register shows up to the latest 200 accessible requests. Filters show My requests, Awaiting my review or Ready for client. Company login, active role permissions and assignment are enforced by the server."
+    ],
+    "headers": [
+      "Status",
+      "Who acts next",
+      "Required action"
+    ],
+    "rows": [
+      [
+        "Draft",
+        "Initiator",
+        "Edit points, upload Word document, submit to PM."
+      ],
+      [
+        "Pending PM",
+        "Assigned Project Manager",
+        "Approve, request amendment/clarification or propose a meeting with comments."
+      ],
+      [
+        "Returned by PM / Meeting requested by PM",
+        "Initiator",
+        "Clarify or meet, then start a fresh revision and upload a revised document."
+      ],
+      [
+        "Pending CTO",
+        "Assigned CTO",
+        "Review the PM-approved revision and record a decision."
+      ],
+      [
+        "Returned by CTO / Meeting requested by CTO",
+        "Initiator",
+        "Start a new revision after the requested work; PM approval must be repeated."
+      ],
+      [
+        "Technically feasible",
+        "Initiator / project team",
+        "Download the approved revision for client sharing. Client changes start another revision."
+      ]
+    ]
+  },
+  {
+    "id": "cr-data",
+    "title": "22. Change-request data, access and backup",
+    "paras": [
+      "CR records use dedicated SQL tables and authenticated /api/change-requests endpoints, separate from the ordinary workspace snapshot. The CR register counts current revision states. My requests uses initiator ID. Awaiting my review uses current Pending PM/CTO status plus assigned reviewer ID. Ready for client uses current Technically feasible state. Historical approved revisions remain available even if the latest revision is being amended.",
+      "Role permissions include Create/revise own change requests, Review as Project Manager, Approve as CTO and View all CRs within project scope. Initiators and assigned reviewers can read their request and revision history. Broad register visibility does not itself give authority to approve. Only the assigned reviewer at the current pending stage can decide.",
+      "Word bytes are stored in dbo.ChangeRequestDocuments.Content with file name, revision and SHA-256 hash. They are not written under wwwroot or a public upload folder. Every download/preview checks the active company login, workspace and CR access. CR metadata and files use no-store responses. Changes use a version check; a stale update returns a conflict instead of overwriting another decision.",
+      "Full SQL database backups include CR metadata, approval history and Word documents. The ordinary workspace JSON export/import does NOT include these dedicated CR tables or document bytes. Keep SQL backups and allow for attachment storage growth. There is no CR delete function in this version. If a project is removed, retain CR audit history; creating further revisions requires a valid project record.",
+      "First installation requires Database-ChangeRequests-v35.sql, or the cumulative v36 upgrade. Existing v31 numeric-hours reporting remains required. A fresh workspace created after installation receives CTO/Team lead templates from owner initialization. The Word text preview is an app review aid, not an embedded Word editor."
+    ],
+    "headers": [
+      "SQL object",
+      "Contents"
+    ],
+    "rows": [
+      [
+        "dbo.ChangeRequests",
+        "Workspace/project/initiator, CR number, optimistic version and JSON revisions/reviews/audit."
+      ],
+      [
+        "dbo.ChangeRequestDocuments",
+        "Protected original Word bytes, request/revision ID, name/type/hash and upload timestamp."
+      ],
+      [
+        "dbo.vwChangeRequestRegister",
+        "One row per historical revision with its state and assigned PM/CTO."
+      ],
+      [
+        "dbo.vwChangeRequestApprovals",
+        "Review decisions, reviewer/time, general/point/paragraph comments and proposed meeting date."
+      ]
+    ]
+  },
+  {
+    "id": "excel-upload",
+    "title": "23. Upload Activity Master and Project Plan from Excel",
+    "paras": [
+      "Activity Master: Masters & Setup > Activity master > Download Excel template / Upload Excel. Project Plan: Projects & Planning > Project plan > Download Excel template / Upload Excel. Import buttons follow existing master/plan permissions. In the company IIS edition they save to SQL Server; in the browser demo they save only to that browser.",
+      "Download the template from the appropriate screen. Fill the first worksheet below its heading row. In-app templates include reference sheets for available activity types or projects/companies/modules, activity codes and consultant IDs/names. Those reference sheets are not imported. Standalone blank templates are included in this release; in-app templates are better for matching your company records.",
+      "Activity Master columns: Activity Code, Activity Name, Activity Type, Description, Status. Code/name allow up to 140 characters; type must match an existing active type code or name. Status is Active or Inactive (default Active). Description is optional, maximum 1000 characters. Codes are unique across the catalog and names are unique within their type, including inactive records.",
+      "Project Plan columns: Plan Reference, Project Code, Company, Module, Activity Code, Consultant, Planned Start, Planned Finish, Planned Hours, Priority, Notes. Use an existing accessible project and exact company name. Company may be blank only when the project has one company. Module must be active and selected for that company; General is allowed. Activity code must be active and match the project stage. Consultant accepts exact ID, unique name or company email; using IDs avoids duplicate-name ambiguity.",
+      "Plan Reference is your unique import line code (up to 50 characters), unique within a project. Re-uploading the same references is rejected. Identical company/module/activity/consultant/date baselines are also rejected, even with another reference. Import is ADD ONLY: it never overwrites existing activities or actual work.",
+      "Plan dates accept yyyy-mm-dd text or normal Excel date values. Empty date cells default to today and show a preview note; date headers are still required. Finish must not be before start. Planned Hours are total baseline effort, above 0 and at most 4000. They become half-day session equivalents by dividing by 4. Priority is Low, Medium or High (default Medium). Notes are optional, up to 2000 characters.",
+      "Select Upload Excel, choose .xlsx or comma-separated UTF-8 CSV, then Preview file. The first sheet/header row 1 is used; maximum file size is 5 MB and maximum 500 data rows. Formulas, protected/encrypted formats and .xls/.xlsm are not supported: paste values and save as .xlsx. Keep codes/references as text to retain leading zeros. For old browsers unable to decompress .xlsx, use a current Chrome/Edge or save the first worksheet as CSV.",
+      "Preview shows normalized values, source row numbers, errors and warnings. No records are saved at preview. Import all rows is enabled only when every row is valid. Correct the original Excel file and preview again if errors appear. There is no partial-row import. A shared workspace version check rejects stale previews: reload/re-preview instead of overwriting another user changes.",
+      "Project Plan upload creates To do baseline tasks with dates, owner and effort. It does NOT create daily allocations, employee actuals, timesheets or go-live events. Schedule imported work from Daily allocations or the weekly worksheet. Uploaded activity master rows become selectable by type in later plans/allocations.",
+      "Activity import uses Manage Activity Master plus View All Projects permissions. Plan import uses Manage Plans within each project scope. Shared preview/commit runs server-side validation again before one database transaction. The file itself is read in the browser; row data is sent only to the company API and the source Excel file is not stored as an attachment. No new SQL tables/schema are required by v36. Existing v31/v35 prerequisites still apply."
+    ],
+    "headers": [
+      "Import",
+      "Saved data / duplicate rules"
+    ],
+    "rows": [
+      [
+        "Activity Master",
+        "Workspaces.SettingsJson.activityMaster, through the existing catalog validation. Existing codes and same-type names are rejected; catalog limit remains 500 total activities."
+      ],
+      [
+        "Project Plan",
+        "WorkspaceRecords task JSON. planImportReference, planImportedBy and planImportedAt identify imported baselines. Existing record relationships and report formulas remain unchanged."
+      ],
+      [
+        "Batch failure / concurrent change",
+        "No rows from a rejected SQL transaction are saved. Fix the sheet or preview again against the latest workspace revision."
+      ]
+    ]
+  }
+]

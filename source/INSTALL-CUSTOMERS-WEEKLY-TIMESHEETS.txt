@@ -1,0 +1,133 @@
+MY PROJECT MANAGEMENT -- CUSTOMERS / WEEKLY PLANS / TIMESHEETS UPDATE
+Windows x64 framework-dependent ASP.NET Core 10; SQL Server 2022/2025.
+
+UPGRADE YOUR EXISTING IIS INSTALLATION
+1. Back up the SQL database and your existing publish folder.
+2. IIS Manager > Application Pools > MyProjectManagement > Stop.
+3. SSMS: run database/Customer-Weekly-Timesheet-Upgrade-SQLServer.sql as an
+   administrator. This cumulative upgrade includes the previous role/type changes.
+   Explicit role permissions, customer records and Yes/No billing decisions are
+   retained on rerun. Old allocations retain their previous client-deduction behavior.
+4. Copy the CONTENTS of this ZIP's publish folder into:
+   C:\inetpub\wwwroot\MyProjectManagement-IIS-SQLServer2022-2025\publish
+   Replace application DLLs and wwwroot files. Do not create publish\publish.
+   The UPDATE publish folder excludes appsettings*.json and web.config. Keep your
+   existing connection settings, IIS configuration and DataProtection/Keys unchanged.
+   Source files are for developers; do not use source as the IIS physical path.
+5. Start the application pool. Open the SAME HTTPS address. Press Ctrl+F5 or open
+   a private window. Sign in with your existing owner account.
+6. Confirm the banner: Customers / weekly plans / timesheets v1.
+Do not reset the database or rerun --create-admin on an existing installation.
+
+CUSTOMER MASTER
+- Open Customer master; add unique customer code (up to 50 characters) and name
+  (up to 160). Customers can be edited or deactivated without deleting history.
+- New projects require a customer selection. Open existing projects > Edit project
+  plan to map their customer. Existing projects are left unassigned until reviewed;
+  project/client-contact names are not guessed or converted into customer records.
+- Project lists and detail screens show the selected customer.
+
+DAILY ALLOCATION / MULTIPLE PEOPLE
+- Daily allocations > Create task & allocate opens Allocate activity to team.
+- Select project, matching activity, optional existing project-plan task, date,
+  start/end time, onsite/offsite, client/internal and one or several employees.
+- One task can have an allocation per person. Each employee records their own work.
+- Edit allocation adjusts remaining instructions/classification and task company/
+  module. Company/module changes apply to all allocations on that task.
+- An existing project-plan task must match the project's current type and activity.
+  Past task/allocation types remain fixed when the project stage changes.
+
+ACTUAL HOURS AND CLIENT DEDUCTION
+- All employee actual hours remain in the employee's timesheet.
+- For a team session, actual submission asks: Deduct this employee's actual hours
+  from the client? Choose Yes or No. A choice is required when saving team hours.
+- Yes deducts Client-tagged hours. No retains those same hours as non-billable client
+  time and does not reduce the client implementation-hours budget.
+- Internal-tagged work never deducts, regardless of the Yes/No selection.
+- Example: two people work 2 hours each. Timesheets show 4 actual hours. If one
+  answers No and the other Yes, only 2 hours deduct from the client.
+- A user with Correct other employees' client-hour deductions can open Client
+  deduction on daily allocations and correct the team's choices. Billing corrections
+  are audited with updater/history and do not change worked hours.
+- Completing one attendee does not mark the shared task fully completed while
+  other allocations remain unfinished.
+
+WEEKLY SITE VISIT PLAN
+- Open Weekly site visits, select the week (Monday-Sunday), and Create weekly plan.
+- The worksheet contains date, consultant, customer, project, optional planned task,
+  activity, from/to times, onsite/offsite and notes. Use Add row for more visits.
+- Customer selection filters projects. Project selection filters activities by its
+  current type. Optional project-plan tasks match the chosen consultant/project.
+- Save validates every row and overlapping employee schedules before changing data.
+- Save automatically creates daily allocations with minimal details. New tasks use
+  the first project company and General module; refine details through Edit allocation.
+- Identical project/activity/time rows for several people become one shared task/team
+  session. Each person still has a separate daily allocation and actual entry.
+- Saved weekly plans are the same allocation records used by daily work. Schedule
+  changes update weekly views and the application calendar, with stable linked events.
+- Edit daily details or Update actual / schedule to change pending work. Recorded
+  work retains its employee/date; create a new allocation for a later visit.
+- Actual update offers optional planned-date/start/end changes before hours have
+  been recorded. Save the new schedule first, then report actual work.
+- The weekly plan can be exported as a real .xlsx workbook.
+
+MODAL FORMS / DRAFT PROTECTION
+- Every popup has an explicit Close button. Close asks before discarding edited data.
+- Escape and clicking outside do not dismiss a form. Enter inside text inputs does
+  not implicitly submit; use Save when ready.
+- Background refresh checks again after the request returns. Incoming workspace
+  snapshots are deferred while a form is open, preserving typed input and references.
+- Closing a form deliberately or refreshing the browser can still discard unsaved
+  work; save your changes before navigating away.
+
+EMPLOYEE TIMESHEETS / EXCEL
+- Open Timesheets. Select dates and, when authorized, employee.
+- Rows are derived automatically from saved daily-allocation actual hours. No second
+  timesheet entry is created, and corrections update the same allocation's row.
+- Work date uses actual work date, falling back to allocation date for older rows.
+- Fields: Date, Employee, Project code, Project Name, Type from the allocation,
+  Activity code, Activity name, Notes (completion remarks), and Hours.
+- Export Excel creates a genuine .xlsx workbook, not a renamed CSV. Hours are numeric.
+  Sheet 1 has these detailed fields. Sheet 2 has employee/day totals, client-deduction
+  hours, internal hours and non-deducted client hours.
+- Where permitted, Update actual / notes from Timesheets opens the actual-entry form.
+- Historical session-only records remain in project reports; modern employee
+  timesheets derive from daily allocation actuals.
+
+ROLE PERMISSIONS
+- Maintain customer master: Project manager by default.
+- Create and edit weekly visit plans: Project manager / Project lead by default;
+  Allocate and reassign tasks is also required to create allocations.
+- Reschedule daily allocations: Project manager / Project lead by default; consultants
+  can be granted it for their own work. Updating from actual requires task-update access.
+- Correct other employees' client-hour deductions: Project manager by default.
+- Consultants can choose Yes/No for their own actual work; peer corrections require
+  the correction permission and project scope. All corrections are audited.
+- Export reports controls weekly/timesheet Excel exports. Read scope still applies.
+- Existing explicit permission choices are preserved by the SQL upgrade. Review
+  custom roles in Role permissions after installation. Workspace owner retains access.
+
+DATABASE / REPORTING
+Data remains in Workspaces, AppUsers, TeamMembers and WorkspaceRecords. The SQL
+upgrade updates workspace settings/allocation JSON and adds read-only views:
+ vwCustomerMaster, vwAllocationWorkforce, vwWeeklySiteVisits,
+ vwEmployeeDailyTimesheets, vwEmployeeTimesheetTotals, vwClientHoursAudit,
+ vwTimesheetBilling, and the customer-linked vwProjectMaster.
+No duplicate timesheet table or SQL Agent job is required. The reporting procedure
+uspProjectStatusReport now separates non-deducted client hours from internal and
+unclassified hours. Existing project reports and budgets respect Yes/No decisions.
+Calendar records are generated from authorized allocations by the application.
+
+FRESH INSTALLATION ONLY
+Use the FULL installation ZIP and database/00-Full-Setup-CustomersWeeklyTimesheets.sql.
+Follow DEPLOY-IIS-SQLSERVER.txt for IIS configuration and new-owner initialization.
+
+VALIDATION
+.NET build and policy tests cover customer uniqueness/authorization, mandatory team
+billing confirmation, self-only and manager deduction rights, immutable actual history,
+calendar synchronization, reschedule-permission revocation and existing scoped access.
+JS DOM tests cover customer forms, multiple people, Yes/No deduction with full hours,
+weekly-to-daily creation, schedule edits, consultant isolation and modal refresh races.
+Generated .xlsx ZIP/XML, required columns and numeric hours were checked. SQL scripts
+passed the SQL Server 2022 T-SQL parser. Live SQL execution and browser/IIS verification
+on your Windows server remain to be performed after installation.

@@ -1,0 +1,6 @@
+My Project Management v36
+Application version: 36.0.0
+Previous application: v35
+Feature: Project Plan and Activity Master Excel/CSV imports
+Database prerequisites remain v31 reporting and v35 change requests
+Release date: 2026-11-22 (Qatar)

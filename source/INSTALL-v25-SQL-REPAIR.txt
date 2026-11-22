@@ -1,0 +1,45 @@
+MY PROJECT MANAGEMENT v25 -- SQL-ONLY COLLATION REPAIR
+Application compatibility: keep the v24 (24.0.0) application. No DLL or web-file replacement is required.
+
+CAUSE
+The v24 timesheet UNION used an OPENJSON key with Latin1_General_BIN2 collation.
+Cross-view joins compared that ID with database-collated text, producing Msg 468.
+The failed billing view then caused dependent employee/weekly views and GRANTs to fail.
+This was a defect in the supplied reporting SQL, not a request to change your database collation.
+
+REPAIR AN EXISTING OR PARTIALLY UPDATED DATABASE
+1. Take a database backup.
+2. Stop the MyProjectManagement application pool in IIS.
+3. Open Database-Repair-v25.sql in SSMS, connected as a database administrator.
+4. Execute the COMPLETE script. It selects MyProjectManagement explicitly.
+   It normalizes textual joins with COLLATE DATABASE_DEFAULT, fixes the JSON UNION
+   ID at its source, and rebuilds reporting views/functions/procedures in dependency order.
+5. The final checks should finish without errors and print:
+   v25 collation repair completed. Restart the application pool.
+6. Start the application pool and retry reports / weekly visits.
+The application will still display Version 24 because this is a database-only repair.
+No account reset, owner initialization, table deletion or application reinstall is needed.
+Database/table collations, stored records, passwords, actual hours and billing choices are not changed.
+Runtime SELECT permissions on rebuilt views are restored for the existing configured pool user.
+
+OTHER SCRIPTS
+Database-Upgrade-v25.sql: corrected cumulative upgrade for an existing base database.
+Database-Full-Setup-v25.sql: corrected complete setup for a NEW installation.
+Use the repair script for the reported failed v24 installation. The other two are
+provided for administrators preparing upgrades/fresh sites; do not recreate your database.
+
+VALIDATION
+Executed on a real isolated SQL Server 2022 Developer instance:
+- Reproduced the original v24 Msg 468 under Latin1_General_CI_AS.
+- Applied v25 repair successfully, including previously missing dependent objects.
+- Re-ran repair successfully.
+- Ran complete v25 setup under Latin1_General_CI_AS and SQL_Latin1_General_CP1_CI_AS.
+- Tested populated allocation/legacy UNION, billing, employee, weekly and AMC views/procedures.
+- Verified full employee hours and a No-client-deduction choice remained correct.
+- SHA-256 fingerprints confirmed workspace, task and team records were unchanged by repair.
+- Verified reporting grants/ownership chaining with a runtime-style SQL test user.
+SQL Server 2025 was not separately live-tested.
+
+VERSIONING
+v25 is a SQL-only fix compatible with application v24. The v24/v23 release downloads
+remain immutable in the version archive. Refer to versions.json / VERSION-HISTORY.md.

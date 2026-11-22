@@ -1,0 +1,41 @@
+MY PROJECT MANAGEMENT v33 (33.0.0) -- GROUPED APPLICATION MENUS
+Release: 22-Nov-2026, Qatar. Previous app: v32.
+
+IIS UPDATE
+1. Back up site files and database; stop MyProjectManagement application pool.
+2. No SQL change if the v31 reporting patch is already installed.
+   From v30 or earlier apply database/Database-HoursOnly-v31.sql or the cumulative
+   Database-Upgrade-v33.sql against MyProjectManagement before restarting.
+3. Copy CONTENTS of the package publish folder into your existing publish folder:
+   C:\inetpub\wwwroot\MyProjectManagement-IIS-SQLServer2022-2025\publish
+   Preserve appsettings*.json, web.config, Keys and external authentication keys.
+   The update ZIP excludes runtime configuration and authentication keys.
+4. Restart the pool, sign in, Ctrl+F5. Confirm Version 33.
+
+GROUPS BY FORM PURPOSE
+Dashboards: Overview, Team/My dashboard.
+Masters & Setup: Customer, Module, Activity types, Activity master.
+Projects & Planning: Projects, Project plan, Weekly visits, Meetings.
+Daily Work: Daily allocations, Task status/My tasks, Timesheets.
+Reports & Performance: Project reports, PSR, Performance, AMC monitoring.
+Administration: Team management, Users, Roles, Permissions, SQL/accounts, Activity log.
+Help: User manual & process flow.
+
+Click a heading to expand/collapse it, or focus it and press Enter/Space.
+The group containing the active screen opens automatically. Groups with no menu
+items visible to the current login are hidden. This groups existing menu entries;
+it does not grant rights or add previously hidden menu items. Choices persist in
+the current page session. The actual forms, records, calculations and permissions
+are unchanged. Chapter 19 of the included v33 manual shows the new menu map.
+
+FILES / SQL / ROLLBACK
+Documentation is in documentation/ and publish/wwwroot/manual/, with PDF and Word
+copies. SQL schema is unchanged from v31; v33 cumulative scripts retain that patch.
+Use full setup only for fresh databases. v32 remains archived for rollback.
+Preserve site/database backups, configuration and keys.
+
+CHECKS
+Windows-target .NET publish and menu tests passed: original authorized menu set
+preserved for owner and three employee views, no duplicate/empty groups, active
+section, collapse persistence, navigation and manual links. v33 PDF navigation
+chapter checked. Verify the installation on your own IIS server after updating.

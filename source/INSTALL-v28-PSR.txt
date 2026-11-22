@@ -1,0 +1,54 @@
+MY PROJECT MANAGEMENT v28 (28.0.0) -- PROJECT STATUS REPORT (PSR)
+Release: 21-Nov-2026, Qatar. Previous app: v27.
+
+IIS UPDATE
+1. Back up site files and database; stop MyProjectManagement application pool.
+2. Copy CONTENTS of the ZIP's publish folder into the existing publish folder:
+   C:\inetpub\wwwroot\MyProjectManagement-IIS-SQLServer2022-2025\publish
+   Keep existing appsettings*.json, web.config, Keys and external key directory.
+   The update package excludes configuration files and authentication keys.
+3. Restart the pool; sign in and Ctrl+F5. Confirm Version 28.
+
+USE THE PSR
+Open PSR report in the sidebar or Project Status Report inside a project.
+Choose a project and From / To dates (both included). Generate the report.
+The layout follows the supplied example: report number, code, name, report date,
+overall status and legend, man-days used/budget, percentage, recent activities,
+highlights/issues/risks/challenges and planned milestones/tasks.
+Manage Plans permission lets you Edit PSR notes / status. The notes/report number
+and overall status are saved against this project and exact date pair. Different
+periods have separate notes. Enter each additional note on its own line.
+Export Reports permission allows Print / save PDF and Excel (.xlsx).
+Print uses your browser's print dialog: select Save as PDF. Enable background
+graphics if your browser omits the pink/blue section shading.
+
+CALCULATION BASIS
+Recent work and period actual hours use actual work dates, not allocation dates.
+Man-days used = cumulative client-deductible hours through To / 8; denominator
+is the project's configured client manday budget, or Not set. Internal hours and
+client hours marked no-deduction do not reduce the client budget. All employee
+work still appears in recent activities and period actual hours.
+Project percentage is current completed task count / current total task count.
+Suggested risk is based on visible period activities and current overdue/follow-up
+state; review it or save a manager assessment before sharing with the client.
+Planned activities include date-overlapping plans and next sessions in the period.
+Status, progress, plans and follow-up are CURRENT records; this is not an immutable
+historical status snapshot. Report footnote states this. Notes persist by period.
+The report includes only records visible to the logged-in user; use an authorized
+project manager account with full project visibility for a complete client report.
+
+DATABASE
+No new table/migration is required. PSR notes are stored in each project's existing
+WorkspaceRecords.Payload JSON as psrReports. Optional Database-PSR-v28.sql creates
+dbo.uspProjectPSR with workspace/project/From/To parameters, returning four result
+sets: header/metrics, recent work, period tasks, and period notes. SQL reports must
+be run by authorized database users. Procedure parameters scope data; they are
+not a substitute for company-login application permissions.
+Database-Upgrade-v28.sql is cumulative, including v25 collation repairs.
+Database-Full-Setup-v28.sql is for a fresh database only.
+
+ROLLBACK / VALIDATION
+v27 remains archived. Use paired site/database backup for complete rollback.
+Forward SQL scripts do not undo changes. Retain configuration and keys.
+Windows-target .NET build, API policy checks, date/deduction/notes/export checks,
+and live SQL Server 2022 procedure execution passed. Check your own IIS deployment.

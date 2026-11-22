@@ -1,0 +1,96 @@
+MY PROJECT MANAGEMENT -- ACTIVITY TYPES, PROJECT STAGES AND REPORTS
+SQL Server 2022/2025; Windows x64 framework-dependent ASP.NET Core 10.
+
+EXISTING INSTALLATION -- FOLLOW IN THIS ORDER
+1. Back up MyProjectManagement in SQL Server and copy your current publish folder.
+2. IIS Manager > Application Pools > MyProjectManagement > Stop.
+3. Run database/ActivityTypes-Reports-Upgrade-SQLServer.sql in SSMS as an administrator.
+   This cumulative script includes the earlier user/role-master upgrade and the new
+   activity-type/reporting migration. It can be rerun; it retains existing IDs,
+   codes, logins, role permissions, assignments, actual hours and explicit types.
+4. Copy the CONTENTS of this update ZIP's publish folder into:
+   C:\inetpub\wwwroot\MyProjectManagement-IIS-SQLServer2022-2025\publish
+   Replace matching application DLLs and wwwroot files. Do not create publish\publish.
+   The update publish folder deliberately excludes appsettings*.json and web.config.
+   Keep your existing connection settings, web.config, environment variables and
+   DataProtection/Keys unchanged. Source files are supplied separately for developers.
+5. Start the application pool. Open the SAME HTTPS address and press Ctrl+F5.
+6. Sign in with your existing owner account. Confirm "Types & reports v1" in the
+   top database bar and Activity types / Project reports in the sidebar.
+Do not reset the database or run --create-admin on your existing installation.
+
+SETUP / DAILY USE
+- Activity types: New Implementation, AMC, Warranty and Office are included.
+  The owner can add more types, edit their names, or deactivate/reactivate them.
+  Type codes are permanent; types are not deleted.
+- Activity master: choose the type when creating each activity, then set its code
+  and name. Code is unique across the workspace; name is unique within its type.
+  Thus AMC / Support and Warranty / Support can be separate activities with
+  different codes. Activity type stays fixed after creation; deactivate and create
+  another activity to use a different type. Existing names/codes are preserved.
+- Projects: set Project stage / activity type on New project or Edit project plan.
+  Old projects and activities without any type start as New Implementation.
+  Review each project's current stage after upgrading; older work remains under
+  the type assigned during migration. Office projects can leave ERP modules
+  unselected and use General.
+- Daily allocation: selecting the project loads its current type automatically and
+  filters the activity list to matching active master activities. Type is read-only.
+  Existing project-plan activity choices match their project's current stage.
+  Editing an existing allocation retains its saved type and actual-work history.
+- Project plan activity entry also filters by type. New tasks and allocations
+  snapshot the type. Moving a project from Implementation to Warranty or AMC
+  does NOT reclassify saved work. For the new stage, select/create a matching
+  activity and create a new task/allocation. Past work can still be updated.
+- Type deactivation prevents new work, while existing records remain accessible.
+- Previously installed user/role masters, permissions, dashboards and actual-time
+  corrections remain available. Type master is owner-managed; activity master
+  uses its existing permission. Reports use existing project/task visibility;
+  ordinary consultants see their own time rows. Export requires Export reports.
+
+REPORTING
+Open Project reports, or a project > Project status & hours report.
+Select From/To (inclusive), project, recorded activity type and work mode;
+press Generate report.
+- Current project portfolio counts by Implementation / AMC / Warranty / Office.
+- Period planned/actual hours and client/internal/unclassified actual hours.
+- Reconciled breakdowns by project, recorded type, activity and onsite/offsite.
+- Activities planned, worked or updated within the period, with CURRENT activity
+  status/completion and latest follow-up. This is not an as-of historical status.
+- Timesheet detail by project, company, module, activity, employee and work dates.
+- CSV timesheet and summary exports; Print / save PDF opens the browser print dialog.
+
+DATE / ACCOUNTING RULES
+Planned hours count against their allocation date. Actual hours count against
+actual work date (falling back to allocation date for older time rows). These dates
+are filtered independently. A November allocation worked in December contributes
+November planned hours and December actual hours. Saved type is used for hours,
+whereas project portfolio counts use the CURRENT project stage.
+Legacy half-day sessions count as 4 hours and have Unclassified work mode because
+no onsite/offsite value was originally recorded. Client/internal classification
+uses the project's explicit legacy classification; otherwise it is Unclassified.
+They are reported separately, not silently assigned to client/internal or onsite.
+Do not enter the same work once as a session and again as a timed allocation.
+All date/history boundaries use Qatar time. Existing fixed code capacities remain:
+project code 50 characters; activity code and activity name 140 characters each.
+
+SQL REPORTS
+Data remains in the four existing JSON-backed SQL tables. New/updated read-only
+views: vwActivityTypes, vwProjectMaster, vwActivityMaster, vwTimesheetEntries.
+Reporting procedure: dbo.uspProjectStatusReport. See database/Report-Examples.sql.
+The procedure requires a workspace ID and inclusive dates, and accepts an optional
+project ID, recorded type ID and work mode. It returns portfolio counts, period
+hours, four breakdowns, current activity statuses and detailed timesheets.
+Direct SQL reports are for authorized database administrators; the web application
+continues to enforce user visibility through its authenticated API.
+
+FRESH INSTALLATION ONLY
+Use database/00-Full-Setup-ActivityTypesReports.sql and the full installation ZIP.
+Follow DEPLOY-IIS-SQLSERVER.txt to configure IIS and initialize a new owner account.
+
+VALIDATION / LIMITS
+.NET build, backend permission/type rules, and JavaScript DOM workflow/report tests
+passed. Checks include same-name activities across types, stage-change history,
+independent planned/actual date boundaries, reconciled grouped hours, legacy
+classification, consultant isolation, CSV output and existing allocation/actual
+workflows. SQL Server 2022 T-SQL parser checks passed. Live execution on your SQL
+Server and Windows browser/IIS verification remain to be performed after installation.

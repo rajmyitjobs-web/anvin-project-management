@@ -1,0 +1,53 @@
+MY PROJECT MANAGEMENT v29 (29.0.0) -- PROJECT MODULES AND COMPANY COUNT
+Release: 21-Nov-2026, Qatar. Previous app: v28.
+
+IIS UPDATE
+1. Back up site files and database; stop MyProjectManagement application pool.
+2. Copy CONTENTS of the package's publish folder into your existing publish folder:
+   C:\inetpub\wwwroot\MyProjectManagement-IIS-SQLServer2022-2025\publish
+   Keep appsettings*.json, web.config, Keys and your external authentication key
+   directory. The update package excludes runtime configuration files and keys.
+3. Restart the pool, sign in, Ctrl+F5. Confirm Version 29.
+
+PROJECT MASTER
+New Project: select modules by checkbox and enter Number of companies (1-100).
+Company-name fields appear in the same form. The first company may use the
+project name if left blank. Additional names default to Company 2, Company 3,
+etc.; enter real names before saving. Names must be unique within the project.
+Choose the Project Manager, Project In-charge and each module's primary and
+additional people as before. Saving creates the company records with selected
+project modules and default primary consultants. Edit each company's details,
+module consultants, plan and go-live dates through its company card.
+
+EXISTING PROJECTS
+Open the project, then Edit project / modules / company count. Increase the
+company count and enter new names. Add modules using checkboxes in the module
+table, select their people, and Save. This works at every stage (implementation,
+AMC, warranty or office) and after go-live. Existing modules are kept selected.
+The default option adds newly selected modules to existing companies without
+replacing their current consultant overrides. Uncheck it if the new module should
+only apply to new companies; use Edit / go-live to configure specific companies.
+A live company receiving a new module becomes Not ready for the added scope;
+its existing actual go-live date and existing module go-live history are retained.
+The separate matching-default update checkbox remains opt-in for owner changes.
+Existing company IDs, tasks, allocations, timesheets and PSR notes are retained.
+Company count cannot be reduced below existing records; this prevents accidental
+removal of company plans and history. Existing names can be changed using Edit /
+go-live on the company card. Manage Plans permission is required for scope/count
+changes. A module-only user can still reassign existing module team members.
+
+DATABASE
+No new table is required. Companies and module selections use the existing
+WorkspaceRecords.Payload JSON. Count is derived from actual company records,
+so using Add company also updates the displayed count automatically.
+Optional Database-Project-Scope-v29.sql creates dbo.vwProjectScopeSummary with
+project code/name, stage, actual company count, selected module count and owner IDs.
+Database-Upgrade-v29.sql is cumulative, including prior collation repairs.
+Database-Full-Setup-v29.sql is for a fresh database only.
+
+ROLLBACK AND CHECKS
+v28 remains archived. Use a paired site/database backup for complete rollback;
+forward SQL scripts do not undo changes. Preserve configuration and keys.
+Windows-target .NET build, API permissions/company validation, frontend scope
+expansion and history checks, and live SQL Server 2022 setup/view checks passed.
+Verify the update on your own IIS server after installation.

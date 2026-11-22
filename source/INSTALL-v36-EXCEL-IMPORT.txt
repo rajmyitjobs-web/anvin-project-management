@@ -1,0 +1,74 @@
+MY PROJECT MANAGEMENT v36 (36.0.0) -- PROJECT PLAN / ACTIVITY MASTER UPLOAD
+Release: 22-Nov-2026, Qatar. Previous app: v35.
+
+IIS UPDATE
+1. Back up application files and SQL database; stop MyProjectManagement pool.
+2. No new SQL schema change if v35 (including v31 reporting) is installed.
+   Earlier installations can use the included Database-Upgrade-v36.sql.
+3. Copy CONTENTS of the ZIP publish folder into the existing folder:
+   C:\inetpub\wwwroot\MyProjectManagement-IIS-SQLServer2022-2025\publish
+   Preserve appsettings*.json, web.config, Keys and external authentication keys.
+   The update package excludes runtime configuration and authentication keys.
+4. Restart pool, sign in, Ctrl+F5. Confirm Version 36.
+
+WHERE TO UPLOAD
+Masters & Setup > Activity master: Download Excel template / Upload Excel.
+Projects & Planning > Project plan: Download Excel template / Upload Excel.
+In-app templates include current reference sheets for your company records.
+Standalone blank templates are also under templates/ in this package and
+publish/wwwroot/templates/. Fill the FIRST worksheet below header row 1.
+
+WORKFLOW
+Download template -> fill rows -> Upload Excel -> Preview file -> Import all rows.
+Supported: .xlsx or comma-separated UTF-8 CSV; maximum 5 MB / 500 data rows.
+No formulas: paste values first. .xls, .xlsm and encrypted files are not supported.
+Use a current Chrome/Edge browser for compressed XLSX support; use CSV if necessary.
+Keep codes and Plan Reference as text to retain leading zeros.
+Preview displays source rows, normalized values, errors and notes. It saves nothing.
+Every row must be valid before import; invalid batches are not partially saved.
+A stale shared preview returns a conflict. Preview again instead of overwriting
+another user. Duplicate codes/references will also block accidental re-import.
+If a server response/refresh is interrupted, refresh and preview before retrying.
+
+ACTIVITY MASTER
+Columns: Activity Code, Activity Name, Activity Type, Description, Status.
+Type is an existing active type code/name. Status Active/Inactive defaults Active.
+Code/name maximum 140, description maximum 1000. Codes are unique; names are
+unique within a type, including inactive entries. Catalog limit remains 500 total.
+Adds new rows only; existing activities are not overwritten.
+Requires Manage Activity Master AND View All Projects rights.
+
+PROJECT PLAN
+Columns: Plan Reference, Project Code, Company, Module, Activity Code, Consultant,
+Planned Start, Planned Finish, Planned Hours, Priority, Notes.
+Plan Reference: unique per project, up to 50 characters. Project code and company
+must already exist and be accessible; company can be blank only for a one-company
+project. Module must be active/selected on that company; General is allowed.
+Activity code must be active and match project stage. Consultant can be an exact
+ID, a unique name or company email; use the reference-sheet IDs if names repeat.
+Dates: yyyy-mm-dd or normal Excel dates. Blank dates default to today, with a
+preview note; review carefully. Finish cannot precede start. Planned hours are
+NET baseline effort (>0, up to 4000); half-day equivalents = hours / 4.
+Priority Low/Medium/High defaults Medium. Notes maximum 2000 characters.
+Imports To do baseline tasks only: NO daily allocations, actuals, timesheets or
+go-live updates are created. Allocate daily work separately. Same baseline activity/
+company/consultant/dates and repeated Plan References are blocked.
+Requires Manage Plans within each project scope. Existing records are unchanged.
+
+STORAGE / DEMO / ROLLBACK
+Live IIS imports use authenticated preview/commit endpoints with server validation,
+workspace revision checks and one SQL transaction. Activity masters use SettingsJson;
+project baselines use existing task JSON with import reference/by/time metadata.
+The source Excel file is read in the browser and is not stored as an attachment.
+The hosted browser demo supports local practice imports only, not shared SQL data.
+v35 is archived; retain paired backups, configuration and keys for rollback.
+Full setup SQL is for fresh databases, not routine updates. v35 CR prerequisites
+and v31 hours-only reporting are still required for those existing features.
+
+GUIDE / VALIDATION
+Manual chapter 23 covers templates, columns, defaults, duplicates and recovery.
+.NET build, import permission/validation and all-or-nothing tests passed. Frontend
+checks covered compressed/shared-string XLSX, CSV quotes, date systems, formula
+rejection, templates, preview/local import and duplicates. Real HTTPS logins against
+SQL Server 2022 covered activity/plan commits, access denial, no partial batches and
+stale-preview conflicts. Live browser visual checks were unavailable; verify IIS.

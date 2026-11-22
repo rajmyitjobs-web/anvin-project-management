@@ -1,0 +1,123 @@
+MY PROJECT MANAGEMENT v24 (24.0.0) -- AMC CONTRACTS & VISIT MONITORING
+Release date: 21-Nov-2026 (Qatar). Previous complete release: v23.
+
+UPGRADE EXISTING IIS / SQL SERVER INSTALLATION
+1. Back up the SQL database and your existing publish folder. Keep both together
+   with the current version number for a complete rollback.
+2. Stop the MyProjectManagement application pool in IIS.
+3. SSMS: run database/Database-Upgrade-v24.sql as an administrator. This cumulative
+   SQL Server 2022/2025 script includes previous user/role, activity-type and
+   customer/weekly/timesheet upgrades. Existing explicit permission choices,
+   records, codes, actual hours and billing decisions are preserved.
+4. Copy the CONTENTS of this update ZIP's publish folder into:
+   C:\inetpub\wwwroot\MyProjectManagement-IIS-SQLServer2022-2025\publish
+   Replace application DLLs and wwwroot files. Do not create publish\publish.
+   The UPDATE excludes appsettings*.json and web.config. Retain your existing
+   connection configuration, environment variables and DataProtection/Keys.
+5. Start the pool. Open the SAME HTTPS address and press Ctrl+F5.
+6. Verify "Version 24" in the top bar and "Version 24 · AMC monitoring" in the
+   shared-database banner. /api/health also reports version 24.0.0.
+Do not reset the database or run --create-admin on an existing installation.
+
+AMC PROJECT SETUP
+Select AMC as the project stage in New project or Edit project plan. Enter:
+- AMC start and end dates (inclusive).
+- Daily, alternate-days, weekly, monthly, quarterly, 6 months or yearly visit cycle.
+- Number of visits required PER CYCLE (1-366).
+- Minimum onsite hours PER VISIT (0.25-12).
+- Preferred start time, used for suggestions; proposed rows can be edited.
+- The consultants/project leads/team leads who must attend EACH required visit.
+- An active AMC activity for automatic suggestions. This can be selected later if
+  you have not yet created the activity under Activity master.
+New AMC projects require valid contract terms. Existing AMC projects without terms
+are flagged for configuration; contract dates/targets are not invented during upgrade.
+Changing contract terms archives the previous values. Current monitoring recalculates
+against the CURRENT configured contract. Changing its start/end creates a new contract
+reference; saved evidence for previous references is retained but not reassigned.
+
+CYCLES / DUE DATES
+Cycles use calendar days, including weekends, anchored to AMC start date. Alternate
+means every two calendar days. Monthly/quarterly/yearly dates preserve the original
+anchor day; month-end and leap-year dates clamp to the last valid day without drifting.
+The last partial cycle uses the full visits/hours target; targets are not prorated.
+An inclusive end date on the next anniversary creates a final partial cycle. For a
+one-year Jan-1 contract, Dec-31 is the usual inclusive end date.
+Required visits are spread evenly through each cycle to generate suggested due dates.
+The contract cycle deadline, not employee timesheet totals, determines compliance.
+
+SITE VISIT / HOURS TRACKING
+- Actual work must be AMC type and Onsite. Update actual contains "Count this onsite
+  actual work as an AMC site visit". Uncheck for work that should not qualify.
+- Offsite work never counts as a site visit. It still appears in employee timesheets.
+- A shared visit is counted once, using its AMC visit reference, team group or date/
+  planned-time evidence. Credited site hours equal the LONGEST attendee's recorded
+  actual hours, not the sum of all staff hours. This avoids doubling a team session.
+- Every selected required attendee must report positive qualifying onsite evidence.
+- A visit qualifies only when its credited hours meet the per-visit target and all
+  required attendees have reported. Extra hours on one visit do not replace a missing
+  separate visit. Short visits remain visible as attended, but do not qualify.
+- Site visit compliance does not depend on Client/Internal tags or Yes/No client
+  deduction decisions. Two people working 4 hours each produce 8 staff timesheet hours
+  but one 4-hour site visit. Client deduction remains the separately approved amount.
+- Evidence dates must fall within the cycle. A linked visit moved outside its cycle
+  is flagged and does not silently satisfy another cycle. Original actual history is
+  preserved. Session-only legacy records without onsite allocation evidence cannot
+  establish AMC site attendance.
+
+ALERTS / WEEKLY SUGGESTIONS
+AMC monitoring shows contracts, cycle requirements, attended/qualified visits,
+credited onsite hours, remaining visits/hours and overdue cycles.
+- Closed cycles below required qualifying visits or hours are overdue.
+- Weekly planning flags missing visits, missing required staff schedules, short
+  planned durations, out-of-cycle schedules and unconfigured contracts.
+- Current cycles with recorded work but remaining requirements are highlighted.
+- Daily actual entry warns on a short AMC visit. Daily allocations and Timesheets
+  also show AMC alerts for authorized users.
+- Alerts are IN THE APPLICATION. This release does not send email or WhatsApp alerts.
+
+Open Weekly site visits > Prepare suggested AMC visits, or use Add missing AMC
+suggestions in the worksheet. Required attendee rows are prefilled from the contract.
+The system checks existing allocations and worksheet conflicts, searches available
+slots within the current week/cycle, and flags unavailable staff/times or missing
+activity/customer setup for manual attention. Past dates are not automatically filled.
+Review and edit proposed rows, then Save to create actual daily allocations and calendar
+entries. Suggestions are not saved automatically. Linked missing/short schedules should
+be edited from daily work rather than duplicated. Weekly warnings remain until gaps are
+resolved. Confirmed/saved schedules continue to synchronize through daily allocations.
+
+PERMISSIONS
+View AMC visit/hour compliance and alerts is added to Role permissions. Project manager
+and Project lead default to enabled; consultants default to disabled. Existing explicit
+false settings and custom roles are preserved. Authorized reports are scoped by project
+and computed on the server from complete evidence, including where a lead's task list
+is partial. Weekly creation still requires weekly-planning AND task-allocation rights;
+schedule changes and actual corrections retain their separate existing permissions.
+The workspace owner retains access.
+
+DATABASE REPORTING
+New SQL views: vwAmcContracts, vwAmcAllocationEvidence, vwAmcCycleCompliance,
+vwAmcVisitRequirements, vwAmcAlerts. fnAmcContractCycles supplies anchored cycles.
+uspAmcComplianceReport accepts workspace, inclusive dates and optional project ID.
+Contract terms/history remain in project JSON; actual marking and visit references
+remain in allocation JSON. No duplicate staff timesheet or billing records are created.
+Existing code capacities remain project code 50, activity code/name 140 characters.
+
+VERSIONS / ROLLBACK
+Use immutable version-numbered downloads. v24 application: MyProjectManagement-Update-v24.zip.
+v23 is preserved separately as MyProjectManagement-Update-v23.zip. Keep the application
+archive, matching forward SQL script and YOUR own pre-upgrade database/site backups.
+A forward SQL upgrade is not an undo script. For a complete rollback, stop IIS and
+restore the matched application + database backup, retaining your configuration/keys.
+Restoring an older database backup also removes work recorded after that backup.
+If you ask for a rollback, specify v23, v24, etc. Read VERSION-HISTORY.md and versions.json.
+
+FRESH INSTALLATION
+Use the full v24 installation package and Database-Full-Setup-v24.sql. Follow the
+normal IIS/SQL setup guide and initialize a new owner only for an empty database.
+
+VALIDATION
+Windows .NET 10 build; backend contract/scope/permission tests; JS DOM project form,
+weekly suggestion/save, missing attendee and short-hour checks; month-end/leap/alternate
+cycles; one-count onsite hours versus staff/client totals; old workforce/module/login
+regressions; SQL Server 2022 syntax parsing and version metadata were checked.
+Live SQL execution and browser verification on your Windows IIS server remain pending.

@@ -1,0 +1,119 @@
+MY PROJECT MANAGEMENT — IIS + MICROSOFT SQL SERVER EDITION
+Target: Windows Server 2019 or newer, IIS x64, ASP.NET Core 10 Hosting Bundle,
+Microsoft SQL Server 2022 or 2025. This package replaces the old static-only IIS ZIP.
+Supabase is NOT required by this edition. Browser clients never connect directly to SQL.
+
+PACKAGE FOLDERS
+  publish\    Ready-to-run Windows x64 framework-dependent ASP.NET Core application.
+  source\     Full C# and web UI source, for review/build; keep outside the IIS site.
+  database\   T-SQL database and read-only reporting views, plus permission examples.
+The IIS Physical path must point at publish, not at the outer ZIP extraction folder.
+No real company data, passwords, SQL credentials or authentication keys are included.
+
+1. BACK UP CURRENT APPLICATION DATA
+On the old application, Database & sign-in > Download current data backup produces a
+JSON file. Keep an unchanged copy. Records stored only in the old browser origin are
+not automatically moved to IIS. Existing Supabase passwords are not migrated; create
+new company login accounts in this SQL edition.
+
+2. CREATE THE DATABASE (SSMS)
+Connect to your SQL Server as a database administrator. Open and run:
+  database\Database-Full-Setup-v36.sql
+It creates MyProjectManagement and its tables without dropping existing data.
+Tables: Workspaces, AppUsers, TeamMembers, WorkspaceRecords.
+Application/project/task details use SQL Server's JSON support inside protected rows.
+Read-only reporting views: dbo.vwProjectTasks, dbo.vwDailyAllocations, dbo.vwUserMaster,
+dbo.vwRoleMaster, dbo.vwRolePermissions, dbo.vwProjectMaster and dbo.vwActivityMaster.
+Existing installations: follow INSTALL-v26-PROJECT-OWNERS.txt and run the cumulative
+Database-Upgrade-v36.sql script.
+The previous setup/database.sql was PostgreSQL and must NOT be run in SQL Server.
+
+3. INSTALL IIS / .NET
+Install IIS and the latest supported .NET 10 ASP.NET Core Hosting Bundle from Microsoft:
+  https://dotnet.microsoft.com/download/dotnet/10.0
+Install the Hosting Bundle after IIS (or repair it after enabling IIS). Restart IIS.
+Use an x64 application pool with .NET CLR Version = No Managed Code and 32-bit disabled.
+Enable IIS Anonymous Authentication; the application supplies its own cookie login.
+Use a valid HTTPS binding/certificate. Login is intentionally HTTPS-only.
+
+4. CONFIGURE SERVER-SIDE SQL ACCESS
+Copy publish to e.g. C:\inetpub\MyProjectManagement\publish.
+In that folder, copy appsettings.Production.example.json to appsettings.Production.json.
+Edit its SQL server/instance name, allowed IIS hostname, and external key directory.
+Example Windows-integrated connection string:
+  Server=YOUR-SQL-SERVER;Database=MyProjectManagement;Integrated Security=True;Encrypt=True;TrustServerCertificate=False;
+For remote SQL, use an appropriate domain service account as the IIS pool identity.
+The SQL administrator must grant that identity the required application-table CRUD
+permissions (see database\02-ApplicationPermissions-EXAMPLE.sql). Runtime does not need
+sa or db_owner. Confirm SQL Server networking/firewall and certificate trust/hostname.
+If SQL authentication is necessary, configure its dedicated application credentials
+only on the SERVER through protected deployment configuration/environment variables.
+Never put a SQL connection string or password in JavaScript or send it in chat.
+An alternative configuration source is the server environment variable:
+  ConnectionStrings__Default
+Recycle the application pool after configuration changes.
+
+Create e.g. C:\ProgramData\MyProjectManagement\Keys and grant the pool identity Modify
+on that directory only. Give the site files Read & Execute. On Windows, authentication
+keys are DPAPI-protected and persisted there so logins survive ordinary pool recycling.
+Keep config files and key backups limited to administrators/service identities.
+
+5. INITIALIZE THE OWNER ACCOUNT
+Open PowerShell interactively on the server, in the publish folder, using an identity
+that has the required SQL database permissions. Run:
+  dotnet .\MyProjectManagement.dll --create-admin owner@yourcompany.com
+Enter the display/workspace name and a new password when prompted. Passwords are
+hidden and never passed in command arguments. This command works only while AppUsers
+is empty and creates one owner account and one empty company workspace in a transaction.
+It does NOT create sample projects or staff. The application must use the same SQL
+connection for this command and for IIS. Configuration contains no default password.
+
+6. CREATE THE IIS SITE
+IIS Manager > Sites > Add Website:
+  Physical path: C:\inetpub\MyProjectManagement\publish
+  Application pool: your configured x64 pool
+  HTTPS hostname/binding: your company application address
+The generated web.config uses AspNetCoreModuleV2; do not replace it with the old
+static-only web.config. An IIS sub-application is supported; browse with its trailing
+slash, e.g. https://intranet.example.com/Projects/.
+
+7. IMPORT RECORDS AND CREATE STAFF LOGINS
+Sign in with the owner account created in step 5.
+SQL Server & accounts > Import JSON backup into empty workspace.
+Choose the JSON backup from step 1. Import is permitted only into an empty workspace.
+If beginning completely fresh, add team profiles, Module master and Activity master entries, then projects instead.
+Under Team management, set each person's real work email and role.
+Under SQL Server & accounts > Create / reset staff login, select the team member and
+set an initial password of at least 12 characters. Share it through the company's
+approved private process. No invitation email/WhatsApp message is sent automatically.
+Staff must change the initial password at first login. Password reset/change invalidates
+other sessions; disabling a team profile blocks access. The owner changes its own
+password through Change password, not through staff account reset.
+Roles, own/assigned work, manager corrections, catalog permissions and revision conflicts
+are checked server-side. Each actual-work correction retains the allocated employee and
+records the authenticated updater. WhatsApp links use your IIS URL and require sign-in.
+
+8. VERIFY ON YOUR SERVER
+- Sign in as owner and a consultant in different browsers.
+- Allocate daily work, open its WhatsApp link, and save actual times as the employee.
+- Confirm the manager sees the update (checks run every 10 seconds outside open forms).
+- Confirm consultants cannot alter someone else's actual work without explicit privilege.
+- Check SQL reporting views and configure SQL backups and restore testing.
+- /api/health reports process availability only; it does not prove a database connection.
+If IIS returns 500.30/502.5, check Windows Event Viewer / ASP.NET Core Module logs,
+Hosting Bundle installation, pool identity, connection configuration and key-folder ACL.
+Do not enable public detailed exception pages on a production server.
+
+VERIFICATION LIMITS
+Build: Windows x64 publish succeeded on .NET 10. Permission-policy and password checks
+passed locally. The T-SQL script passed Microsoft's SQL Server 2022 syntax parser.
+HTTPS startup, unauthenticated API rejection, CSRF rejection and config-file protection
+were checked locally. UI/API integration used mocked HTTP. No real SQL Server database
+or Windows IIS server was attached here, so live SQL execution and your Windows/IIS
+installation remain to be verified using step 8. This is not a claim of live deployment.
+
+BUILD FROM SOURCE (OPTIONAL)
+Install .NET 10 SDK, then in source:
+  dotnet publish .\MyProjectManagement.csproj -c Release -r win-x64 --self-contained false -p:UseAppHost=false -o ..\publish
+Never store real production secrets in source control. The published appsettings.json
+has an empty connection string intentionally; production configuration is server-only.

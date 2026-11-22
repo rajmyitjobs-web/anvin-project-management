@@ -1,0 +1,63 @@
+MY PROJECT MANAGEMENT -- USER / ROLE MASTERS UPDATE
+SQL Server 2022/2025; existing IIS .NET 10 application.
+
+EXISTING INSTALLATION
+1. Take a SQL database backup and a copy of the current publish folder.
+2. IIS Manager > Application Pools > MyProjectManagement > Stop.
+3. SSMS > New Query > open database/03-UserRoleMasters-Upgrade.sql.
+   Execute as a database administrator. Resolve any reported error before continuing.
+   Existing codes, IDs, assignments, login passwords and role permissions are retained.
+4. In this UPDATE package, copy the CONTENTS of publish into:
+   C:\inetpub\wwwroot\MyProjectManagement-IIS-SQLServer2022-2025\publish
+   Replace matching application DLLs and wwwroot files.
+   This update package intentionally excludes appsettings*.json and web.config.
+   Keep your existing appsettings.json / appsettings.Production.json, web.config,
+   connection-string environment variables and DataProtection/Keys unchanged.
+   Do not place publish inside publish. Source files are for developers only.
+5. Start the MyProjectManagement application pool. Open the SAME HTTPS address.
+   Press Ctrl+F5 or use a private window. Sign in with your existing owner account.
+6. Confirm User master and Role master appear in the sidebar and the database
+   banner includes "User/Role masters v1".
+
+WORKFLOW
+- Role master: Project manager, Project lead and Consultant are provided.
+  Add a custom role if required. Role key and base scope remain permanent;
+  labels, codes, descriptions and active status can be edited.
+- Role permissions: owner selects actions for every role and saves the matrix.
+  Newly added roles start with no actions; explicitly configure their permissions.
+- User master: add/edit a user profile and assign an active role.
+  Wait for the shared save to finish; use Create / reset login for that user.
+  Set a 12-128 character initial password and share through your company process.
+  The employee must change it at first sign-in. No messages are sent automatically.
+- Profile deactivation blocks account access; role deactivation blocks all users
+  assigned that role. Reactivate or reassign to restore access. History is retained.
+- Changing a profile's email updates its linked login email in the same transaction.
+  Email/role/profile-status changes invalidate that user's existing login sessions.
+- Workspace owner access is separate and cannot be removed by a role edit.
+- Project code: editable on New project and Edit project plan, maximum 50 chars.
+  Default suggestion PRJ-000001. Existing codes remain unchanged. Codes are unique
+  within a workspace (case-insensitive). Use your own standard if preferred.
+- Activity master: activity code and activity name both allow up to 140 chars.
+  Existing ACT codes remain unchanged. Codes start with a letter/digit and allow
+  letters, digits, underscores, periods, spaces, slashes and hyphens; stored uppercase.
+- Records remain in the original four SQL tables as JSON. No separate duplicate
+  user/role tables are created. New reporting views are vwUserMaster, vwRoleMaster,
+  vwRolePermissions, vwProjectMaster and vwActivityMaster.
+
+FRESH INSTALLATION ONLY
+Use database/00-Full-Setup-UserRoleMasters.sql instead of the upgrade script.
+Use the full installation package (not this config-preserving update) for a new site.
+Follow DEPLOY-IIS-SQLSERVER.txt to configure IIS/SQL and initialize the owner.
+Do not run --create-admin again on an existing installation.
+
+VALIDATION
+Windows x64 framework-dependent .NET 10 build succeeded. Backend policy tests cover
+role mapping/deactivation, scope and escalation guards, and code-length boundaries.
+JS DOM tests cover role/user forms, permission mapping, 50-char project create/edit,
+140-char activity codes, and existing module-save/dashboards. SQL scripts passed the
+SQL Server 2022 T-SQL parser. Live execution on your SQL Server remains to be verified.
+
+ROLLBACK
+With the pool stopped, restore your application-folder backup. The upgrade adds
+JSON role metadata and read-only reporting views; it does not reset work data.
+If a full data rollback is needed, restore the database backup with administrator help.
