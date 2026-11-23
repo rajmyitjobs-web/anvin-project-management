@@ -1,9 +1,9 @@
 {
   "name": "mpm-login-security-tests",
-  "version": "48.0.0",
+  "version": "49.0.0",
   "private": true,
   "scripts": {
-    "test": "node logout.cjs"
+    "test": "node logout.cjs && node change-request-form.cjs"
   },
   "devDependencies": {
     "jsdom": "31.0.1"
