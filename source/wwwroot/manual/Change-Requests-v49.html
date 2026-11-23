@@ -4,7 +4,7 @@
 FORMAT AND OPERATION
 Change requests &gt; New change request opens the mapped Word form.
 Choose the linked project and CTO. Its Project Manager is loaded from Project Master.
-Upload .docx and click Load Word into form. The supplied format is:
+Choose .docx; fields load automatically. Use Load Word into form to reload if needed. The supplied format is:
 Header table: Client, Date, Project, Requested by, Change Request No:
 Details table: Sl # | Client Requirement | Remarks
 Module heading row: Module: &lt;module&gt;
@@ -45,15 +45,18 @@ technically feasible/ready for client, not client or commercial sign-off.
 
 LOCAL IIS INSTALLATION
 1. Back up SQL database, current application folder and protected authentication keys.
+   The delta Update-v49-from-v48 package requires v48. For older versions use the full v49
+   package and preserve your existing configuration and protected keys.
 2. Stop the MyProjectManagement application pool. Apply Database-Mapped-ChangeRequests-v49.sql
-   as SQL administrator to MyProjectManagement. It idempotently ensures existing v35 CR
+   in a fresh SSMS connection as SQL administrator to MyProjectManagement. It idempotently ensures existing v35 CR
    tables/role flags and adds reporting views plus object-level rights for the known local
    IIS APPPOOL\MyProjectManagement identity. No account/password or business records are reset.
    It does not grant sysadmin/db_owner. Other service identities need equivalent object grants.
 3. Copy contents of package publish into the current IIS publish folder. The update excludes
    appsettings*.json and web.config. Preserve your working SQL configuration and Keys/App_Data.
 4. Start the pool, refresh desktop/mobile and confirm /api/health version 49.0.0.
-5. Test with separate consultant/PM/CTO logins: import, mapped edit, duplicate rejection,
+5. Mobile: More &gt; Change requests / approvals uses the same permissions and workflow.
+   Test with separate consultant/PM/CTO logins: import, mapped edit, duplicate rejection,
    PM return/revision, PM approval, CTO return/revision and final approval.
 
 Storage remains existing ChangeRequests JSON and ChangeRequestDocuments protected SQL blobs.
