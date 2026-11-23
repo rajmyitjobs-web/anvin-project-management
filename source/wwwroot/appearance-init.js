@@ -1,0 +1,1 @@
+try{var t=localStorage.getItem("mpm-ui-theme-v1");if(["midnight","light","charcoal"].includes(t))document.documentElement.dataset.uiTheme=t;var d=localStorage.getItem("mpm-ui-density-v1");if(["comfortable","compact"].includes(d))document.documentElement.dataset.uiDensity=d;}catch(e){}

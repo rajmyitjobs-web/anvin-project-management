@@ -1,0 +1,50 @@
+MY PROJECT MANAGEMENT v48 — SELECTED LOGIN SECURITY CONTROLS
+23 November 2026 (Qatar). Previous application: v47.
+
+Scope: AUTH-01, AUTH-02, AUTH-04, AUTH-07, AUTH-08, SESSION-01,
+SESSION-03, WEB-01, WEB-02, WEB-03 and OPS-05 from the yellow-marked checklist.
+MFA, security audit register, session inactivity/absolute limits, password-change
+throttling and other unmarked features have not been added in this release.
+
+Changes:
+- New/reset passwords require 15–128 characters and pass a small local common-password
+  blocklist (extend with Security:BlockedPasswords). This is not a complete breach database.
+  Existing passwords are still accepted until changed/reset. Passwords never go to an external checker.
+- Identity hashes use 600,000 iterations. Older supported hashes are upgraded after successful login.
+- Login IP limit: 10 requests/minute using a sliding window, controlled HTTP 429 and Retry-After.
+  This remains process-local. Confirm trusted-proxy client IPs and add edge/distributed controls
+  before scaling to multiple app instances; the deployment settings are not automatically changed.
+- Generic credential/disabled/locked/inactive-role login errors; staff initial change enforced server-side.
+- Authentication cookies: Secure, HttpOnly, SameSite Strict. HTTPS redirection and 180-day HSTS.
+- CSRF validation on API mutations including login/logout. Sensitive API responses use no-store.
+- CSP blocks inline JavaScript; application boot scripts moved to local files. Inline styles are
+  retained for existing forms/reports. Same-origin framing permits the internal user manual,
+  while cross-origin framing, plugins and arbitrary external script execution are blocked.
+- Logout revokes the user's existing sessions across devices by rotating the existing security
+  stamp. It clears private browser workspace/import/CR/report state and stops pending requests.
+  Unsaved changes can be explicitly discarded. Back up unsaved work first.
+  If offline/server sign-out fails, local data is cleared, a warning is shown and the app retries
+  server sign-out before the next login. Server revocation requires a successful server response.
+- Same-origin tabs receive a logout notification. Theme preferences are retained.
+
+IIS update:
+1. Back up site folder, SQL database and protected authentication keys.
+2. For the v48 delta update, confirm the server is on v47 first. Otherwise use the full v48 package.
+3. Stop the application pool; copy CONTENTS of publish from the update ZIP into the current publish
+   folder. Preserve appsettings*.json, web.config, protected keys and your SQL connection string.
+4. Start the pool, reopen desktop/mobile, verify Version 48 and /api/health version 48.0.0.
+5. No database schema change. Existing AppUsers SecurityStamp and PasswordHash columns are used.
+6. Confirm an ordinary staff login, required password change, authorized saves, logout and two-device
+   invalidation on your deployment. Existing connections and SQL permissions must allow UPDATE AppUsers.
+
+The update includes an installation manifest describing exactly which files changed.
+Rollback: stop the pool, restore the pre-update application folder (including removal of newly added
+files), keep database and key backups, then restart. The numbered v47 package remains available.
+Hash upgrades use the same Identity format. Sessions revoked by logout remain revoked after rollback.
+
+Verification: isolated HTTP tests run the actual application with a synthetic in-memory account store;
+no production credentials/database are used. They cover authentication, real cookie attributes, CSRF,
+required password change, hash upgrade, generic errors, revocation, rate limits and response headers.
+Browser tests cover desktop/mobile shared logout state, offline sign-out and delayed-response rejection.
+Full SQL-backed credential integration, live user sessions and multi-instance behavior require staging
+validation. Public live checks do not prove authenticated database operations work.

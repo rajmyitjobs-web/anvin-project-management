@@ -1,3 +1,7 @@
+## v48 — 23 November 2026
+
+Selected login security controls: 15–128-character new/reset passphrases with an extensible local common-password blocklist; successful-login upgrade of older hashes; sliding-window IP login limiter and clear 429 responses; secure cookies, HTTPS/HSTS, CSRF and browser headers; logout revokes existing sessions for the user and clears desktop/mobile browser state. Existing passwords remain valid until changed/reset. Added isolated HTTP integration tests and browser logout tests. No schema changes. MFA and other unselected checklist items remain pending.
+
 ## v47 — 23 November 2026
 
 New Implementation project plan template matching the supplied activity/day/session structure. Client/Us responsibility, multiple employees, automatic weekly/daily/calendar links, display-only phase totals, editable import validation and duplicate protection. Existing JSON schema retained; optional read-only plan view. Previous version: v46.
