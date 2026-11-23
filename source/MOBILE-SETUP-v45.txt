@@ -1,0 +1,83 @@
+MY PROJECT MANAGEMENT v45 (45.0.0) -- DESKTOP + MOBILE / QUICK WORK
+Release: 23-Nov-2026, Qatar. Previous app: v44.
+
+IIS UPDATE
+Back up site files and SQL database; stop MyProjectManagement pool.
+Copy CONTENTS of update ZIP publish folder into the existing IIS publish folder.
+Preserve appsettings*.json, web.config, Keys and external authentication keys.
+The update ZIP excludes configuration and authentication keys. Restart pool.
+Deploy BOTH the application DLL and web assets. Quick work and zero-hour completion
+need the new server policy; copying mobile files alone is insufficient.
+No new SQL schema change over v43. Earlier sites have cumulative v45 scripts.
+Refresh Ctrl+F5; confirm Version 45. v42 remains archived for rollback.
+
+PHONE INSTALLATION
+Open https://YOUR-COMPANY-SITE/mobile.html in the phone browser.
+The phone must reach IIS over the company network or an approved VPN, using a
+trusted HTTPS certificate for that hostname. localhost on the phone is the phone,
+not your IIS server. Do not expose SQL Server to phones or place SQL credentials
+in the app. Existing IIS server-side connection string remains unchanged.
+iPhone: Safari > Share > Add to Home Screen > Add.
+Android: Chrome menu > Install app / Add to Home screen.
+More > Install on this phone provides these steps; supported Android browsers
+also offer a native install prompt. Browser installation UI varies by OS version.
+This is an installable web app (PWA), not an APK/IPA or App Store/Play Store release.
+No Apple/Google signing accounts are needed for home-screen installation.
+Sign in with the same company email/password. Same-origin cookies/CSRF and all
+existing backend project/role checks are reused. Owner may create/reset staff
+company logins as before. Hosted demo is browser-local practice, not company SQL.
+
+MOBILE SCREENS
+Today: allocations, pending tasks, actual-hour summary and quick entry.
+Work: daily allocations/date, manager Create task & allocate, Quick work and pending
+allocations from other dates. Actual updates reuse the existing actual form.
+Visits: weekly site visits view and actual/update actions under existing rights.
+Hours: employee timesheets by date range; enter/correct actual hours from an
+allocation. Actuals update the same timesheet row, not a separate copied entry.
+More: meetings, project status, installation help, password and sign-out.
+Meetings: existing schedule/detail/calendar flow; create under scheduling rights.
+Project status: implementation/company/module progress, AMC contract compliance,
+Office direct allocations. No Office baseline comparison is introduced.
+Team-capable users can choose accessible employees; ordinary staff see their work.
+
+DESKTOP AND MOBILE QUICK WORK
+Daily allocations offers Quick work - for me. Pick project, company/activity,
+date, hours, mode/classification and notes. Choose Allocated (report later) or
+Completed (these hours are actual now). Completed work feeds the timesheet.
+Quick work always assigns the signed-in active employee, never another person.
+Requires Update Tasks plus Create instant work allocated to self, and existing
+project scope. This new right defaults on for the standard PM/lead/consultant
+base roles; the owner can turn it off in Role permissions. Custom roles follow
+their base role unless explicitly overridden. It does not grant Assign Tasks.
+Owner-only workspace accounts without an employee profile cannot self-allocate;
+use a staff company login with an active User Master profile for personal work.
+Managers use Create task & allocate to allocate work to the team as before.
+
+PERSISTENT PENDING TASKS / SIGN-OFF
+All-date pending allocated tasks remain visible until their allocation is completed.
+Manager Allocate follow-up / sign-off task supports project sign-off, CR sign-off
+and other follow-ups with a task subject, assignee, activity, due date and notes.
+These completion-only tasks have zero hours. Assignees/authorized managers update
+status with a dated remark. Completion removes them from pending, without fake
+timesheet/client hours. Formal CR feasibility/approval is still a separate workflow;
+completing a follow-up does not grant approval or sign a document automatically.
+Hourly tasks still need actual hours/remarks to complete under existing validation.
+
+CONNECTIVITY AND SAVE STATUS
+Online required. No offline write queue or push notifications are implemented.
+The service worker caches only public offline help and icons, never API responses,
+login pages, workspace data or tokens. Offline navigation shows reconnect help.
+Keep the app open while Saving is shown. A failed save displays attention status;
+Resolve save offers an unsaved backup and confirmed reload. Do not treat a toast
+or locally closed form as server confirmation: wait for Connected/saved status.
+An interrupted unsaved session uses the existing recovery backup process.
+
+VERIFICATION
+Automated UI/DOM workflow tests cover quick self-work/actual/timesheet flow, mobile
+navigation, persistent sign-offs, zero-hour completion, install help and offline
+submit blocking. Policy tests check self identity/scope, disabled permissions,
+invalid assignment/hours and no-hour completion. Existing policy/AMC tests pass.
+Windows IIS build and package checks pass. No live SQL, physical iPhone/Android,
+or visual browser test was performed for v45. Verify login, one quick entry, one
+manager allocation, actual update, sign-off and timesheet after installing.
+Manual chapters 30-31 document mobile and task flows.

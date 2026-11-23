@@ -2,6 +2,15 @@
 
 | Version | Main change | Package type |
 | --- | --- | --- |
+| v45 / 45.0.0 | Explicit AMC starting/ending period update from Project Master and AMC view; end extensions retain links, new start creates term/history; master imports retained | Complete update + optional AMC period SQL view; no new tables |
+| v44 / 44.0.0 | Customer/Project Master templates and add-only imports; grouped companies/modules, active references, editable preview and AMC contract validation | Complete update; no new schema change over v43 |
+| v43 / 43.0.0 | Installable mobile companion, scoped quick self-work with actual/timesheet flow, manager allocation, pending tasks across dates and completion-only sign-offs | Complete desktop + mobile update; no new schema change over v42 |
+| v42 / 42.0.0 | Office projects use direct daily allocations/actual updates, without baseline planning/comparison or baseline imports | Complete update; no new schema change over v41 |
+| v41 / 41.0.0 | AMC projects use contract Plan vs Actual for cycle visits/hours and qualifying actual delivery, with AMC-specific details and export | Complete update; no new schema change over v40 |
+| v40 / 40.0.0 | Project chooser and project-specific plan/status, fixed project on activity entry, scoped import validation/templates and project-only exports | Complete update; no new schema change over v39 |
+| v39 / 39.0.0 | Import progress/error feedback beside action buttons; row error summary across pages, fresh pre-save validation and explicit stopped-import reasons | Complete update; no new schema change over v38 |
+| v38 / 38.0.0 | Editable Activity Master, Project Plan and Weekly Visit import previews; dependent system master dropdowns and mandatory revalidation | Complete update; no new schema change over v37 |
+| v37 / 37.0.0 | Weekly Site Visits Excel/CSV upload, week validation, multi-consultant sessions, schedule conflict checks and automatic daily/calendar creation | Complete update; no new schema change over v36 |
 | v36 / 36.0.0 | Project Plan/Activity Master Excel and CSV uploads, templates/reference sheets, row preview, duplicate prevention and atomic imports | Complete update; no new schema change over v35 |
 | v35 / 35.0.0 | Change Request register, locked revisions, PM/CTO feasibility decisions, point/paragraph comments, private Word uploads and new-revision client feedback | Complete update + REQUIRED CR/Word SQL tables and role seed |
 | v34 / 34.0.0 | Enterprise workspace redesign, KPI ribbon/register, three browser-selectable themes and table density; grouped menus retained | Complete update; no new schema change |

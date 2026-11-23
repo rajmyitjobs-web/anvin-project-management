@@ -3,7 +3,7 @@
     "id": "start",
     "title": "1. Start here: the daily operating cycle",
     "paras": [
-      "My Project Management v36 | User manual, process flow and dashboard/report data guide | 22 November 2026 | Qatar time.",
+      "My Project Management v45 | User manual, process flow and dashboard/report data guide | 23 November 2026 | Qatar time.",
       "The application follows Customer > Project > Companies > Modules > Activities > Daily allocations > Actual hours > Timesheets and reports. The daily activity entry uses one Activity Date and Hours. One man-day is 8 hours; a half-day session equivalent is 4 hours. Enter net decimal hours: 1.5 means 1 hour 30 minutes, not 1 hour 50 minutes.",
       "For a first setup, the workspace owner completes masters, users and permissions before the project manager creates projects. Each morning, the manager reviews pending work and allocates the day. Each consultant reports actual hours and remarks. The manager reviews client deductions, follow-ups and reports.",
       "This manual describes the IIS / SQL Server edition. Hosted preview or browser-local demo data is separate from your live company database. Sign in at the company IIS address to work on shared company records."
@@ -469,7 +469,7 @@
     "title": "15. SQL reporting map for administrators",
     "paras": [
       "Use the application for ordinary editing. Direct SQL changes can bypass validation, relationships, audit and permissions; an administrator should take a backup and understand the JSON model before any repair. Never share SQL credentials with consultants.",
-      "The v31 numeric-hours reporting patch remains required in v36. New allocation JSON uses plannedHours and actualHours; numeric zero is authoritative. Older entries fall back to stored clock times/breaks, then legacy half-day units. SQL views preserve those rules. v36 adds documentation and does not require another schema change."
+      "The v31 numeric-hours reporting patch remains required in v45. New allocation JSON uses plannedHours and actualHours; numeric zero is authoritative. Older entries fall back to stored clock times/breaks, then legacy half-day units. SQL views preserve those rules. v45 adds documentation and does not require another schema change."
     ],
     "headers": [
       "SQL object",
@@ -598,7 +598,7 @@
     "title": "18. Administration, backups and release control",
     "paras": [
       "Keep the application version, database patch history and a backup together. Verify the displayed version after an IIS update. Back up both SQL data and the deployed site before upgrading; retain appsettings configuration, web.config and the authentication key directory.",
-      "For v36, install the updated application and guide. There is no additional SQL schema change over v35. If upgrading from an earlier version, use the cumulative v36 upgrade to include the v31 numeric-hours reporting and v35 change-request prerequisites.",
+      "For v45, install the updated application and guide. There is no additional SQL schema change over v35. If upgrading from an earlier version, use the cumulative v45 upgrade to include the v31 numeric-hours reporting and v35 change-request prerequisites.",
       "Preserve the existing IIS configuration and keys when replacing publish contents. Restart the application pool and hard-refresh the browser. Do not run a fresh-database setup script as a routine update. Complete rollback uses the paired application/database backup; old application versions may not understand direct-hour entries.",
       "The full manual and process-flow PDFs/Word files in this release contain examples and operating instructions only, with no live company records or credentials. Users can open User manual & process flow in the application; the online and PDF/Word versions contain the same guide content."
     ],
@@ -654,7 +654,7 @@
       "Open Appearance & Help > Appearance, or use the theme button in the top bar. Choose Midnight Blue, Light Workspace or Charcoal & Amber. The default is Midnight Blue. Each theme applies to navigation, dashboard panels, tables, forms and dialogs.",
       "Midnight Blue uses a navy navigation rail and blue actions. Light Workspace uses a white sidebar and indigo controls. Charcoal & Amber uses a charcoal sidebar and amber actions. All three retain light data surfaces for readable forms and reports.",
       "Choose Comfortable or Compact table spacing. Theme and spacing are saved only in this browser preferences. They do not change shared company data, employee permissions, saved actuals or report calculations. Another device can use another theme. Clearing browser storage resets the preference.",
-      "PDF/Word manuals and printed PSR reports keep their own document design. v36 also introduces a consolidated dashboard KPI ribbon, a project-register layout, sharper table and input borders, and local system fonts. No Google font download is required for the application theme."
+      "PDF/Word manuals and printed PSR reports keep their own document design. v45 also introduces a consolidated dashboard KPI ribbon, a project-register layout, sharper table and input borders, and local system fonts. No Google font download is required for the application theme."
     ],
     "headers": [],
     "rows": []
@@ -719,7 +719,7 @@
       "Role permissions include Create/revise own change requests, Review as Project Manager, Approve as CTO and View all CRs within project scope. Initiators and assigned reviewers can read their request and revision history. Broad register visibility does not itself give authority to approve. Only the assigned reviewer at the current pending stage can decide.",
       "Word bytes are stored in dbo.ChangeRequestDocuments.Content with file name, revision and SHA-256 hash. They are not written under wwwroot or a public upload folder. Every download/preview checks the active company login, workspace and CR access. CR metadata and files use no-store responses. Changes use a version check; a stale update returns a conflict instead of overwriting another decision.",
       "Full SQL database backups include CR metadata, approval history and Word documents. The ordinary workspace JSON export/import does NOT include these dedicated CR tables or document bytes. Keep SQL backups and allow for attachment storage growth. There is no CR delete function in this version. If a project is removed, retain CR audit history; creating further revisions requires a valid project record.",
-      "First installation requires Database-ChangeRequests-v35.sql, or the cumulative v36 upgrade. Existing v31 numeric-hours reporting remains required. A fresh workspace created after installation receives CTO/Team lead templates from owner initialization. The Word text preview is an app review aid, not an embedded Word editor."
+      "First installation requires Database-ChangeRequests-v35.sql, or the cumulative v45 upgrade. Existing v31 numeric-hours reporting remains required. A fresh workspace created after installation receives CTO/Team lead templates from owner initialization. The Word text preview is an app review aid, not an embedded Word editor."
     ],
     "headers": [
       "SQL object",
@@ -757,7 +757,7 @@
       "Select Upload Excel, choose .xlsx or comma-separated UTF-8 CSV, then Preview file. The first sheet/header row 1 is used; maximum file size is 5 MB and maximum 500 data rows. Formulas, protected/encrypted formats and .xls/.xlsm are not supported: paste values and save as .xlsx. Keep codes/references as text to retain leading zeros. For old browsers unable to decompress .xlsx, use a current Chrome/Edge or save the first worksheet as CSV.",
       "Preview shows normalized values, source row numbers, errors and warnings. No records are saved at preview. Import all rows is enabled only when every row is valid. Correct the original Excel file and preview again if errors appear. There is no partial-row import. A shared workspace version check rejects stale previews: reload/re-preview instead of overwriting another user changes.",
       "Project Plan upload creates To do baseline tasks with dates, owner and effort. It does NOT create daily allocations, employee actuals, timesheets or go-live events. Schedule imported work from Daily allocations or the weekly worksheet. Uploaded activity master rows become selectable by type in later plans/allocations.",
-      "Activity import uses Manage Activity Master plus View All Projects permissions. Plan import uses Manage Plans within each project scope. Shared preview/commit runs server-side validation again before one database transaction. The file itself is read in the browser; row data is sent only to the company API and the source Excel file is not stored as an attachment. No new SQL tables/schema are required by v36. Existing v31/v35 prerequisites still apply."
+      "Activity import uses Manage Activity Master plus View All Projects permissions. Plan import uses Manage Plans within each project scope. Shared preview/commit runs server-side validation again before one database transaction. The file itself is read in the browser; row data is sent only to the company API and the source Excel file is not stored as an attachment. No new SQL tables/schema are required by v45. Existing v31/v35 prerequisites still apply."
     ],
     "headers": [
       "Import",
@@ -777,5 +777,168 @@
         "No rows from a rejected SQL transaction are saved. Fix the sheet or preview again against the latest workspace revision."
       ]
     ]
+  },
+  {
+    "id": "weekly-excel",
+    "title": "24. Upload the Weekly Site Visits plan from Excel",
+    "paras": [
+      "Open Projects & Planning > Weekly site visits and select Week containing. Then choose Download Excel template / Upload Excel. The import is bound to that Monday-to-Sunday week; every visit date must fall inside it. The selected week is displayed in the upload dialog.",
+      "Fill the first worksheet, one row per consultant. Columns: Visit Reference, Activity Date, Project Code, Company, Module, Activity Code, Consultant, Start Time, End Time, Work Mode, Hours Classification, Notes, Existing Task ID. In-app templates include project/company/module/customer references, activity codes, consultant IDs and open task IDs. Standalone templates are blank and generic.",
+      "Visit Reference is a new unique visit code within the project (maximum 50 characters). Repeat it only for different people attending the SAME company/module/activity/date/start/end/mode/classification/existing task. This creates one shared task/session with separate employee allocations. A different session needs another reference. Already-imported references are blocked, even if the file changes employee or date.",
+      "Activity Date accepts yyyy-mm-dd text or real Excel dates. Empty dates default to today in the preview, and must still be within the selected week. Start Time/End Time accept 24-hour HH:mm or real Excel time fractions. The end must be later on the same day; overnight visits are not supported. Planned hours are end minus start, with zero break. Daily actuals are entered later as net hours.",
+      "Project, company, active module and activity code must already exist. Activity type must match the current project stage. Consultant accepts exact ID, unique name or company email. Customer is inherited from the project. Work Mode is Onsite/Offsite (default Onsite); Hours Classification is Client/Internal (default Client). Notes allow 2000 characters.",
+      "Existing Task ID is optional. It must be an open task matching this project/company/module/activity/type, and the consultant must be its primary owner or an existing allocation participant. Leave it blank to create a new planned activity. Existing baseline dates, effort, import reference and actual history are preserved when linking a task.",
+      "Preview checks access, row references, the selected week, duplicate consultants and time conflicts within the file, existing timed daily allocations and scheduled meetings. Date-based hours-only allocations do not reserve a clock slot, so they are not treated as time overlaps. Fix every error before Import all rows. There is no partial import or overwrite of old visits.",
+      "Import creates canonical daily allocations with weekly-plan links. Those same rows appear in Weekly Site Visits, Daily Allocations and the application calendar. They start Planned with zero actual work, so no actual timesheet is created until the employee or authorized manager reports actual hours.",
+      "Shared sessions retain a common team group so later actual updates ask each attendee about client-hour deduction. All employee time remains in timesheets regardless of deduction. AMC compliance still uses onsite evidence, attendance, cycle dates and visit hours; importing a visit does not itself confirm it was delivered.",
+      "Use Edit daily details for later schedule changes with the proper rights. If a timed row is changed into an hours-only daily allocation, the weekly screen/export shows hours without a booked clock slot, matching its date-based calendar entry. A reported allocation date remains protected.",
+      "The upload accepts .xlsx or UTF-8 CSV, up to 500 rows / 5 MB; formulas and .xls/.xlsm are unsupported. Preview is read-only; commit revalidates against the current shared workspace revision. The live IIS edition saves to SQL; the browser demo saves locally. Rights required: Manage Weekly Plans plus Assign Tasks within project scope; Manage Plans is not additionally required."
+    ],
+    "headers": [
+      "Weekly import data",
+      "Where it is saved / used"
+    ],
+    "rows": [
+      [
+        "Weekly links",
+        "Task allocation JSON: weeklyPlanId, weeklyWeek, weeklyImportReference, weeklyImportedBy and weeklyImportedAt."
+      ],
+      [
+        "Shared visit",
+        "One task/session per project/reference group unless linking an existing task; multiple people receive separate allocations with a common teamGroupId."
+      ],
+      [
+        "Daily/calendar/report data",
+        "The same allocation date/time/mode and planned hours feed weekly and daily screens, generated calendar events and planned work reports. Actuals and timesheets are not pre-created."
+      ],
+      [
+        "Database installation",
+        "No new SQL tables or schema change in v45. Existing v31 reporting and v35 Change Request prerequisites still apply."
+      ]
+    ]
+  },
+  {
+    "id": "editable-import",
+    "title": "25. Correct an upload in the preview",
+    "paras": [
+      "Activity Master, Project Plan and Weekly Site Visits previews are editable. Your original uploaded values remain visible, even when they do not match a system master.",
+      "Choose existing active reference values from dropdowns. Project selection filters companies and activities; company selection filters modules. Consultants show ID/name/email. Other cells support direct text correction.",
+      "Any edit immediately blocks import. Click Revalidate rows to check the edited batch against current data and permissions. Correct every error, then Import all rows. The workbook is not reread during revalidation.",
+      "Use Previous rows and Next rows for batches over 25 rows; all edits are retained across pages. Dates use yyyy-mm-dd, visit times HH:mm, hours decimal.",
+      "Changing project or company retains other entered values for your review. Old mismatches remain explicitly visible until replaced. Selecting a new file or closing the form discards unsaved corrections.",
+      "Corrections change the import rows only; they do not rename or add system master records. Uploads remain add-only and atomic, subject to the same authorization, revision and duplicate/conflict checks. No database migration is required for v45."
+    ],
+    "headers": [],
+    "rows": []
+  },
+  {
+    "id": "import-feedback",
+    "title": "26. Import progress, validation and save results",
+    "paras": [
+      "Import all rows rechecks the current rows before saving. The footer beside the buttons displays checking, saving and server-waiting progress so messages remain visible on a long preview.",
+      "If rows become invalid, no rows are saved. A summary lists the original Excel row numbers and reasons across all pages. Click a row button to jump to its editable cells, correct them, then revalidate.",
+      "A missing preview, changed cells, revoked permissions or pending shared changes display an explicit reason instead of silently returning. Shared revision changes stop the attempt for review and revalidation.",
+      "Server errors remain visible in the footer and the form stays open with your corrections. Import success shows the saved row count. If saving is confirmed but refresh fails, reload the workspace and do not import those rows again.",
+      "Do not resubmit while the footer says the server is still responding. The form prevents repeated submissions and closing during a save. If the response is uncertain, reload and revalidate before retrying; already-saved rows will be flagged as duplicates."
+    ],
+    "headers": [],
+    "rows": []
+  },
+  {
+    "id": "project-specific-plans",
+    "title": "27. Open and save each project plan separately",
+    "paras": [
+      "Open Projects & Planning > Project plan. First select a project from the accessible project list. Its code, stage, current project status and visible activity progress identify the project you are opening.",
+      "The opened workspace shows only that project plan, current activity status, progress and planned versus actual effort. Company, module, person, status and date filters refine that project. Reset filters keeps the project selected.",
+      "Use the project dropdown or Choose another project to switch. Opening a project or company plan from Project Master goes directly to the corresponding project and company.",
+      "Plan activity and Edit plan retain a fixed project. Saving updates only that project task. Plan export uses the selected project and current filters. Project status is read from Project Master; activity progress uses saved task and actual updates.",
+      "Open the target project before Excel upload. The modal freezes its ID; blank Project Code cells inherit its code, while another project code is a row error. Template project reference sheets and preview choices are scoped to the opened project. Both server preview and commit validate scope.",
+      "Existing records already carry project references and are retained. No SQL migration or data conversion is needed. Performance and other reporting screens retain their existing workspace-wide options and permission checks."
+    ],
+    "headers": [],
+    "rows": []
+  },
+  {
+    "id": "amc-plan-actual",
+    "title": "28. AMC Plan vs Actual: contract delivery",
+    "paras": [
+      "AMC projects do not use implementation baseline progress. Set the project stage to AMC and configure contract dates, site-visit cycle, required visits, hours per visit and required attendees.",
+      "Opening the project plan or project details shows AMC Plan vs Actual. Plan values come from the contract requirements. Scheduled and actual values come from that project onsite AMC daily allocations and actual updates, using the existing AMC compliance calculation.",
+      "Each cycle shows required visits/hours, scheduled qualifying visits/hours, actual attended and qualifying visits, credited onsite hours, remaining requirements and status. Cycles extend through today or the review week, whichever is later. Short closed cycles are overdue; current short cycles remain open.",
+      "A shared onsite visit counts once using the longest attendee actual hours; a qualifying visit also needs the required duration and all required attendees. Offsite support, employee timesheet totals and client deductions stay separate.",
+      "Use Weekly site visits or Daily allocations to schedule AMC work and submit actuals. Implementation baseline activity creation and plan Excel upload are not shown in the AMC workspace. Existing records remain stored.",
+      "Export AMC Plan vs Actual includes only this project contract cycles. View AMC compliance permission is required. Unconfigured contracts show a setup prompt. Implementation project plans retain their existing workflow."
+    ],
+    "headers": [],
+    "rows": []
+  },
+  {
+    "id": "office-direct-work",
+    "title": "29. Office: allocate directly and update actuals",
+    "paras": [
+      "Office projects have no project baseline plan or plan-versus-actual comparison. Set the project stage to Office, then use Daily allocations to create the activity and allocate people/date/hours.",
+      "Allocated people submit actual date/hours, completion status and remarks through Update actual. Project managers can update others according to role permissions. Existing actual-entry and billing rights remain in force.",
+      "Office entries in the plan project chooser open Daily allocations directly. Office project details show a date-based direct work register with allocation and actual-update actions. Allocation entry opened there keeps the Office project fixed.",
+      "Baseline activity creation, project plan templates, baseline comparison and plan export are not offered for Office. Project Plan Excel imports reject Office rows in server preview and commit; Office is omitted from plan template reference sheets.",
+      "Office hours remain included in employee timesheets and existing daily/hour reports. Existing client/internal classifications and client-deduction choices are preserved. Historical Office records are not deleted.",
+      "AMC projects continue to use contract Plan vs Actual. Implementation projects retain their project plan workflow. No database migration is needed over v41."
+    ],
+    "headers": [],
+    "rows": []
+  },
+  {
+    "id": "mobile-companion",
+    "title": "30. Install and use the mobile companion",
+    "paras": [
+      "Open the company HTTPS address ending /mobile.html. iPhone: Safari > Share > Add to Home Screen. Android: Chrome menu > Install app / Add to Home screen. This is a PWA, not a native app-store APK/IPA. The company server must be reachable from the phone over its network/VPN with a trusted certificate.",
+      "Sign in using the same company email/password. Today shows allocations, pending work and actual-hour summaries. Work offers daily allocation, actual updates and quick entry. Visits shows the weekly schedule. Hours provides date-range timesheets and actual-entry actions. More includes meetings, project status, installation help, password and sign-out.",
+      "Mobile and desktop share the same authenticated server, project/role checks and database records. Actual updates feed employee timesheets; they do not create duplicate copied timesheets. Implementation, AMC and Office status retain their separate workflows.",
+      "Online access is required to load/save work. Offline submissions are blocked. Only public offline help/icons are cached; API/login/workspace data are not cached by the service worker. Watch shared Saving/saved/error status and use backup/reload recovery for failed saves.",
+      "Use a real company hostname, not localhost. No SQL credentials belong on the phone. Home-screen installation does not require Apple/Google developer signing, but physical-device acceptance testing is required after deployment."
+    ],
+    "headers": [],
+    "rows": []
+  },
+  {
+    "id": "quick-work-pending",
+    "title": "31. Instant work, team allocation and pending sign-offs",
+    "paras": [
+      "For unexpected work, choose Quick work - for me in desktop Daily allocations or mobile Today/Work/Hours. Select project, activity, date, hours and notes. Allocated saves a task/daily allocation to yourself; Completed also saves actual hours into your timesheet.",
+      "The self-work permission is separate from general team assignment. Existing project access and an active staff profile are required. The owner can disable Create instant work allocated to self in Role permissions. Owners without a staff-linked login should use a staff company account for personal work.",
+      "Managers use Create task & allocate for employees. Both desktop and mobile pending lists retain uncompleted allocations across dates, including project/CR sign-off follow-ups.",
+      "Allocate follow-up / sign-off task records a task subject, assignee, activity, due date and instructions. Completion-only tasks require a dated completion remark and create no timesheet hours. Hourly tasks use ordinary actual-hours updates.",
+      "Formal CR approvals/signatures remain separate; completing a tracking follow-up is not an approval. Existing formal approval roles and document workflow remain unchanged."
+    ],
+    "headers": [],
+    "rows": []
+  },
+  {
+    "id": "customer-project-import",
+    "title": "32. Import Customer Master and Project Master from Excel",
+    "paras": [
+      "First use Masters & Setup > Customer master > Download Excel template / Upload Excel. Then use Projects & Planning > Projects for Project Master upload. These imports add records only; existing codes are never overwritten.",
+      "Customer template fields are Customer Code (50), Customer Name (160), Status (Active/Inactive; blank Active). Codes use letters/numbers/underscores/hyphens and must be unique ignoring case. Manage Customers permission is required.",
+      "Project template uses one row per project/company/module. Repeat code and identical common project/AMC fields for all rows of that project. Companies and modules are grouped into one saved project. Use Additional Consultants, separated by semicolons, for multiple people on a module.",
+      "Project Code supports up to 50 characters, name 90. Customer must already be active. Choose active project type, Project Manager, Project In-charge, Primary Consultant and module. In-app reference worksheets list current codes, employee IDs and names. General is permitted as a module.",
+      "Company blank becomes Company 1. Blank Project Start and Target Finish become today, shown in preview and frozen before commit. Finish must follow start. Industry/contact/budget are optional. Company count is derived from distinct company names, up to 100.",
+      "AMC projects require contract start/end, cycle, visits per cycle, hours per visit and attendees. Attendees and additional consultants use semicolon-separated IDs/names/emails. Preferred AMC time defaults 09:00. Non-AMC rows ignore AMC fields with a note.",
+      "Preview the file, correct editable cells or choose system master values, revalidate, then Import all rows. Employee-list cells include Add employee from master selectors. Duplicate codes, repeated company/module pairs, missing references and conflicting common fields are listed by source row. Any invalid row blocks the whole transaction.",
+      "Project creation requires Create Projects permission and all existing server validation. No tasks, actuals, timesheets, sign-offs or completed go-live records are generated. Customers remain in settings JSON and projects in existing record JSON. No database schema change is needed over v43."
+    ],
+    "headers": [],
+    "rows": []
+  },
+  {
+    "id": "amc-period-update",
+    "title": "33. Update AMC starting and ending periods",
+    "paras": [
+      "Customer Master and Project Master Excel imports remain available. Import new customers first, then new projects. Existing project codes are add-only; use Update AMC period to edit an existing contract.",
+      "On Projects, the AMC contract periods register shows current starting/ending dates and Update AMC period. The AMC project view has the same button. Manage Plans permission is required; unconfigured contracts open full contract setup.",
+      "Saved dates load into the form. Enter ordered dates within ten years, add an optional reason, and save. End-only changes preserve the contract ID and existing visit links. The former contract snapshot is appended to history.",
+      "A changed start date changes cycle anchors and creates a new contract term ID. Previously tagged visits keep their prior contract links. Existing allocations, actual hours and employee timesheets are retained; no visit data is moved automatically. Coverage changes can alter current compliance counts.",
+      "Use Edit AMC contract for attendees, cycles and per-visit hours. The optional Database-AMC-Periods-v45.sql adds a reporting view over existing project JSON, without updating business data or creating new tables. The app does not depend on that view."
+    ],
+    "headers": [],
+    "rows": []
   }
 ]

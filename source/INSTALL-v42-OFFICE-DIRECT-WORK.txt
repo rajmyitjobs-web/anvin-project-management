@@ -1,0 +1,33 @@
+MY PROJECT MANAGEMENT v42 (42.0.0) -- OFFICE DIRECT WORK
+Release: 23-Nov-2026, Qatar. Previous app: v41.
+
+IIS UPDATE
+Back up application files and SQL database. Stop MyProjectManagement pool.
+Copy CONTENTS of the update ZIP publish folder into the current IIS publish folder.
+Preserve appsettings*.json, web.config, Keys and external authentication keys.
+Update ZIP excludes runtime configuration and authentication keys.
+Restart pool, sign in and Ctrl+F5. Confirm Version 42. No SQL change over v41.
+Earlier installations can use cumulative Database-Upgrade-v42.sql if needed.
+
+OFFICE WORKFLOW
+Select Office as the project stage/type. Allocate the activity directly in Daily
+allocations, then update actual date/hours, status and remarks using existing rights.
+Office project entries in the plan project chooser open Daily allocations directly.
+Office project details show the direct allocation/actual register, not a baseline.
+Choose the activity date to see allocated people/hours, actual hours/status/remarks.
+Allocate Office activity fixes that project on the entry form. Edit allocation and
+Update actual use existing allocation and actual-entry permission checks.
+Office has no Plan activity, baseline comparison, baseline template or plan export.
+Project-plan Excel imports reject Office rows on the server in preview and commit,
+with an explicit reason; Office entries are omitted from plan template references.
+Office actuals continue to feed employee timesheets and existing hours reports.
+Billing classifications and client deduction choices are preserved, not reclassified.
+AMC still uses AMC Plan vs Actual. Implementation plans retain the existing workflow.
+All existing Office tasks, allocations, actuals and timesheets remain stored.
+
+VALIDATION
+Automated DOM/workflow checks cover Office direct save, fixed project, actual display,
+project detail, baseline UI/import rejection and daily navigation. .NET tests verify
+Office baseline rejection without writes; existing policies and Windows build pass.
+No live IIS/SQL or visual browser test was performed for v42. Verify one Office
+allocation/actual after installing. Manual chapter 29 documents Office work.

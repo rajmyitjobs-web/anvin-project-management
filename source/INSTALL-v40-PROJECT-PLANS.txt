@@ -1,0 +1,43 @@
+MY PROJECT MANAGEMENT v40 (40.0.0) -- PROJECT-BY-PROJECT PLANS
+Release: 23-Nov-2026, Qatar. Previous app: v39.
+
+IIS UPDATE
+Back up site files and SQL database. Stop the MyProjectManagement pool.
+Copy CONTENTS of the update ZIP publish folder into the existing IIS publish folder.
+Preserve appsettings*.json, web.config, Keys and external authentication keys.
+Update ZIP excludes runtime configuration and authentication keys.
+Restart pool, sign in and Ctrl+F5. Confirm Version 40.
+No SQL change over v39. Existing project/task references remain unchanged.
+Earlier sites can use cumulative Database-Upgrade-v40.sql; full setup is for fresh DB.
+
+PROJECT PLAN
+Projects & Planning > Project plan first lists accessible projects with their code,
+stage, current project status and visible activity progress. Click Open project plan.
+The selected project alone supplies activities, summary, planned/actual effort,
+completion and overdue status. Other projects' activities are never combined here.
+Switch via the project dropdown or Choose another project. Existing project-detail
+Open project plan / company View plan links open that exact project/company.
+Reset filters clears company/module/person/status/date filters while retaining project.
+The project current status is from Project Master; activity status/progress come from
+saved task status/completion and actual records, subject to existing access rights.
+Plan activity and Edit plan keep a fixed project choice and save against that project.
+Company choices belong to that project; other existing activity checks are preserved.
+Export plan uses only the selected project's currently filtered activities.
+
+SCOPED EXCEL IMPORT
+Open the target project first. Template reference worksheets show that project only.
+Upload modal freezes the opened project ID. Blank Project Code cells are filled from
+that project. Nonblank codes for another project are row errors in preview/commit.
+Project Code correction dropdown offers the opened project; mismatches remain visible.
+All rows must pass validation before saving. Preview edits and v39 import feedback remain.
+Server validates the selectedProjectId constraint on both preview and commit.
+No baseline/task/actual/calendar records are moved or deleted by this update.
+Workspace-wide performance/reporting views remain available through their own menus.
+
+VALIDATION / MANUAL
+Automated DOM/workflow checks cover project chooser, task isolation, filter reset,
+fixed-project activity save, scoped import correction and templates, switching and
+unchanged performance aggregation. .NET tests check matching/mismatched import scope
+and no writes on rejected scope. Existing policy/import tests and Windows build pass.
+No live IIS/SQL or visual browser test was performed for v40; verify after installation.
+Manual chapter 27 covers project-specific plans. v39 is retained for rollback.

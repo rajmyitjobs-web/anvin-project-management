@@ -1,6 +1,6 @@
-My Project Management v36
-Application version: 36.0.0
-Previous application: v35
-Feature: Project Plan and Activity Master Excel/CSV imports
-Database prerequisites remain v31 reporting and v35 change requests
-Release date: 2026-11-22 (Qatar)
+My Project Management v45
+Application version: 45.0.0
+Previous application: v44
+Feature: Customer/Project Master Excel imports and direct AMC starting/ending period update
+No new tables; optional AMC period reporting view supplied
+Release date: 2026-11-23 (Qatar)
