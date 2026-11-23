@@ -1,5 +1,6 @@
-My Project Management v48
-Application version: 48.0.0
-Previous application: v47
-Release: 23 November 2026, Qatar
-Selected login security controls; no database schema migration.
+My Project Management v49
+Application version: 49.0.0
+Previous application: v48
+Release: 24 November 2026 (Qatar)
+Mapped Word change requests, synchronized documents and amendment review history.
+Existing v35 CR tables retained; SQL permission/reporting script supplied.

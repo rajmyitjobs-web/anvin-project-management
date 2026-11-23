@@ -1,9 +1,11 @@
-# My Project Management v48
+# My Project Management v49
 
 ASP.NET Core 10 and Microsoft SQL Server application for ERP implementation teams.
 Source code is in `source/`. The desktop and installable mobile companion share the same company login, role permissions and database.
 
-## Included in v48
+## Included in v49
+
+- Mapped Word change requests: header, module/form changes and remarks, side-by-side preview, synchronized Word drafts, customer/project duplicate CR validation and PM/CTO amendment cycles with previous comments.
 
 - Selected login security controls: stronger new/reset passphrases, old hash upgrades, login throttling, secure cookies, HTTPS/CSRF/headers and cross-device logout revocation with browser cleanup.
 - Isolated actual-application HTTP integration tests and browser logout tests. Existing passwords remain valid until changed/reset.
@@ -83,3 +85,19 @@ npm test --prefix tests/browser
 ```
 
 The GitHub workflow runs both before packaging/deployment.
+
+## Word change requests — v49
+
+[Installation/workflow guide](source/INSTALL-v49-MAPPED-CHANGE-REQUESTS.txt) · [SQL permissions/reporting script](source/database/18-Mapped-ChangeRequests-v49.sql) · [generic Word template](source/wwwroot/templates/CR-Word-Template-v49.docx)
+
+Upload the Word format using Change requests > New change request. Link the correct project/customer, select the CTO and load Word into the form. Header values and module/form/changes/remarks rows are editable. Saving retains original uploads and produces synchronized Word documents. The right pane renders tables/text; exact native Word pagination and typography can differ. The user's original attachment is not included in this repository.
+
+Approval remains initiator → Project Manager → CTO. Returns create a new revision and repeat both stages. Initiators respond to prior amendment comments; returning approvers see their previous comments, old/current wording and responses, and acknowledge checking them. Base CR numbers exclude the document revision suffix and are validated transactionally against the linked customer or project. Existing legacy records remain available; external numbers must be mapped to apply the external-number check. No mandatory new table/column is needed over the v35 CR tables. Apply the SQL script as administrator to ensure CR table rights and reporting views. v48 login security is retained.
+
+Run the synthetic Word/workflow tests:
+
+```sh
+dotnet run --project tests/ChangeRequestTests/ChangeRequestTests.csproj
+```
+
+The existing CI also runs login security and browser logout/mapped-form tests before deployment. Tests cover parsing, Word round trips, dynamic rows, immutable history, PM/CTO return/resubmission, duplicate-scope rules and SQL syntax. Production SQL-backed document transactions require verification on the deployment.

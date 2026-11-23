@@ -1,3 +1,7 @@
+## v49 — 24 November 2026
+
+Word CR format: Client, Date, Project, Requested by and CR number; module/form changes and remarks. Imports and mapped edits produce synchronized Word versions while retaining originals. Side-by-side preview, customer/project number validation, stable form IDs, amendment responses and previous-comment acknowledgment in sequential PM/CTO approvals. Existing v35 CR tables and v48 login security retained. Added Word, workflow and UI tests.
+
 ## v48 — 23 November 2026
 
 Selected login security controls: 15–128-character new/reset passphrases with an extensible local common-password blocklist; successful-login upgrade of older hashes; sliding-window IP login limiter and clear 429 responses; secure cookies, HTTPS/HSTS, CSRF and browser headers; logout revokes existing sessions for the user and clears desktop/mobile browser state. Existing passwords remain valid until changed/reset. Added isolated HTTP integration tests and browser logout tests. No schema changes. MFA and other unselected checklist items remain pending.

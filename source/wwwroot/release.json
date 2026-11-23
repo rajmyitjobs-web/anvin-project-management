@@ -1,8 +1,8 @@
 {
-  "version": "48.0.0",
-  "label": "v48",
-  "previous_application": "v47",
+  "version": "49.0.0",
+  "label": "v49",
+  "previous_application": "v48",
   "required_database_patch": "v35",
-  "date": "2026-11-23",
-  "features": "Selected login security controls: stronger new-password policy, hash upgrades, throttling, cookies, HTTPS/CSRF/headers, logout revocation and browser cleanup; isolated HTTP security tests"
+  "date": "2026-11-24",
+  "features": "Mapped Word change requests: header/module/form import, synchronized Word drafts, customer/project CR number validation, side-by-side review and amendment comment history"
 }

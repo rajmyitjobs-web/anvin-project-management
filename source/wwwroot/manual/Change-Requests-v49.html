@@ -1,0 +1,70 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mapped Word change requests — v49</title><style>body{font:16px/1.6 system-ui;color:#182d43;max-width:1050px;margin:40px auto;padding:0 24px}pre{white-space:pre-wrap}a{color:#205ad0}</style><h1>Word change request workflow — v49</h1><p><a href="../templates/CR-Word-Template-v49.docx" download>Download Word template</a></p><p>Word import → mapped form + Word → PM review → CTO review → ready for client. Returned requests create a new revision and repeat both stages.</p><pre>MY PROJECT MANAGEMENT v49 — MAPPED WORD CHANGE REQUESTS
+24 November 2026 (Qatar). Previous application: v48.
+
+FORMAT AND OPERATION
+Change requests &gt; New change request opens the mapped Word form.
+Choose the linked project and CTO. Its Project Manager is loaded from Project Master.
+Choose .docx; fields load automatically. Use Load Word into form to reload if needed. The supplied format is:
+Header table: Client, Date, Project, Requested by, Change Request No:
+Details table: Sl # | Client Requirement | Remarks
+Module heading row: Module: &lt;module&gt;
+Each requirement row: Form : &lt;form name&gt;, followed by one or more requirement lines.
+A sanitized example template is supplied. The original uploaded format was used for
+local parsing tests; the user&#x27;s original file is NOT published with the application.
+Legacy .doc files remain downloadable for legacy requests; structured imports require .docx.
+
+Confirm that the selected linked project/customer matches the Word labels. The Word
+Requested by field is document text; the authenticated initiator is separately audited.
+The document&#x27;s &#x27;Rev 2.0&#x27; suffix is separated from the base CR number. Workflow R1/R2 etc.
+are separate approval revisions. Base numbers are normalized for case/whitespace and
+checked against the same project or linked customer, including across its projects.
+Legacy records without mapped external numbers remain intact; convert their Word drafts
+to map external numbers. Legacy generated register numbers are also checked.
+
+Saving retains the original upload and creates a synchronized mapped Word copy. Editing
+header, module, form, changes or remarks updates the right preview and generates a new
+current Word document on Save. Re-uploaded amended Word files reload the text boxes.
+The preview shows Word tables/text; exact pagination, page headers and typography can
+differ. Download Word for its original layout. Unmapped body content is retained.
+At most 50 form rows and 5 MB per file; existing 20-document-per-workflow-revision limit
+is retained. Original uploads and submitted historical revisions are never overwritten.
+
+APPROVAL AND AMENDMENTS
+Initiator, assigned PM and assigned CTO must be active and different people with rights.
+Save &gt; Request PM -&gt; CTO approval. Submitted fields/documents are locked.
+PM can approve or return with Amendment / Clarification / Meeting comments. CTO acts
+only after PM approval, with the same return options. Click Word preview paragraphs to
+start D-number comments, or comment against each module/form row.
+A return starts a NEW revision. Edit mapped values and Save (generates revised Word),
+or upload amended Word and reload fields. Respond to the previous revision&#x27;s amendment/
+clarification comments, save, then resubmit. Both PM and CTO approval stages restart.
+Approvers see their previous comments, old/current wording, initiator responses and links
+to previous Word copies. They acknowledge checking previous comments before deciding.
+Meeting dates remain requests; confirm/schedule through Meetings. PM + CTO approval means
+technically feasible/ready for client, not client or commercial sign-off.
+
+LOCAL IIS INSTALLATION
+1. Back up SQL database, current application folder and protected authentication keys.
+   The delta Update-v49-from-v48 package requires v48. For older versions use the full v49
+   package and preserve your existing configuration and protected keys.
+2. Stop the MyProjectManagement application pool. Apply Database-Mapped-ChangeRequests-v49.sql
+   in a fresh SSMS connection as SQL administrator to MyProjectManagement. It idempotently ensures existing v35 CR
+   tables/role flags and adds reporting views plus object-level rights for the known local
+   IIS APPPOOL\MyProjectManagement identity. No account/password or business records are reset.
+   It does not grant sysadmin/db_owner. Other service identities need equivalent object grants.
+3. Copy contents of package publish into the current IIS publish folder. The update excludes
+   appsettings*.json and web.config. Preserve your working SQL configuration and Keys/App_Data.
+4. Start the pool, refresh desktop/mobile and confirm /api/health version 49.0.0.
+5. Mobile: More &gt; Change requests / approvals uses the same permissions and workflow.
+   Test with separate consultant/PM/CTO logins: import, mapped edit, duplicate rejection,
+   PM return/revision, PM approval, CTO return/revision and final approval.
+
+Storage remains existing ChangeRequests JSON and ChangeRequestDocuments protected SQL blobs.
+Duplicate validation and Word/form saves run in a transaction serialized by workspace locks.
+No new mandatory table/column/index is required over v35; reporting views are optional.
+All v48 login security is retained. Full SQL-backed and production credential workflows require
+validation on your deployment. Automated tests use synthetic records and test Word files.
+Rollback: restore pre-update application files (remove new v49 files as appropriate). Older
+versions can read common CR fields but do not enforce mapped synchronization; back up the
+updated CR data/documents and use a planned rollback rather than editing approved history.
+</pre></html>
