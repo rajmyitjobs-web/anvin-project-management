@@ -1,4 +1,4 @@
-/* v45: AMC delivery is compared with contract cycles, not implementation baselines. */
+/* v46: AMC delivery is compared with contract cycles, not implementation baselines. */
 function amcProjectPlanSummary(p){return amcSummaries().find(s=>s.projectId===p.id);}
 function amcProjectPlanBody(p){
  if(!roleAllows('viewAmcCompliance'))return '<div class="notice">AMC Plan vs Actual requires View AMC compliance permission.</div>';

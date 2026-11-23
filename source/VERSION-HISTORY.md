@@ -1,7 +1,12 @@
+## v47 — 23 November 2026
+
+New Implementation project plan template matching the supplied activity/day/session structure. Client/Us responsibility, multiple employees, automatic weekly/daily/calendar links, display-only phase totals, editable import validation and duplicate protection. Existing JSON schema retained; optional read-only plan view. Previous version: v46.
+
 # My Project Management release history
 
 | Version | Main change | Package type |
 | --- | --- | --- |
+| v46 / 46.0.0 | Separate New Implementation project template without AMC fields, prefilled type, reference sheets and simplified preview | Complete update; template also works with v45; no SQL change |
 | v45 / 45.0.0 | Explicit AMC starting/ending period update from Project Master and AMC view; end extensions retain links, new start creates term/history; master imports retained | Complete update + optional AMC period SQL view; no new tables |
 | v44 / 44.0.0 | Customer/Project Master templates and add-only imports; grouped companies/modules, active references, editable preview and AMC contract validation | Complete update; no new schema change over v43 |
 | v43 / 43.0.0 | Installable mobile companion, scoped quick self-work with actual/timesheet flow, manager allocation, pending tasks across dates and completion-only sign-offs | Complete desktop + mobile update; no new schema change over v42 |

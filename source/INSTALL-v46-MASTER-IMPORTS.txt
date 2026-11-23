@@ -1,0 +1,68 @@
+MY PROJECT MANAGEMENT v46 (46.0.0) -- CUSTOMER / PROJECT MASTER IMPORTS
+Release: 23-Nov-2026, Qatar. Previous application: v45.
+
+IIS UPDATE
+Back up site files and SQL database. Stop MyProjectManagement pool; copy CONTENTS
+of update ZIP publish folder into current IIS publish folder. Preserve appsettings*.json,
+web.config, Keys and external authentication keys. Update ZIP excludes configuration
+and keys. Deploy the application DLL AND web assets, restart, Ctrl+F5, confirm Version 46.
+No SQL schema change over v43. Cumulative v46 scripts are included for older installs.
+
+UPLOAD ORDER / LOCATION
+1. Masters & Setup > Customer master > Download Excel template / Upload Excel.
+2. Projects & Planning > Projects > Download Excel template / Upload Excel.
+The in-app templates include current reference worksheets. Standalone blank templates
+are also under templates/. Fill FIRST worksheet, header row 1; 1–500 rows / 5 MB.
+XLSX or UTF-8 CSV. No formulas. Codes are text to retain leading zeros.
+Preview > correct editable cells / choose system master values > Revalidate rows >
+Import all rows. One invalid row blocks the entire batch. No existing rows overwritten.
+All normal login, role permissions, workspace revision and SQL transaction checks apply.
+
+CUSTOMER MASTER
+Columns: Customer Code, Customer Name, Status.
+Code: 1–50 letters/numbers/underscore/hyphen, unique ignoring case. Name: 1–160.
+Status Active/Inactive; blank defaults Active. Existing and within-file codes rejected.
+Requires Manage Customers. Newly imported inactive customers cannot be used for projects.
+
+PROJECT MASTER
+One row per project/company/module. Repeat Project Code and all common project/AMC
+fields identically for multiple companies/modules. This creates ONE project with
+those companies/modules, not duplicate projects. Different primary consultants per
+company/module are supported; Additional Consultants adds the rest of the module team.
+Code: 1–50; name: 1–90. Existing project codes are never overwritten.
+Customer Code must already exist and be active; import customers first.
+Project Type: existing active code/name (implementation/amc/warranty/office etc.).
+Project Manager, Project In-charge, Primary Consultant: active employee ID/name/email.
+Use reference-sheet IDs for ambiguous names. Module: active code/name or General.
+Company blank defaults Company 1, up to 100 chars; maximum 100 distinct companies.
+Additional Consultants: semicolon-separated employees; primary is included automatically.
+Project Start / Target Finish: yyyy-mm-dd or Excel dates. Blank defaults today;
+preview shows warnings and freezes those default dates before commit. Finish >= start.
+Industry (70), Client Contact (90), Client Mandays (0–1000000) optional; blank budget 0.
+Duplicate company/module within a project is rejected; add team members in the extra
+consultant list instead. Conflicting repeated project fields are errors on all its rows.
+Requires Create Projects. Project ownership/active master rules are validated on server.
+
+AMC ONLY
+AMC Start / End, Cycle, Visits per Cycle, Hours per Visit, Attendees required.
+Cycle: daily, alternate-days, weekly, monthly, quarterly, six-monthly, yearly (6 months
+and matching names are supported). Visits integer 1–366, hours per visit 0.25–12.
+AMC dates ordered, within ten years. Attendees use semicolon-separated active employees.
+AMC Preferred Start uses HH:mm / Excel time, defaults 09:00. Other project types ignore
+AMC fields with a preview note. Optional suggested AMC activity can be set later.
+
+RESULT / STORAGE / SAFETY
+Creates master records and module/company ownership only: no tasks, daily allocations,
+actual hours, timesheets, completed go-live or formal approvals are created.
+Customers use existing Workspaces.SettingsJson. Projects use existing WorkspaceRecords
+JSON. Source workbook is read in browser, not stored as an attachment.
+Hosted demo imports browser-local practice data; company IIS app uses shared SQL.
+Interrupted response: check records and revalidate before retrying; existing codes block
+reimports. Old versions remain archived; update package contains the current guide.
+
+VALIDATION
+Automated frontend and .NET checks cover permissions, customer/project saves, grouped
+companies/module teams, editable reference choices, AMC validation, duplicates, conflicts
+and no partial batches. Windows build/package checks pass. No live IIS/SQL or visual
+browser test was performed for v46. Verify one customer and one project after install.
+Manual chapter 32 documents these imports. Mobile and v43 quick-work features remain.
