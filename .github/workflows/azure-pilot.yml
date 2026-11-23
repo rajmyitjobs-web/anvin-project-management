@@ -18,6 +18,15 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
+      - name: Run isolated login security integration tests
+        run: dotnet run --project tests/SecurityTests/SecurityTests.csproj -c Release
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Run browser logout security tests
+        run: |
+          npm ci --prefix tests/browser
+          npm test --prefix tests/browser
       - name: Publish Windows x86 application
         run: dotnet publish source/MyProjectManagement.csproj -c Release -r win-x86 --self-contained false -p:UseAppHost=false -o dist
       - name: Check publish output and package site

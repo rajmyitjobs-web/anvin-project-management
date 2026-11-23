@@ -1,9 +1,12 @@
-# My Project Management v47
+# My Project Management v48
 
 ASP.NET Core 10 and Microsoft SQL Server application for ERP implementation teams.
 Source code is in `source/`. The desktop and installable mobile companion share the same company login, role permissions and database.
 
-## Included in v47
+## Included in v48
+
+- Selected login security controls: stronger new/reset passphrases, old hash upgrades, login throttling, secure cookies, HTTPS/CSRF/headers and cross-device logout revocation with browser cleanup.
+- Isolated actual-application HTTP integration tests and browser logout tests. Existing passwords remain valid until changed/reset.
 
 - New Implementation plan Excel template matching activity / working-day start / planned days / sessions.
 - Client or Us responsibilities, multiple employees and linked weekly schedules, daily allocations and calendar entries.
@@ -61,3 +64,22 @@ Download the [formatted Excel plan template](source/wwwroot/templates/New-Implem
 Documentation: [user manual PDF](source/wwwroot/manual/User-Manual-v47.pdf), [process flow PDF](source/wwwroot/manual/Process-Flow-v47.pdf), and [HTML manual](source/wwwroot/manual/index.html).
 
 Automated policy, import, date calculation, multi-person schedule, calendar and SQL syntax checks passed for v47. The application was published for Windows IIS locally; production IIS/SQL connectivity requires verification in your environment.
+
+## Login security — v48
+
+See [security instructions](source/INSTALL-v48-LOGIN-SECURITY.txt) and [updated checklist](docs/security/Login-Security-Checklist-v48.csv). New/reset passphrases require 15–128 characters and pass a local common-password blocklist; existing passwords continue to work. Logout ends existing sessions for that user across devices. There is no database schema migration. MFA and other unselected review items remain pending. Proxy client-IP handling, multiple-instance throttling, production credentials, SQL-backed authentication and infrastructure permissions still require deployment-specific verification.
+
+Run the isolated HTTP tests (synthetic account store; no production database):
+
+```sh
+dotnet run --project tests/SecurityTests/SecurityTests.csproj
+```
+
+Run browser logout tests with Node.js 24:
+
+```sh
+npm ci --prefix tests/browser
+npm test --prefix tests/browser
+```
+
+The GitHub workflow runs both before packaging/deployment.
