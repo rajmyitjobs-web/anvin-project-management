@@ -1,4 +1,4 @@
-/* v45: Project plans open and save in a single, explicit project context. */
+/* v46: Project plans open and save in a single, explicit project context. */
 function selectedPlanProject(){let p=project(planState.project);return p&&canViewProject(p)?p:null;}
 const scopedPlanTasks=planTasks;
 planTasks=function(){if(state.page==='planning'&&!selectedPlanProject())return [];return scopedPlanTasks();};

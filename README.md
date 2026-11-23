@@ -1,9 +1,14 @@
-# My Project Management v45
+# My Project Management v47
 
 ASP.NET Core 10 and Microsoft SQL Server application for ERP implementation teams.
 Source code is in `source/`. The desktop and installable mobile companion share the same company login, role permissions and database.
 
-## Included in v45
+## Included in v47
+
+- New Implementation plan Excel template matching activity / working-day start / planned days / sessions.
+- Client or Us responsibilities, multiple employees and linked weekly schedules, daily allocations and calendar entries.
+- Display-only phase headings and totals, editable import validation and duplicate protection.
+- Separate New Implementation Project Master template without AMC details (v46).
 
 - Customer Master and Project Master Excel/CSV imports with editable previews, reference lists and atomic validation.
 - Project/company/module ownership, multiple consultants, activity planning and project status reports.
@@ -23,11 +28,11 @@ dotnet publish source/MyProjectManagement.csproj -c Release -r win-x64 --self-co
 Deploy the contents of `publish/` to IIS with the ASP.NET Core Hosting Bundle installed. Preserve existing runtime configuration, authentication key storage and database backups during upgrades.
 Configure `ConnectionStrings__Default` and `DataProtection__KeyPath` on the server. The committed JSON settings are blank/placeholders; do not commit real SQL credentials, local environment settings, authentication keys or runtime data.
 
-See [IIS instructions](source/DEPLOY-IIS-SQLSERVER.txt), [v45 update guide](source/INSTALL-v45-MASTERS-AMC-PERIODS.txt) and [version history](source/VERSION-HISTORY.md).
+See [IIS instructions](source/DEPLOY-IIS-SQLSERVER.txt), [v47 update guide](source/INSTALL-v47-IMPLEMENTATION-PLAN.txt) and [version history](source/VERSION-HISTORY.md).
 
 ## Database and Excel imports
 
-Existing v44 databases need no new tables for v45. The optional [AMC period reporting view](source/database/15-AMC-Periods-v45.sql) does not modify business data. [Cumulative upgrade](source/database/Database-Upgrade-v45.sql) and [fresh setup](source/database/Database-Full-Setup-v45.sql) scripts are included; review the guide and back up the database before applying upgrades. Full setup is intended for a fresh database.
+Existing v35+ databases need no new tables for v47. The optional [New Implementation plan reporting view](source/database/16-Implementation-Plan-v47.sql) exposes project baseline rows without changing business data. The optional [AMC period reporting view](source/database/15-AMC-Periods-v45.sql) does not modify business data. [Cumulative upgrade](source/database/Database-Upgrade-v47.sql) and [fresh setup](source/database/Database-Full-Setup-v47.sql) scripts are included; review the guide and back up the database before applying upgrades. Full setup is intended for a fresh database.
 
 Import customers first, then projects. Download current reference templates from Customer Master or Projects. Blank [Customer Master](source/wwwroot/templates/Customer-Master-Upload-Template-v45.xlsx) and [Project Master](source/wwwroot/templates/Project-Master-Upload-Template-v45.xlsx) templates are also included. Existing codes are not overwritten.
 
@@ -46,3 +51,13 @@ The existing `.github/workflows/azure-pilot.yml` builds Windows x86 for the pilo
 ## Validation
 
 The v45 source was checked with .NET builds, policy/SQL syntax tests and DOM workflow tests for imports, AMC dates, mobile/quick work and pending tasks. Live IIS/SQL and physical phone acceptance testing remain necessary after deployment. Authentication keys, database contents and compiled releases are excluded from source publication.
+
+## New Implementation project plans (v47)
+
+Open Project plan, select a New Implementation project, then Upload / enter project plan. Choose company, kickoff date and working week. PLAN START is a working-day number; one session equals four hours. Client activities create tracked dependencies without employee allocations. Heading and Total rows do not create work. Us activities create daily allocations for every selected employee, with the same records feeding weekly schedules and calendar. Actual updates feed timesheets and retain the shared-session client-deduction decision.
+
+Download the [formatted Excel plan template](source/wwwroot/templates/New-Implementation-Project-Plan-v47.xlsx). Use active activity codes and semicolon-separated employee IDs/names/emails, or correct them in the editable preview. The sample totals our 21 days / 42 sessions, excluding client work and headings. Duplicate rows are rejected; reschedule generated work through Daily allocations while retaining baseline dates. AMC and Office workflows remain unchanged.
+
+Documentation: [user manual PDF](source/wwwroot/manual/User-Manual-v47.pdf), [process flow PDF](source/wwwroot/manual/Process-Flow-v47.pdf), and [HTML manual](source/wwwroot/manual/index.html).
+
+Automated policy, import, date calculation, multi-person schedule, calendar and SQL syntax checks passed for v47. The application was published for Windows IIS locally; production IIS/SQL connectivity requires verification in your environment.

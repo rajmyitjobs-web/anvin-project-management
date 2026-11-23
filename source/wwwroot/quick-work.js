@@ -1,4 +1,4 @@
-/* v45: safe self-allocation, using the same task/actual/timesheet records. */
+/* v46: safe self-allocation, using the same task/actual/timesheet records. */
 permissionLabels.createOwnWork='Create instant work allocated to self';
 for(const role of ['Project manager','Project lead','ERP consultant'])defaultPermissions[role].createOwnWork=true;
 const quickRoleAllows=roleAllows;roleAllows=function(key){if(key==='createOwnWork'&&state.role!=='manager'&&data.rolePermissions[currentRole()]?.[key]===undefined)return person(actorId()).active!==false&&['Project manager','Project lead','ERP consultant'].includes(roleScope(currentRole()));return quickRoleAllows(key);};

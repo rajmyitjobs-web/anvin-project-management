@@ -1,0 +1,42 @@
+MY PROJECT MANAGEMENT v46 -- SEPARATE NEW IMPLEMENTATION TEMPLATE
+Release: 23-Nov-2026, Qatar. Previous app: v45.
+
+USE WITHOUT AN APPLICATION UPDATE
+New-Implementation-Project-Upload-Template-v46.xlsx already works with the existing
+v45 Project Master upload. No SQL change is required to use this workbook.
+Open Projects > Upload Excel > choose file > Preview > correct > Revalidate > Import.
+Customer codes must already exist and be active. Import customers first if needed.
+
+NEW TEMPLATE
+Only 15 non-AMC columns are present:
+Project Code, Project Name, Customer Code, Project Type, Project Manager,
+Project In-charge, Company, Module, Primary Consultant, Additional Consultants,
+Project Start, Target Finish, Industry, Client Contact, Client Mandays.
+Row 2 has Project Type prefilled as implementation. Fill its remaining required
+fields, and copy implementation into the Project Type cell of each added row.
+There are NO AMC date/cycle/hour/attendee fields or AMC reference sheets.
+Company blank defaults Company 1. Project dates blank default today in preview.
+Code max 50, name max 90. Employee references accept active ID/name/email.
+Additional Consultants uses semicolon-separated employees. Module may be General.
+Repeat project code and common fields for multiple company/module rows.
+No existing projects are overwritten. Add-only, 1–500 rows / 5 MB, no formulas.
+Keep codes as text to retain leading zeros. Fill the FIRST worksheet only.
+
+V46 APPLICATION BUTTON / PREVIEW
+Projects has Download New Implementation template. Its in-app workbook also lists
+current customers, employees/roles and modules. Use the existing Upload Excel button.
+For an implementation-only file with no AMC headings, preview hides irrelevant AMC
+columns. The general Project Master template remains available for AMC/other types.
+AMC start/end editing and all previous features remain available.
+
+OPTIONAL IIS UPDATE
+Back up site files/database, stop the pool, copy CONTENTS of update ZIP publish
+folder into the current IIS publish folder, preserve appsettings*.json/web.config/
+Keys, restart pool, Ctrl+F5 and confirm Version 46. Update ZIP excludes configuration
+and keys. No new SQL changes over v45. Cumulative SQL is supplied for older sites.
+
+VERIFICATION
+Automated checks cover workbook headers/type, parsing, simplified preview, import
+through the existing server and no AMC contract creation, and permission checks.
+Windows build/package checks pass. No live IIS/SQL or visual browser check performed
+for v46. Verify one import after deploying. Manual chapter 34 documents this template.

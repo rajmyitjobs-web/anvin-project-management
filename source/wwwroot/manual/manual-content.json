@@ -3,7 +3,7 @@
     "id": "start",
     "title": "1. Start here: the daily operating cycle",
     "paras": [
-      "My Project Management v45 | User manual, process flow and dashboard/report data guide | 23 November 2026 | Qatar time.",
+      "My Project Management v47 | User manual, process flow and dashboard/report data guide | 23 November 2026 | Qatar time.",
       "The application follows Customer > Project > Companies > Modules > Activities > Daily allocations > Actual hours > Timesheets and reports. The daily activity entry uses one Activity Date and Hours. One man-day is 8 hours; a half-day session equivalent is 4 hours. Enter net decimal hours: 1.5 means 1 hour 30 minutes, not 1 hour 50 minutes.",
       "For a first setup, the workspace owner completes masters, users and permissions before the project manager creates projects. Each morning, the manager reviews pending work and allocates the day. Each consultant reports actual hours and remarks. The manager reviews client deductions, follow-ups and reports.",
       "This manual describes the IIS / SQL Server edition. Hosted preview or browser-local demo data is separate from your live company database. Sign in at the company IIS address to work on shared company records."
@@ -469,7 +469,7 @@
     "title": "15. SQL reporting map for administrators",
     "paras": [
       "Use the application for ordinary editing. Direct SQL changes can bypass validation, relationships, audit and permissions; an administrator should take a backup and understand the JSON model before any repair. Never share SQL credentials with consultants.",
-      "The v31 numeric-hours reporting patch remains required in v45. New allocation JSON uses plannedHours and actualHours; numeric zero is authoritative. Older entries fall back to stored clock times/breaks, then legacy half-day units. SQL views preserve those rules. v45 adds documentation and does not require another schema change."
+      "The v31 numeric-hours reporting patch remains required in v47. New allocation JSON uses plannedHours and actualHours; numeric zero is authoritative. Older entries fall back to stored clock times/breaks, then legacy half-day units. SQL views preserve those rules. v47 adds documentation and does not require another schema change."
     ],
     "headers": [
       "SQL object",
@@ -598,7 +598,7 @@
     "title": "18. Administration, backups and release control",
     "paras": [
       "Keep the application version, database patch history and a backup together. Verify the displayed version after an IIS update. Back up both SQL data and the deployed site before upgrading; retain appsettings configuration, web.config and the authentication key directory.",
-      "For v45, install the updated application and guide. There is no additional SQL schema change over v35. If upgrading from an earlier version, use the cumulative v45 upgrade to include the v31 numeric-hours reporting and v35 change-request prerequisites.",
+      "For v47, install the updated application and guide. There is no additional SQL schema change over v35. If upgrading from an earlier version, use the cumulative v47 upgrade to include the v31 numeric-hours reporting and v35 change-request prerequisites.",
       "Preserve the existing IIS configuration and keys when replacing publish contents. Restart the application pool and hard-refresh the browser. Do not run a fresh-database setup script as a routine update. Complete rollback uses the paired application/database backup; old application versions may not understand direct-hour entries.",
       "The full manual and process-flow PDFs/Word files in this release contain examples and operating instructions only, with no live company records or credentials. Users can open User manual & process flow in the application; the online and PDF/Word versions contain the same guide content."
     ],
@@ -654,7 +654,7 @@
       "Open Appearance & Help > Appearance, or use the theme button in the top bar. Choose Midnight Blue, Light Workspace or Charcoal & Amber. The default is Midnight Blue. Each theme applies to navigation, dashboard panels, tables, forms and dialogs.",
       "Midnight Blue uses a navy navigation rail and blue actions. Light Workspace uses a white sidebar and indigo controls. Charcoal & Amber uses a charcoal sidebar and amber actions. All three retain light data surfaces for readable forms and reports.",
       "Choose Comfortable or Compact table spacing. Theme and spacing are saved only in this browser preferences. They do not change shared company data, employee permissions, saved actuals or report calculations. Another device can use another theme. Clearing browser storage resets the preference.",
-      "PDF/Word manuals and printed PSR reports keep their own document design. v45 also introduces a consolidated dashboard KPI ribbon, a project-register layout, sharper table and input borders, and local system fonts. No Google font download is required for the application theme."
+      "PDF/Word manuals and printed PSR reports keep their own document design. v47 also introduces a consolidated dashboard KPI ribbon, a project-register layout, sharper table and input borders, and local system fonts. No Google font download is required for the application theme."
     ],
     "headers": [],
     "rows": []
@@ -719,7 +719,7 @@
       "Role permissions include Create/revise own change requests, Review as Project Manager, Approve as CTO and View all CRs within project scope. Initiators and assigned reviewers can read their request and revision history. Broad register visibility does not itself give authority to approve. Only the assigned reviewer at the current pending stage can decide.",
       "Word bytes are stored in dbo.ChangeRequestDocuments.Content with file name, revision and SHA-256 hash. They are not written under wwwroot or a public upload folder. Every download/preview checks the active company login, workspace and CR access. CR metadata and files use no-store responses. Changes use a version check; a stale update returns a conflict instead of overwriting another decision.",
       "Full SQL database backups include CR metadata, approval history and Word documents. The ordinary workspace JSON export/import does NOT include these dedicated CR tables or document bytes. Keep SQL backups and allow for attachment storage growth. There is no CR delete function in this version. If a project is removed, retain CR audit history; creating further revisions requires a valid project record.",
-      "First installation requires Database-ChangeRequests-v35.sql, or the cumulative v45 upgrade. Existing v31 numeric-hours reporting remains required. A fresh workspace created after installation receives CTO/Team lead templates from owner initialization. The Word text preview is an app review aid, not an embedded Word editor."
+      "First installation requires Database-ChangeRequests-v35.sql, or the cumulative v47 upgrade. Existing v31 numeric-hours reporting remains required. A fresh workspace created after installation receives CTO/Team lead templates from owner initialization. The Word text preview is an app review aid, not an embedded Word editor."
     ],
     "headers": [
       "SQL object",
@@ -757,7 +757,7 @@
       "Select Upload Excel, choose .xlsx or comma-separated UTF-8 CSV, then Preview file. The first sheet/header row 1 is used; maximum file size is 5 MB and maximum 500 data rows. Formulas, protected/encrypted formats and .xls/.xlsm are not supported: paste values and save as .xlsx. Keep codes/references as text to retain leading zeros. For old browsers unable to decompress .xlsx, use a current Chrome/Edge or save the first worksheet as CSV.",
       "Preview shows normalized values, source row numbers, errors and warnings. No records are saved at preview. Import all rows is enabled only when every row is valid. Correct the original Excel file and preview again if errors appear. There is no partial-row import. A shared workspace version check rejects stale previews: reload/re-preview instead of overwriting another user changes.",
       "Project Plan upload creates To do baseline tasks with dates, owner and effort. It does NOT create daily allocations, employee actuals, timesheets or go-live events. Schedule imported work from Daily allocations or the weekly worksheet. Uploaded activity master rows become selectable by type in later plans/allocations.",
-      "Activity import uses Manage Activity Master plus View All Projects permissions. Plan import uses Manage Plans within each project scope. Shared preview/commit runs server-side validation again before one database transaction. The file itself is read in the browser; row data is sent only to the company API and the source Excel file is not stored as an attachment. No new SQL tables/schema are required by v45. Existing v31/v35 prerequisites still apply."
+      "Activity import uses Manage Activity Master plus View All Projects permissions. Plan import uses Manage Plans within each project scope. Shared preview/commit runs server-side validation again before one database transaction. The file itself is read in the browser; row data is sent only to the company API and the source Excel file is not stored as an attachment. No new SQL tables/schema are required by v47. Existing v31/v35 prerequisites still apply."
     ],
     "headers": [
       "Import",
@@ -813,7 +813,7 @@
       ],
       [
         "Database installation",
-        "No new SQL tables or schema change in v45. Existing v31 reporting and v35 Change Request prerequisites still apply."
+        "No new SQL tables or schema change in v47. Existing v31 reporting and v35 Change Request prerequisites still apply."
       ]
     ]
   },
@@ -826,7 +826,7 @@
       "Any edit immediately blocks import. Click Revalidate rows to check the edited batch against current data and permissions. Correct every error, then Import all rows. The workbook is not reread during revalidation.",
       "Use Previous rows and Next rows for batches over 25 rows; all edits are retained across pages. Dates use yyyy-mm-dd, visit times HH:mm, hours decimal.",
       "Changing project or company retains other entered values for your review. Old mismatches remain explicitly visible until replaced. Selecting a new file or closing the form discards unsaved corrections.",
-      "Corrections change the import rows only; they do not rename or add system master records. Uploads remain add-only and atomic, subject to the same authorization, revision and duplicate/conflict checks. No database migration is required for v45."
+      "Corrections change the import rows only; they do not rename or add system master records. Uploads remain add-only and atomic, subject to the same authorization, revision and duplicate/conflict checks. No database migration is required for v47."
     ],
     "headers": [],
     "rows": []
@@ -936,7 +936,38 @@
       "On Projects, the AMC contract periods register shows current starting/ending dates and Update AMC period. The AMC project view has the same button. Manage Plans permission is required; unconfigured contracts open full contract setup.",
       "Saved dates load into the form. Enter ordered dates within ten years, add an optional reason, and save. End-only changes preserve the contract ID and existing visit links. The former contract snapshot is appended to history.",
       "A changed start date changes cycle anchors and creates a new contract term ID. Previously tagged visits keep their prior contract links. Existing allocations, actual hours and employee timesheets are retained; no visit data is moved automatically. Coverage changes can alter current compliance counts.",
-      "Use Edit AMC contract for attendees, cycles and per-visit hours. The optional Database-AMC-Periods-v45.sql adds a reporting view over existing project JSON, without updating business data or creating new tables. The app does not depend on that view."
+      "Use Edit AMC contract for attendees, cycles and per-visit hours. The optional Database-AMC-Periods-v47.sql adds a reporting view over existing project JSON, without updating business data or creating new tables. The app does not depend on that view."
+    ],
+    "headers": [],
+    "rows": []
+  },
+  {
+    "id": "implementation-only-template",
+    "title": "34. New Implementation project upload without AMC fields",
+    "paras": [
+      "Use Projects > Download New Implementation template for the separate workbook. It has only 15 non-AMC project fields and no AMC reference sheets. Upload it with the existing Projects > Upload Excel action.",
+      "Row 2 has Project Type set to implementation. Fill its other required fields and copy this type into every added row. Existing active customer, employee and module references are required. The in-app download includes their reference worksheets.",
+      "The fields are Project Code, Project Name, Customer Code, Project Type, Project Manager, Project In-charge, Company, Module, Primary Consultant, Additional Consultants, Project Start, Target Finish, Industry, Client Contact and Client Mandays.",
+      "Repeat project code and common project-level fields for multiple company/module rows. Additional consultants are semicolon-separated. Blank company becomes Company 1; blank project dates default to today. Keep codes as text.",
+      "Preview, correct, revalidate and import. Existing codes are not overwritten. In v47, an implementation-only workbook without AMC headings gets a preview without AMC columns. The same workbook already works with the v45 Project Master uploader, so a SQL change is unnecessary.",
+      "The general Project Master template still supports AMC and other types. AMC period editing and prior application/mobile features are preserved."
+    ],
+    "headers": [],
+    "rows": []
+  },
+  {
+    "id": "implementation-baseline",
+    "title": "35. New Implementation plan: responsibilities and automatic schedules",
+    "paras": [
+      "Open Project plan, choose a New Implementation project and company, then Upload / enter project plan. AMC keeps its contract plan and Office keeps direct allocations.",
+      "The first four Excel columns are ACTIVITY, PLAN START, Planned Consumption (days), Planned Consumption (Sessions). Day 1 is the kickoff date or next working day; default work week is Sunday\u2013Thursday. One session is four hours. Days must use half-day units and sessions must equal days times two.",
+      "Choose Responsible Client or Us. Client rows are tracked dependencies without employee allocations. Phase/summary rows use Row Type Heading; Total rows are display-only. These rows cannot assign staff and do not double count effort. The supplied example totals 21 days / 42 sessions for Us; the client\u2019s three days are excluded.",
+      "For Us activities, select an active matching Activity Code and one or more Assigned People. Enter IDs/names/emails separated by semicolon or use Add employee from the master list in preview. Activity labels can retain the spreadsheet wording while the activity code maps work to the master.",
+      "Select company, kickoff and work week before preview. Correct cells with the system lists, revalidate, then import all rows. An invalid row blocks the entire save. Reimported label/start/type combinations for the company are rejected to prevent duplicate schedules.",
+      "Saving creates one task per Us activity and daily allocations for every person, split into eight-hour full days and four-hour half days. Each person gets the full planned duration. Weekly schedules and calendar are views of these same allocations; no actual hours or timesheets are created until actual work is reported.",
+      "Use Daily allocations to change scheduled dates/hours; weekly view and calendar follow the edited allocation, while project baseline dates remain for comparison. Actual updates feed employee timesheets. On shared sessions, confirm Yes/No for each employee\u2019s client deduction; authorized managers can correct it.",
+      "Project-plan baseline totals sum Us leaf rows once. Employee allocated hours sum all generated people/date allocations, so they can exceed baseline hours when multiple people attend. Current delivery status comes from linked tasks; client dependencies have a separate Update dependency action. Existing legacy activities remain visible in Activity delivery and actuals.",
+      "Permissions: Manage project plans, Manage weekly plans and Assign tasks, plus project access. Data stays in existing WorkspaceRecords project/task JSON. The optional vwImplementationPlanRows SQL view exposes baseline rows for reporting; it is not required for saving."
     ],
     "headers": [],
     "rows": []

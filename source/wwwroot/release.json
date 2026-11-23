@@ -1,1 +1,8 @@
-{"version": "45.0.0", "label": "v45", "previous_application": "v44", "required_database_patch": "v35", "date": "2026-11-23", "features": "Customer/Project Master Excel imports plus explicit AMC period update with history and end-extension reference retention"}
+{
+  "version": "47.0.0",
+  "label": "v47",
+  "previous_application": "v46",
+  "required_database_patch": "v35",
+  "date": "2026-11-23",
+  "features": "New Implementation baseline template, Client/Us responsibilities, multi-person weekly/daily allocation generation"
+}

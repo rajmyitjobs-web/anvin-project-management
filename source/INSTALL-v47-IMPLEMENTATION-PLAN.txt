@@ -1,0 +1,24 @@
+MY PROJECT MANAGEMENT v47 — NEW IMPLEMENTATION PROJECT PLANS
+
+Existing IIS upgrade:
+1. Back up the application folder and SQL database. Keep the v46 package for rollback.
+2. Stop the MyProjectManagement application pool.
+3. Extract MyProjectManagement-Update-v47.zip and copy publish contents into the current IIS publish folder.
+   The update excludes appsettings*.json and web.config. Keep your connection string, authentication keys and configuration.
+4. Start the pool; reopen the site and confirm Version 47. Health: /api/health reports 47.0.0.
+5. Existing v35+ databases require no schema migration. The optional Database-Implementation-Plan-v47.sql adds a read-only reporting view only.
+   Do not run Full Setup against an existing database. Earlier databases should use the cumulative upgrade and appropriate backups.
+
+USE:
+Project plan > open New Implementation project > Upload / enter project plan.
+Select company, kickoff date (defaults today), and working week (defaults Sunday–Thursday).
+Download Excel template. First four columns match supplied plan; additional columns hold responsibility and employee/master references.
+Client activities: leave employees blank. Heading / Total: no employee assignments. Us: choose activity code and multiple employees separated by semicolon.
+PLAN START is working day number, not a calendar date. Sessions = days x2; one session=4 hours.
+Preview; correct using the system lists / Add employee; revalidate; import. Errors prevent all saving.
+The supplied sample totals Our 21 days /42 sessions, excluding client compilation and roll-up headings.
+Each employee receives the full duration, split into 8-hour /4-hour dated allocations. Weekly schedule and calendar reference these same allocations.
+No actual hours/timesheets are fabricated. Employees report actual hours; shared session deduction Yes/No remains mandatory.
+Edit schedules in Daily allocations to update the weekly schedule/calendar; original baseline dates remain on the plan.
+Client dependency status is updated from the project plan. Reimporting matching rows is rejected to avoid duplicate work.
+AMC and Office behavior is unchanged. Current preview and .NET policy tests passed; your IIS identity, SQL permissions and production data must be checked on your server.
