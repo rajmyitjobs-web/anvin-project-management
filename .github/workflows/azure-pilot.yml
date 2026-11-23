@@ -1,0 +1,76 @@
+name: Build and deploy Azure pilot
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Publish Windows x86 application
+        run: dotnet publish source/MyProjectManagement.csproj -c Release -r win-x86 --self-contained false -p:UseAppHost=false -o dist
+      - name: Check publish output and package site
+        shell: pwsh
+        run: |
+          foreach ($path in 'web.config','MyProjectManagement.dll','wwwroot/index.html','wwwroot/release.json') {
+            if (!(Test-Path "dist/$path" -PathType Leaf)) { throw "Missing publish output $path" }
+          }
+          Compress-Archive -Path dist/* -DestinationPath site.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pilot-site
+          path: site.zip
+          retention-days: 3
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    concurrency:
+      group: azure-pilot-deploy
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME || 'anvin-project-management-pilot' }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: pilot-site
+      - name: Sign in to Azure using GitHub OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID || secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID || secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID || secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Deploy pilot package
+        id: publish
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          package: site.zip
+      - name: Verify running application version
+        env:
+          APP_URL: ${{ steps.publish.outputs.webapp-url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected=$(unzip -p site.zip wwwroot/release.json | jq -er '.version')
+          for attempt in {1..12}; do
+            if curl -fsS --max-time 20 "${APP_URL%/}/api/health" | jq -e --arg v "$expected" '.status == "running" and .version == $v'; then exit 0; fi
+            sleep 10
+          done
+          echo "Pilot did not report the packaged application version." >&2
+          exit 1
