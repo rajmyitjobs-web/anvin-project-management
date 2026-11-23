@@ -1,1 +1,1 @@
-{"version": "36.0.0", "label": "v36", "previous_application": "v35", "required_database_patch": "v35", "date": "2026-11-22", "features": "Project Plan and Activity Master Excel/CSV templates, row validation/preview, duplicate checks and atomic imports"}
+{"version": "45.0.0", "label": "v45", "previous_application": "v44", "required_database_patch": "v35", "date": "2026-11-23", "features": "Customer/Project Master Excel imports plus explicit AMC period update with history and end-extension reference retention"}

@@ -1,0 +1,41 @@
+MY PROJECT MANAGEMENT v38 (38.0.0) -- EDITABLE IMPORT PREVIEW
+Release: 22-Nov-2026, Qatar. Previous app: v37.
+
+IIS UPDATE
+Back up site files and SQL database. Stop the MyProjectManagement pool.
+Copy CONTENTS of the update ZIP publish folder into the existing IIS publish folder.
+Preserve appsettings*.json, web.config, Keys and external authentication keys.
+The update ZIP excludes runtime configuration and authentication keys.
+Restart pool, sign in and Ctrl+F5. Confirm Version 38.
+No new SQL schema change if v37/v36 prerequisites are installed. Earlier sites
+can use the cumulative Database-Upgrade-v38.sql; full setup is for fresh databases.
+
+EDIT UPLOAD PREVIEW
+Available in Activity Master, Project Plan and Weekly Site Visits uploads.
+Choose file and Preview file. The preview contains editable original source values.
+Mismatches are retained visibly until you correct them; no automatic substitutions.
+Choose existing active Activity Types, scoped Projects, project Companies, active
+company Modules, stage-matching Activities and active Consultants from system lists.
+Status, Priority, Work Mode and Hours Classification also use dropdowns.
+Codes, names, dates (yyyy-mm-dd), hours, notes and time text can be edited directly.
+Changing a project/company refreshes dependent choices without clearing other cells.
+If any old selection no longer matches, explicitly choose its replacement.
+Weekly Existing Task ID can be selected from matching open task choices; the server
+also checks participation and all other existing-task constraints.
+Only 25 rows are shown per page; Next/Previous preserves edits to all rows.
+Edits mark the preview as changed and immediately disable Import all rows.
+Click Revalidate rows: it validates the edited cells, not the original file again.
+Import enables only when every row passes. All original role/scope checks, duplicate
+checks, schedule conflicts, revision checks and all-or-nothing SQL commit remain.
+Changing the chosen file discards the current preview/edits. Close/Cancel discards
+unsaved corrections. This changes import rows only, not the underlying system masters.
+Existing records are never overwritten by these add-only uploads.
+Hosted demo stores local practice data; company IIS edition uses shared SQL.
+
+VALIDATION
+Automated DOM/workflow checks cover mismatches, system dropdowns, dependencies,
+dirty preview import blocking, revalidation, corrected shared request data, optional
+columns and source row numbers. Existing parser and weekly workflow checks passed.
+.NET build and policy tests passed. No live SQL or visual browser check was performed
+for v38. Server import logic and SQL schema are unchanged; verify one IIS import.
+Manual chapter 25 documents this workflow. v37 remains archived for rollback.

@@ -18,14 +18,14 @@ new company login accounts in this SQL edition.
 
 2. CREATE THE DATABASE (SSMS)
 Connect to your SQL Server as a database administrator. Open and run:
-  database\Database-Full-Setup-v36.sql
+  database\Database-Full-Setup-v45.sql
 It creates MyProjectManagement and its tables without dropping existing data.
 Tables: Workspaces, AppUsers, TeamMembers, WorkspaceRecords.
 Application/project/task details use SQL Server's JSON support inside protected rows.
 Read-only reporting views: dbo.vwProjectTasks, dbo.vwDailyAllocations, dbo.vwUserMaster,
 dbo.vwRoleMaster, dbo.vwRolePermissions, dbo.vwProjectMaster and dbo.vwActivityMaster.
 Existing installations: follow INSTALL-v26-PROJECT-OWNERS.txt and run the cumulative
-Database-Upgrade-v36.sql script.
+Database-Upgrade-v45.sql script.
 The previous setup/database.sql was PostgreSQL and must NOT be run in SQL Server.
 
 3. INSTALL IIS / .NET

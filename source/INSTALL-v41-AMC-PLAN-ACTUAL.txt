@@ -1,0 +1,39 @@
+MY PROJECT MANAGEMENT v41 (41.0.0) -- AMC PLAN VS ACTUAL
+Release: 23-Nov-2026, Qatar. Previous app: v40.
+
+IIS UPDATE
+Back up application files and SQL database. Stop the MyProjectManagement pool.
+Copy CONTENTS of the update ZIP publish folder into the current IIS publish folder.
+Preserve appsettings*.json, web.config, Keys and external authentication keys.
+Update ZIP excludes runtime configuration and authentication keys.
+Restart pool, sign in and Ctrl+F5. Confirm Version 41. No SQL change over v40.
+Earlier installations can use cumulative Database-Upgrade-v41.sql if needed.
+
+AMC WORKFLOW
+Project Master stage must be AMC. Configure contract start/end, cycle, required
+visits per cycle, per-visit hours and required attendees. Open that project's plan.
+AMC projects now show AMC Plan vs Actual, not implementation baseline/progress.
+The AMC project detail also shows this contract-based comparison.
+Required visits/hours come from the saved AMC contract. Scheduled/actual delivery
+comes from onsite AMC allocations under the project and current contract.
+Qualifying visits meet per-visit hours and contain every required attendee.
+Shared-session hours count once using the longest attendee's recorded hours.
+Offsite support is excluded from site-visit credit. Employee timesheets and client
+hour deductions remain separate. Required staff attendance, gaps and overdue cycles
+reuse existing AMC compliance calculations; no new billing or attendance formula.
+Rows cover cycles through today or the review week, whichever extends further.
+Current cycles with gaps remain Open; closed short cycles are Overdue.
+Use Weekly site visits / Daily allocations to schedule work and submit actuals.
+The AMC screen does not expose implementation Plan activity or baseline Excel import.
+Export AMC Plan vs Actual exports only this project's contract cycle comparison.
+View AMC compliance permission is required for compliance data and export.
+Unconfigured contracts display a setup prompt instead of misleading zero progress.
+Implementation projects retain their existing project-plan workspace unchanged.
+No existing plans, actuals, timesheets, schedules or client deductions are deleted.
+
+VALIDATION
+Automated DOM/workflow checks cover AMC separation, contract comparison, shared
+session hours once, attendee requirements, offsite exclusion, project details,
+AMC-only export and implementation regression. .NET policy/AMC tests and Windows
+publish passed. No live IIS/SQL or visual browser test was performed for v41.
+Verify one configured AMC project after installing. Manual chapter 28 covers AMC.
