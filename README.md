@@ -1,3 +1,5 @@
+Current release: **v51 / 51.0.0**. [User master logins and installation](docs/RELEASE-v51.md).
+
 Current release: **v50.1 / 50.1.0**. [Shared save recovery and installation](docs/RELEASE-v50.1.md).
 
 Current release: **v50 / 50.0.0**. [Upgrade and delegation guide](docs/RELEASE-v50.md).

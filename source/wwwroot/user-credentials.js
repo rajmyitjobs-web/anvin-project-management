@@ -1,0 +1,26 @@
+/* v51: company credentials in User master. Passwords never enter workspace state/backups. */
+const credentialsUserView=userMasterView;userMasterView=function(){let html=credentialsUserView();if(!cloud.active||typeof sqlRequest!=='function')return html;return html.replace('data-action="add-member">Add user profile','data-user-create>Add user + login').replace('Save the profile and assign a role first, then use Create / reset login to set an initial password.','Choose Add user + login to create a profile, user ID and password together. Existing users can use Set / reset password. The company email is the login user ID.').replaceAll('Create / reset login','Set / reset password');};
+function credentialPasswordFields(){return field('Password · 15–128 characters','<input type="password" name="password" minlength="15" maxlength="128" autocomplete="new-password" required>')+field('Confirm password','<input type="password" name="confirmPassword" minlength="15" maxlength="128" autocomplete="new-password" required>')+'<label class="field full"><span><input type="checkbox" data-credentials-show> Show password while entering</span></label>';}
+async function credentialsForm(memberId,create=false){
+ if(!cloud.active||!can('manageTeam'))return;
+ try{await ensureSharedSaved();}catch(e){toast(e.message);return;}
+ let choices=activeMembers().filter(m=>m.email),selected=memberId?choices.find(m=>m.id===memberId):choices[0];
+ if(!create&&!selected){toast('Save an active user profile with a company email first.');return;}
+ let roles=(data.roleMaster||[]).filter(r=>r.active!==false),id=create?crypto.randomUUID():selected.id;
+ modal(create?'Add user and company login':'Set / reset user password',`<form id="userCredentials" autocomplete="off"><div class="modalbody"><p>The company email is the user ID. Staff must change this initial/reset password at first sign-in. Resetting invalidates their existing sessions. Workspace owners use Change password.</p><div class="formgrid">${create?field('Full name','<input name="name" maxlength="80" required autocomplete="name">')+field('User ID · company email','<input name="email" type="email" maxlength="180" required autocomplete="off">')+field('Role',`<select name="role">${options(roles.map(r=>({id:r.name,name:r.label})),roles.some(r=>r.name==='ERP consultant')?'ERP consultant':roles[0]?.name)}</select>`):field('User',`<select name="memberId" id="credentialsMember">${options(choices,selected.id)}</select>`)+field('User ID · company email',`<input id="credentialsUserId" readonly value="${esc(selected.email)}" autocomplete="username">`)}${credentialPasswordFields()}</div><div class="notice" id="credentialsError" role="alert" hidden></div></div><div class="modalfoot"><button class="btn" type="button" data-close>Close</button><button class="btn primary" type="submit">${create?'Save user + login':'Save password'}</button></div></form>`);
+ let form=$('#userCredentials'),generation=typeof sqlGeneration==='number'?sqlGeneration:0,completed=false;
+ if(!create)$('#credentialsMember').onchange=()=>{$('#credentialsUserId').value=choices.find(m=>m.id===$('#credentialsMember').value)?.email||'';};
+ form.querySelector('[data-credentials-show]').onchange=e=>{for(let input of form.querySelectorAll('[name="password"],[name="confirmPassword"]'))input.type=e.target.checked?'text':'password';};
+ form.onsubmit=async e=>{e.preventDefault();if(completed)return;let button=form.querySelector('[type="submit"]'),error=form.querySelector('#credentialsError');button.disabled=true;error.hidden=true;
+ try{if(form.elements.password.value!==form.elements.confirmPassword.value)throw Error('Passwords do not match.');await ensureSharedSaved();if(typeof sqlGeneration==='number'&&generation!==sqlGeneration)throw Error('Session changed. Sign in again.');
+ let body={memberId:create?id:form.elements.memberId.value,password:form.elements.password.value};
+ if(create){let name=form.elements.name.value.trim();body.profile={name,email:form.elements.email.value.trim().toLowerCase(),role:form.elements.role.value,color:'green',modules:'',whatsapp:'',initials:name.split(/\s+/).slice(0,2).map(s=>Array.from(s)[0]||'').join('').toUpperCase()};}
+ await sqlRequest('users','POST',body);completed=true;form.reset();form.querySelectorAll('[name="password"],[name="confirmPassword"]').forEach(n=>n.value='');if($('#modal').contains(form)){$('#modal').close();form.remove();}
+ toast(create?'User and login created. The user must change their password at first sign-in.':'Password saved. The user must change it at next sign-in.');
+ try{await loadShared();if(state.page==='user-master')showSqlAccounts();}catch{toast('Login saved. Refresh to reload the user list.');}
+ }catch(e){if(form.isConnected){error.hidden=false;error.textContent=e.message;}}finally{if(button.isConnected)button.disabled=false;}};
+ // Closing clears credential inputs even when no request was made.
+ $('#modal').addEventListener('close',()=>{form.querySelectorAll('[name="password"],[name="confirmPassword"]').forEach(n=>n.value='');},{once:true});
+}
+sqlCreateAccount=function(memberId){return credentialsForm(memberId,false);};
+document.addEventListener('click',e=>{if(e.target.closest('[data-user-create]'))credentialsForm(null,true);});
