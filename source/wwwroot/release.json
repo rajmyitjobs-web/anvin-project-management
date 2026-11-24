@@ -1,8 +1,8 @@
 {
-  "version": "50.0.0",
-  "label": "v50",
-  "previous_application": "v49",
+  "version": "50.1.0",
+  "label": "v50.1",
+  "previous_application": "v50",
   "required_database_patch": "v35",
   "date": "2026-11-24",
-  "features": "Executive profiles and dashboard, dated project-scoped PM delegation, independent PM-initiated CR review"
+  "features": "Shared save recovery: wait for pending writes, prevent render-only saves, preserve edits and display actionable CR save errors"
 }

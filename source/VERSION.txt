@@ -1,5 +1,5 @@
-My Project Management v50
-Application version: 50.0.0
-Previous application: v49
+My Project Management v50.1
+Application version: 50.1.0
+Previous application: v50
 Release: 24 November 2026 (Qatar)
-Executive oversight, independent CR review and dated PM authority delegation.
+Shared save recovery for change request creation and editing. No database changes.
