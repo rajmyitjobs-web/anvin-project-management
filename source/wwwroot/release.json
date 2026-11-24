@@ -1,8 +1,8 @@
 {
-  "version": "49.0.0",
-  "label": "v49",
-  "previous_application": "v48",
+  "version": "50.0.0",
+  "label": "v50",
+  "previous_application": "v49",
   "required_database_patch": "v35",
   "date": "2026-11-24",
-  "features": "Mapped Word change requests: header/module/form import, synchronized Word drafts, customer/project CR number validation, side-by-side review and amendment comment history"
+  "features": "Executive profiles and dashboard, dated project-scoped PM delegation, independent PM-initiated CR review"
 }

@@ -1,6 +1,5 @@
-My Project Management v49
-Application version: 49.0.0
-Previous application: v48
+My Project Management v50
+Application version: 50.0.0
+Previous application: v49
 Release: 24 November 2026 (Qatar)
-Mapped Word change requests, synchronized documents and amendment review history.
-Existing v35 CR tables retained; SQL permission/reporting script supplied.
+Executive oversight, independent CR review and dated PM authority delegation.
