@@ -1,0 +1,3 @@
+3207fd95bd0aee866799e70e79328269ace5fe76e95eecb27bccdab0a37b7a44  INSTALL-v50.1-SHARED-SAVE.txt
+d39234ba09ddcd62617e28b74a02a1a0f02095c343ae677f62088d6f02aa643b  MyProjectManagement-Full-v50.1.zip
+497b7cf61a304eb2d13c8a9642c6aa8d6ca0c92b6cc435f3e4283c9e07cd579e  MyProjectManagement-Update-v50.1-from-v50.zip
