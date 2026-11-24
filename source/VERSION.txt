@@ -1,5 +1,5 @@
-My Project Management v50.1
-Application version: 50.1.0
-Previous application: v50
+My Project Management v51
+Application version: 51.0.0
+Previous application: v50.1
 Release: 24 November 2026 (Qatar)
-Shared save recovery for change request creation and editing. No database changes.
+Create users and company passwords directly in User master. No database schema changes.
