@@ -1,3 +1,5 @@
+Current release: **v50 / 50.0.0**. [Upgrade and delegation guide](docs/RELEASE-v50.md).
+
 # My Project Management v49
 
 ASP.NET Core 10 and Microsoft SQL Server application for ERP implementation teams.
