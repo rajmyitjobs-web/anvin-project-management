@@ -1,5 +1,5 @@
-My Project Management v51
-Application version: 51.0.0
-Previous application: v50.1
+My Project Management v52
+Application version: 52.0.0
+Previous application: v51
 Release: 24 November 2026 (Qatar)
-Create users and company passwords directly in User master. No database schema changes.
+Word serial preservation and PM/CTO point approval tracker. No physical database schema changes.

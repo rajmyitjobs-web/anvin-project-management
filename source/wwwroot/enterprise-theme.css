@@ -15,3 +15,5 @@ body{font:16px/1.45 'Segoe UI',Arial,sans-serif;background:var(--ui-canvas);colo
 #crReviewWord [data-doc-paragraph]{cursor:pointer}#crReviewWord [data-doc-paragraph]:hover,.cr-doc-marked{background:#fff2b0;color:#182433;outline:1px solid #b98422}
 
 .cr-word-page table:first-of-type tr:first-child>:first-child{width:35%}.cr-word-page table:nth-of-type(2) tr:first-child>:first-child{width:9%}.cr-word-page table:nth-of-type(2) tr:first-child>:nth-child(2){width:65%}.cr-word-page table:nth-of-type(2) tr:first-child>:nth-child(3){width:26%}
+/* v52 point review states also use text labels for accessibility. */
+.cr-point-status{display:inline-block;padding:5px 10px;border-radius:6px;font-weight:700}.cr-proceed{background:#e4f3e8;color:#18562e}.cr-revision{background:#fff0dc;color:#813d04}
