@@ -1,8 +1,8 @@
 {
-  "version": "51.0.0",
-  "label": "v51",
-  "previous_application": "v50.1",
+  "version": "52.0.0",
+  "label": "v52",
+  "previous_application": "v51",
   "required_database_patch": "v35",
   "date": "2026-11-24",
-  "features": "User master: create staff profile and company login together; set/reset password with confirmation, current role permissions and forced initial change"
+  "features": "Preserved Word serial numbers and independent PM/CTO point decisions, mandatory revision remarks and approval history tracker"
 }
