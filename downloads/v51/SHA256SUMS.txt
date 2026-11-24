@@ -1,0 +1,3 @@
+8b88cfc4f49c2b5aa2428d0b50af2f8db5dfc25ea152b8ae35652cc27c794fec  INSTALL-v51-USER-LOGINS.txt
+429fcc8a7d136cf9290c3a15b6cfa5a2fefdd063a2d95c45227501ef65170584  MyProjectManagement-Full-v51.zip
+440742cf1a871168adac7d2dab79fc04905c426d19f717d7327b213e5ef8dec0  MyProjectManagement-Update-v51-from-v50.1.zip
