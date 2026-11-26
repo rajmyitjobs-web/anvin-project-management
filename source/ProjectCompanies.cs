@@ -2,6 +2,10 @@ using System.Text.Json.Nodes;
 namespace MyProjectManagement;
 public static class ProjectCompanies {
  public static void Validate(JsonObject row,JsonObject? old){
+ // Older clients can add a company without knowing the explicit count field.
+ if(old is not null&&row["companyCount"] is JsonValue declared&&declared.TryGetValue<int>(out var existingCount)&&J.A(row,"companies").Count()>J.A(old,"companies").Count()&&existingCount==(int)J.N(old,"companyCount",J.A(old,"companies").Count()))row["companyCount"]=Math.Max(existingCount,J.A(row,"companies").Count());
+ foreach(var (key,min,max) in new[]{("companyCount",1,Math.Max(100,J.A(old,"companies").Count())),("businessUnitCount",0,10000)})if(row[key] is not null)J.Require(row[key] is JsonValue v&&v.TryGetValue<int>(out var count)&&count>=min&&count<=max&&(key!="companyCount"||count>=J.A(row,"companies").Count()),"Invalid "+key+"; retain the count of existing companies",400);
+ if(row["companyWiseProjectTrackingRequired"] is not null)J.Require(row["companyWiseProjectTrackingRequired"] is JsonValue flag&&flag.TryGetValue<bool>(out _),"Company-wise Project Tracking Required must be a checkbox value",400);
  if(old is not null&&JsonNode.DeepEquals(row["companies"],old["companies"]))return;
  J.Require(row["companies"] is JsonArray,"Project companies must be a list",400);
  var companies=J.A(row,"companies").ToList();var previous=J.A(old,"companies").ToList();

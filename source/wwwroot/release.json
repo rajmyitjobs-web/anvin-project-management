@@ -1,8 +1,8 @@
 {
-  "version": "52.0.0",
-  "label": "v52",
-  "previous_application": "v51",
+  "version": "53.0.0",
+  "label": "v53",
+  "previous_application": "v52",
   "required_database_patch": "v35",
-  "date": "2026-11-24",
-  "features": "Preserved Word serial numbers and independent PM/CTO point decisions, mandatory revision remarks and approval history tracker"
+  "date": "2026-11-26",
+  "features": "Project-level company/business-unit counts and tracking checkbox; separate project company master with retained company identities"
 }

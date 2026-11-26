@@ -1,3 +1,5 @@
+Current release: **v53 / 53.0.0**. [Project/company master and installation](docs/RELEASE-v53.md).
+
 Current release: **v52 / 52.0.0**. [CR point decisions and installation](docs/RELEASE-v52.md).
 
 Current release: **v51 / 51.0.0**. [User master logins and installation](docs/RELEASE-v51.md).
