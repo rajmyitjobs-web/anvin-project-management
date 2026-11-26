@@ -1,0 +1,4 @@
+08b07b7bf0fc7e83fd04b37eab5d7bebad39beb424bdd49f67600b776f13f755  20-Project-Configuration-v59.sql
+b66e0a8630f4ea456a46fcff845b4f9dc30a98a607b24132cfcd15eeecf5ce53  MyProjectManagement-Review-Update-v59-from-v58.1.zip
+cd35e25f0e976ccd0a222f067bdb37e9ec8ec53f8469a3db389dc0c3dfc383cd  REVIEW-v59-CONFIGURATION-SAFEGUARDS.txt
+6226166c73422c52c40ed37caf7b2c6141104d1f89607f886c3d04934a118c27  SOURCE-CHANGES-v59.patch

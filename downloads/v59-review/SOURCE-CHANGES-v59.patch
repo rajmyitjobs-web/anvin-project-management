@@ -1,0 +1,593 @@
+diff --git a/README.md b/README.md
+index 9341909..259c77d 100644
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,5 @@
++Prepared for review: **v59 / 59.0.0**. [Safeguards and SQL migration review](docs/REVIEW-v59.md). Not deployed; production approval is required.
++
+ Current release: **v58.1 / 58.1.0**. [Project monitoring and first-load fix](docs/RELEASE-v58.1.md).
+ 
+ Previous release: **v58 / 58.0.0**. [Project monitoring and installation](docs/RELEASE-v58.md).
+diff --git a/docs/REVIEW-v59.md b/docs/REVIEW-v59.md
+new file mode 100644
+index 0000000..e7c44a0
+--- /dev/null
++++ b/docs/REVIEW-v59.md
+@@ -0,0 +1,77 @@
++My Project Management v59 / 59.0.0 — REVIEW CANDIDATE
++Prepared 27 November 2026 (Qatar). Production deployment requires approval.
++
++SCOPE
++This is a focused update to the existing ASP.NET Core/SQL Server application, not a
++regenerated application. Snapshot, Policy, WorkspaceRecords JSON, Workspaces revision,
++existing company/unit/plan fields, formModal, company forms and existing UI styles
++are reused. No new persistent tables, endpoints, framework or dependencies are added.
++Hosting settings, web.config, appsettings, authentication keys and CI/CD workflow files
++are unchanged. Existing header/mobile files receive version-label updates only.
++
++SAFE CONFIGURATION CHANGES
++Counts cannot fall below retained company/unit details. Used project/company modules
++cannot be removed. Imported plan row IDs and their company/module/task links cannot
++be discarded by a Project Master update. Business units referenced by saved work cannot
++move to a different company. Name/code edits and unused configuration remain editable.
++Turning tracking off retains company IDs and records. Turning it on checks scoped
++work for resolvable company mappings; a single-company implicit legacy reference is
++supported. Standalone project-level meetings need no company selection.
++
++TRANSACTION LINKS
++Activities with allocations, sessions, status history, actual dates or imported-plan
++links retain their project, company, module and master activity identity. Create a new
++activity for different work scope. Dates, instructions, permitted status/actual updates
++and billing corrections keep existing permissions. Existing explicit deletion flows
++are not changed; the new checks protect configuration edits, not unrelated modules.
++Older project clients that omit configuration arrays/counts/flag/imported plan rows
++retain the saved values. A legacy default company may initialize only with the same
++canonical project-derived ID and project module defaults. Missing legacy module/master
++identities may be materialized only with their existing implicit meaning. No bulk
++remapping, truncation, transaction reset or account/password change is performed.
++Client form checks mirror the safeguards for visible records; server checks use the
++full workspace snapshot and remain authoritative for records not visible to a client.
++
++SQL MIGRATION — database/20-Project-Configuration-v59.sql
++The existing schema already supports these fields. The optional metadata migration
++adds only missing/null project tracking/count values inside WorkspaceRecords.Payload.
++Missing tracking defaults to false, matching v53-v58.1; explicit valid choices/counts
++are not overwritten. Counts derive from retained details. Company/unit/plan JSON arrays
++and all task/meeting/session/actual/billing/CR records are untouched. Workspace revision
++increments once per affected workspace on apply, preserving shared-save concurrency.
++The script uses a transaction, workspace-first locks, snapshot-hash checks, explicit
++collations for JSON comparisons, rollback on failure, and mapping-preservation checks.
++Reruns after successful apply should update zero records/revisions. No persistent
++schema, database permission, compatibility level, hosting or security setting is changed.
++SQL temporary staging tables are removed at completion. Run outside other transactions.
++
++By default @Apply=0: PREVIEW ONLY, no persistent changes. It lists proposed metadata
++changes and unresolved historical task mappings for review; it never repairs mappings
++by guessing. Invalid JSON/configuration aborts without overwriting explicit values.
++Use a backup/staging copy of MyProjectManagement on SQL Server 2022/2025 first. Inspect
++preview output. Only after approval change @Apply to 1 in a separately reviewed copy.
++Do not run initial owner/database setup on an existing workspace. The application does
++not execute this script automatically, and normal operation remains compatible with
++existing metadata when it has not been run.
++
++VALIDATION / LIMITS
++Automated tests cover real Policy.Apply rejection and permitted edits, legacy clients,
++company/module/unit/plan links, tracking toggles, permitted actual corrections, client
++form locks, preserved legacy module options, and existing allocation/monitoring/login/
++change-request workflows. SQL is parsed using the SQL Server 2022 ScriptDom parser.
++This environment has not executed the migration against a real SQL Server instance;
++runtime staging validation and preview inspection remain required before production.
++
++DELIVERABLE / DEPLOYMENT HOLD
++The review ZIP is a delta from v58.1: changed publish files, changed source/tests/docs,
++the SQL migration and a SHA-256 manifest. Publish configs and protected keys are excluded.
++Source diff and checksums are supplied separately. No full application rebuild from a
++new design is included. No production deployment, database migration execution, main
++branch merge or CI/CD setting change is part of this review. Production remains v58.1.
++
++After approval: back up the site/database, stop the IIS pool, copy only publish CONTENTS
++into the existing folder, preserve configuration/keys, restart and refresh. Confirm
++Version 59 / health 59.0.0 and validate in staging before a production cutover. SQL is
++preview-first and separately approved. To revert app files, restore the prior publish
++backup. Additive metadata is understood by v58.1; do not delete existing records/fields.
++The earlier v52 rollback remains paused.
+diff --git a/source/MyProjectManagement.csproj b/source/MyProjectManagement.csproj
+index 1e997bf..5b1f614 100644
+--- a/source/MyProjectManagement.csproj
++++ b/source/MyProjectManagement.csproj
+@@ -1 +1 @@
+-<Project Sdk="Microsoft.NET.Sdk.Web"><PropertyGroup><TargetFramework>net10.0</TargetFramework><Version>58.1.0</Version><AssemblyVersion>58.1.0.0</AssemblyVersion><FileVersion>58.1.0.0</FileVersion><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><InvariantGlobalization>false</InvariantGlobalization></PropertyGroup><ItemGroup><PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.2" /><PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.15" /></ItemGroup></Project>
++<Project Sdk="Microsoft.NET.Sdk.Web"><PropertyGroup><TargetFramework>net10.0</TargetFramework><Version>59.0.0</Version><AssemblyVersion>59.0.0.0</AssemblyVersion><FileVersion>59.0.0.0</FileVersion><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><InvariantGlobalization>false</InvariantGlobalization></PropertyGroup><ItemGroup><PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.2" /><PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.15" /></ItemGroup></Project>
+diff --git a/source/Policy.cs b/source/Policy.cs
+index f632477..6ddec0c 100644
+--- a/source/Policy.cs
++++ b/source/Policy.cs
+@@ -44,7 +44,7 @@ public sealed class Policy(Snapshot state,AppUser user){
+  else if(kind=="task"){J.Require(cascade.Contains(pid)||Flag("deleteTasks")&&Read(kind,old),"Task deletion denied");foreach(var k in state.Records.Where(x=>x.Key.StartsWith("meeting:")&&J.S(x.Value,"parentTaskId")==id&&J.Day(J.S(x.Value,"date"))>=J.Today).Select(x=>x.Key).ToList())state.Records.Remove(k);}
+  else if(kind=="meeting"){var parent=state.Records.GetValueOrDefault("task:"+J.S(old,"parentTaskId"));J.Require(cascade.Contains(pid)||Flag("deleteMeetings")&&Read(kind,old)||Flag("updateTasks")&&J.S(old,"assignee")==Actor&&parent is not null&&Contributes(parent),"Meeting deletion denied");}else throw new ApiError(403,"Existing activity history is immutable");state.Records.Remove(key);continue;}
+  J.Require(change["payload"] is JsonObject,"Invalid payload",400);var row=J.Clone(change["payload"]!.AsObject());J.Require(row.ToJsonString().Length<=500000,"Record too large",400);row["id"]=id;var newPid=kind=="project"?id:J.S(row,"project");
+- if(kind=="project"){if(old is not null&&DelegatedProject(id)&&!Flag("managePlans"))J.Require(J.S(row,"projectManager")==J.S(old,"projectManager"),"Delegates cannot replace the permanent project manager");ActivityTypes.Project(state.Settings,row,old);Workforce.Project(state,row,old);Amc.Validate(state,row,old);ProjectOwnership.Validate(state,row,old);Psr.Validate(row,old);ProjectCompanies.Validate(row,old);if(old is not null&&!Can("managePlans",id))J.Require(JsonNode.DeepEquals(J.Without(row,new[]{"modules","moduleTeams"}),J.Without(old,new[]{"modules","moduleTeams"})),"Project plan permission required to change project management fields");if(old is null||J.S(row,"code")!=J.S(old,"code"))J.Require(J.S(row,"code").Trim().Length is >0 and <=50,"Enter a project code up to 50 characters",400);J.Require(old is null?Flag("createProjects"):ProjectScope(id)&&(Can("managePlans",id)||Can("manageModules",id)),"Project editing denied");if(row["clientMandays"] is not null)J.Require(J.N(row,"clientMandays")>=0,"Invalid client manday budget",400);}
++ if(kind=="project"){ProjectConfigurationGuard.PreserveLegacyFields(row,old);if(old is not null&&DelegatedProject(id)&&!Flag("managePlans"))J.Require(J.S(row,"projectManager")==J.S(old,"projectManager"),"Delegates cannot replace the permanent project manager");ActivityTypes.Project(state.Settings,row,old);Workforce.Project(state,row,old);Amc.Validate(state,row,old);ProjectOwnership.Validate(state,row,old);Psr.Validate(row,old);ProjectCompanies.Validate(row,old);ProjectConfigurationGuard.Project(state,row,old);if(old is not null&&!Can("managePlans",id))J.Require(JsonNode.DeepEquals(J.Without(row,new[]{"modules","moduleTeams"}),J.Without(old,new[]{"modules","moduleTeams"})),"Project plan permission required to change project management fields");if(old is null||J.S(row,"code")!=J.S(old,"code"))J.Require(J.S(row,"code").Trim().Length is >0 and <=50,"Enter a project code up to 50 characters",400);J.Require(old is null?Flag("createProjects"):ProjectScope(id)&&(Can("managePlans",id)||Can("manageModules",id)),"Project editing denied");if(row["clientMandays"] is not null)J.Require(J.N(row,"clientMandays")>=0,"Invalid client manday budget",400);}
+  else if(kind=="task"){J.Require(Project(newPid)is not null,"Project not found",400);bool privileged=ProjectScope(newPid)&&(Can("managePlans",J.S(row,"project"))||Can("assignTasks",J.S(row,"project")));if(old is null){if(J.B(row,"selfCreated")){SelfWork.Creation(state,this,row);privileged=true;}J.Require(privileged,"Task allocation denied");}else {if(pid!=newPid)J.Require(privileged&&Flag("deleteTasks")&&ProjectScope(pid),"Task move denied");if(!privileged)J.Require(Can("manageClientHours",J.S(row,"project"))&&ProjectScope(pid)&&Workforce.BillingOnly(row,old)||Can("updateTasks",J.S(row,"project"))&&(Contributes(old)||Can("correctActualTimes",J.S(row,"project"))&&ProjectScope(pid))&&JsonNode.DeepEquals(J.Without(row,StatusKeys),J.Without(old,StatusKeys)),"Only authorized task outcomes may be updated");if(J.S(row,"status")!=J.S(old,"status"))J.Require(Can("updateTasks",J.S(row,"project")),"Status permission required");J.Require(J.ContainsAll(row["sessions"],old["sessions"]),"Session history cannot be rewritten");}
+  ValidateTask(row,old,privileged);Workforce.Aggregate(row);}
+  else if(kind=="meeting"){var parent=state.Records.GetValueOrDefault("task:"+J.S(row,"parentTaskId"));J.Require(Can("scheduleMeetings",J.S(row,"project"))&&ProjectScope(newPid)||Can("updateTasks",J.S(row,"project"))&&J.S(row,"assignee")==Actor&&parent is not null&&Contributes(parent),"Meeting scheduling denied");J.Day(J.S(row,"date"));J.Minute(J.S(row,"time"));J.Require(J.N(row,"duration") is >0 and <=480,"Invalid meeting duration",400);}
+@@ -52,7 +52,7 @@ public sealed class Policy(Snapshot state,AppUser user){
+  state.Records[key]=row;}
+  foreach(var meeting in records.Where(x=>J.S(x,"kind")=="meeting"&&x["payload"]is JsonObject)){var row=state.Records["meeting:"+J.S(meeting,"id")];var start=J.Day(J.S(row,"date")).ToDateTime(TimeOnly.ParseExact(J.S(row,"time"),"HH:mm"));foreach(var other in state.Records.Where(x=>x.Key.StartsWith("meeting:")&&x.Key!="meeting:"+J.S(row,"id")&&!J.B(x.Value,"hoursOnly")&&J.S(x.Value,"assignee")==J.S(row,"assignee")).Select(x=>x.Value)){var os=J.Day(J.S(other,"date")).ToDateTime(TimeOnly.ParseExact(J.S(other,"time"),"HH:mm"));J.Require(!(start<os.AddMinutes((double)J.N(other,"duration"))&&start.AddMinutes((double)J.N(row,"duration"))>os),"Consultant meeting time conflict",400);}}
+  ValidateOverlaps();Workforce.SyncCalendar(state);MasterData.ValidateCodes(state);}
+- void ValidateTask(JsonObject row,JsonObject? old,bool privileged){PlanningCompany.TaskScope(Project(J.S(row,"project"))!,row,old);ActivityTypes.Task(state,row,old);string status=J.S(row,"status");J.Require(new[]{"To do","In progress","Completed","More visits needed","More sessions needed","Awaiting client confirmation","Open — update manager later"}.Contains(status),"Invalid task status",400);J.Require(J.N(row,"completion")is >=0 and <=100&&(J.N(row,"plannedSessions",1)>0||J.N(row,"plannedSessions")==0&&J.A(row,"allocations").Any()&&J.A(row,"allocations").All(a=>J.B(a,"completionOnly"))),"Invalid activity progress or effort",400);foreach(var field in new[]{"actualStart","actualFinish"})if(J.S(row,field)!="")J.Require(J.Day(J.S(row,field))<=J.Today,"Actual work cannot be in the future",400);
++ void ValidateTask(JsonObject row,JsonObject? old,bool privileged){ProjectConfigurationGuard.Task(state,row,old);PlanningCompany.TaskScope(Project(J.S(row,"project"))!,row,old);ActivityTypes.Task(state,row,old);string status=J.S(row,"status");J.Require(new[]{"To do","In progress","Completed","More visits needed","More sessions needed","Awaiting client confirmation","Open — update manager later"}.Contains(status),"Invalid task status",400);J.Require(J.N(row,"completion")is >=0 and <=100&&(J.N(row,"plannedSessions",1)>0||J.N(row,"plannedSessions")==0&&J.A(row,"allocations").Any()&&J.A(row,"allocations").All(a=>J.B(a,"completionOnly"))),"Invalid activity progress or effort",400);foreach(var field in new[]{"actualStart","actualFinish"})if(J.S(row,field)!="")J.Require(J.Day(J.S(row,field))<=J.Today,"Actual work cannot be in the future",400);
+  if(status=="Completed"&&!J.B(row,"legacyActualUnknown"))J.Require(J.S(row,"actualFinish")!="","Completed activity requires actual finish",400);if(J.S(row,"actualStart")!=""&&J.S(row,"actualFinish")!="")J.Require(J.Day(J.S(row,"actualFinish"))>=J.Day(J.S(row,"actualStart")),"Invalid actual date range",400);
+  if(J.S(row,"plannedStart")!=""&&J.S(row,"plannedFinish")!="")J.Require(J.Day(J.S(row,"plannedFinish"))>=J.Day(J.S(row,"plannedStart")),"Invalid planned date range",400);
+  if(new[]{"More sessions needed","Awaiting client confirmation","Open — update manager later"}.Contains(status))J.Require(J.S(row,"followupNote").Trim()!="","A follow-up note is required",400);
+diff --git a/source/Program.cs b/source/Program.cs
+index 9bdf97b..1e1ad3e 100644
+--- a/source/Program.cs
++++ b/source/Program.cs
+@@ -33,7 +33,7 @@ app.MapPost("/api/rpc/{method}",async(string method,HttpContext ctx,Db db)=>{var
+ SpreadsheetImports.Map(app,(ctx,db)=>Current(ctx,db));
+ Authority.Map(app,(ctx,db)=>Current(ctx,db));
+ ChangeRequestApi.Map(app,(ctx,db)=>Current(ctx,db));
+-app.MapGet("/api/health",()=>Results.Json(new{status="running",version="58.1.0",database="Microsoft SQL Server",databaseCheck="Not performed by this endpoint"}));
++app.MapGet("/api/health",()=>Results.Json(new{status="running",version="59.0.0",database="Microsoft SQL Server",databaseCheck="Not performed by this endpoint"}));
+ app.Run();
+ static async Task<JsonObject> Body(HttpContext c)=>(await JsonNode.ParseAsync(c.Request.Body))?.AsObject()??throw new ApiError(400,"JSON object required");
+ static Task<AppUser> Current(HttpContext c,Db db,bool allowPasswordChange=false)=>AuthEndpoints.Current(c,c.RequestServices.GetRequiredService<IAccountStore>(),allowPasswordChange);
+diff --git a/source/ProjectCompanies.cs b/source/ProjectCompanies.cs
+index 247da9a..4c02b00 100644
+--- a/source/ProjectCompanies.cs
++++ b/source/ProjectCompanies.cs
+@@ -17,5 +17,5 @@ public static class ProjectCompanies {
+  foreach(var group in companies.GroupBy(c=>J.S(c,"name").Trim(),StringComparer.OrdinalIgnoreCase))J.Require(group.Count()==1||previous.Count(c=>J.S(c,"name").Trim().Equals(group.Key,StringComparison.OrdinalIgnoreCase))>=group.Count(),"Company names must be unique within the project",400);
+  J.Require(previous.All(c=>ids.Contains(J.S(c,"id"))),"Existing companies cannot be removed by changing the count; preserve their plans and history",400);
+  }
+- static bool ScaffoldingOnly(JsonObject row,JsonObject old){var before=J.A(old,"companies").ToList();var after=J.A(row,"companies").ToList();if(after.Count<=before.Count)return false;if(!before.All(c=>after.Any(n=>J.S(n,"id")==J.S(c,"id")&&JsonNode.DeepEquals(n,c))))return false;foreach(var c in after.Where(c=>!before.Any(p=>J.S(p,"id")==J.S(c,"id")))){if(!J.S(c,"name").StartsWith("Company ",StringComparison.Ordinal)||J.S(c,"code")!=""||!JsonNode.DeepEquals(c["modules"],row["modules"])||J.S(c,"actualGoLive")!=""||J.S(c,"goLiveStatus")!="Not ready"||J.S(c,"notes")!=""||c["moduleGoLive"] is JsonObject g&&g.Count>0)return false;}return true;}
++ static bool ScaffoldingOnly(JsonObject row,JsonObject old){var before=J.A(old,"companies").ToList();var after=J.A(row,"companies").ToList();if(after.Count<=before.Count)return false;if(!before.All(c=>after.Any(n=>J.S(n,"id")==J.S(c,"id")&&JsonNode.DeepEquals(n,c))))return false;foreach(var c in after.Where(c=>!before.Any(p=>J.S(p,"id")==J.S(c,"id")))){bool legacy=before.Count==0&&after.Count==1&&J.S(c,"id")=="company-"+J.S(row,"id")&&(J.S(c,"name")==J.S(old,"name")||J.S(c,"name")==J.S(row,"name"));if(!legacy&&!J.S(c,"name").StartsWith("Company ",StringComparison.Ordinal)||J.S(c,"code")!=""||!JsonNode.DeepEquals(c["modules"],row["modules"])||J.S(c,"actualGoLive")!=""||J.S(c,"goLiveStatus")!="Not ready"||J.S(c,"notes")!=""||c["moduleGoLive"] is JsonObject g&&g.Count>0)return false;}return true;}
+ }
+diff --git a/source/ProjectConfigurationGuard.cs b/source/ProjectConfigurationGuard.cs
+new file mode 100644
+index 0000000..fc1e8dc
+--- /dev/null
++++ b/source/ProjectConfigurationGuard.cs
+@@ -0,0 +1,24 @@
++using System.Text.Json.Nodes;
++namespace MyProjectManagement;
++// Guards configuration changes only. Existing record deletion/actual/billing permissions remain unchanged.
++public static class ProjectConfigurationGuard {
++ public static void PreserveLegacyFields(JsonObject row,JsonObject? old){if(old is null)return;foreach(string key in new[]{"companyWiseProjectTrackingRequired","companyCount","businessUnitCount","companies","businessUnits","implementationPlanRows"})if(row[key] is null&&old[key] is not null)row[key]=old[key]!.DeepClone();}
++ static IEnumerable<JsonObject> References(Snapshot s,JsonObject p)=>s.Records.Where(r=>(r.Key.StartsWith("task:")||r.Key.StartsWith("meeting:"))&&J.S(r.Value,"project")==J.S(p,"id")).Select(r=>r.Value).Concat(J.A(p,"implementationPlanRows"));
++ public static void Project(Snapshot s,JsonObject row,JsonObject? old){if(old is null)return;var refs=References(s,old).ToList();var companies=J.A(row,"companies").ToList();
++  var scoped=s.Records.Where(r=>J.S(r.Value,"project")==J.S(old,"id")&&(r.Key.StartsWith("task:")||r.Key.StartsWith("meeting:")&&(J.S(r.Value,"companyId")!=""||J.S(r.Value,"calendarSource")=="daily-allocation"))).Select(r=>r.Value).Concat(J.A(old,"implementationPlanRows"));
++  if(!PlanningCompany.Enabled(old)&&PlanningCompany.Enabled(row))foreach(var r in scoped){string id=J.S(r,"companyId");J.Require(companies.Any(c=>J.S(c,"id")==id)||id==""&&companies.Count==1,"Cannot enable company-wise tracking: saved work has an unresolved company mapping. Review the mapping first",400);}
++  var before=old["modules"] as JsonObject;var next=row["modules"] as JsonObject;
++  if(before is not null)foreach(var m in before.Select(x=>x.Key).Where(m=>next?.ContainsKey(m)!=true))J.Require(!refs.Any(r=>J.S(r,"module")==m),"Cannot remove project module "+m+": saved work uses it. Retain the module and its history",400);
++  foreach(var c in J.A(old,"companies")){var n=companies.FirstOrDefault(n=>J.S(n,"id")==J.S(c,"id"));if(n is null)continue;if(c["modules"] is JsonObject modules)foreach(string m in modules.Select(x=>x.Key).Where(m=>(n["modules"] as JsonObject)?.ContainsKey(m)!=true))J.Require(!refs.Any(r=>J.S(r,"companyId")==J.S(c,"id")&&J.S(r,"module")==m),"Cannot remove company module "+m+": saved work uses it. Retain the module and its history",400);}
++  foreach(var u in J.A(old,"businessUnits")){var n=J.A(row,"businessUnits").FirstOrDefault(n=>J.S(n,"id")==J.S(u,"id"));if(n is not null&&J.S(n,"companyId")!=J.S(u,"companyId"))J.Require(!refs.Any(r=>J.S(r,"businessUnitId")==J.S(u,"id")),"Cannot move a business unit used by saved work to another company",400);}
++  foreach(var r in J.A(old,"implementationPlanRows")){var n=J.A(row,"implementationPlanRows").FirstOrDefault(n=>J.S(n,"id")==J.S(r,"id"));J.Require(n is not null,"Existing imported plan rows must be retained when editing project configuration",400);foreach(string field in new[]{"companyId","module","taskId"})J.Require(J.S(n,field)==J.S(r,field),"Imported plan row mappings must be retained when editing project configuration",400);}
++ }
++ public static bool Linked(JsonObject t)=>J.A(t,"allocations").Any()||J.A(t,"sessions").Any()||J.A(t,"history").Any()||J.S(t,"actualStart")!=""||J.S(t,"actualFinish")!=""||J.S(t,"implementationPlanRowId")!=""||J.S(t,"planImportReference")!="";
++ public static void Task(Snapshot s,JsonObject row,JsonObject? old){if(old is null||!Linked(old))return;J.Require(J.S(row,"project")==J.S(old,"project"),"Cannot move an activity with saved work to another project; create a new activity",400);var p=s.Records.GetValueOrDefault("project:"+J.S(old,"project"));
++  bool legacyCompany=J.S(old,"companyId")==""&&(!PlanningCompany.Enabled(p)||J.A(p,"companies").Count()==1)&&J.S(row,"companyId")==J.S(J.A(p,"companies").FirstOrDefault(),"id");
++  J.Require(J.S(row,"companyId")==J.S(old,"companyId")||legacyCompany,"Cannot change the company mapping of an activity with saved work; create a new activity",400);
++  J.Require(J.S(row,"module")==J.S(old,"module")||J.S(old,"module")==""&&J.S(row,"module")=="General","Cannot change the module mapping of an activity with saved work; create a new activity",400);
++  bool legacyActivity=J.S(old,"activityId")==""&&J.S(row,"title")==J.S(old,"title")&&J.A(s.Settings,"activityMaster").Any(a=>J.S(a,"id")==J.S(row,"activityId")&&J.S(a,"name")==J.S(old,"title")&&ActivityTypes.Id(a)==ActivityTypes.Id(old));
++  J.Require(J.S(row,"activityId")==J.S(old,"activityId")||legacyActivity,"Cannot replace the master activity of saved work; create a new activity",400);
++ }
++}
+diff --git a/source/REVIEW-v59-CONFIGURATION-SAFEGUARDS.txt b/source/REVIEW-v59-CONFIGURATION-SAFEGUARDS.txt
+new file mode 100644
+index 0000000..e7c44a0
+--- /dev/null
++++ b/source/REVIEW-v59-CONFIGURATION-SAFEGUARDS.txt
+@@ -0,0 +1,77 @@
++My Project Management v59 / 59.0.0 — REVIEW CANDIDATE
++Prepared 27 November 2026 (Qatar). Production deployment requires approval.
++
++SCOPE
++This is a focused update to the existing ASP.NET Core/SQL Server application, not a
++regenerated application. Snapshot, Policy, WorkspaceRecords JSON, Workspaces revision,
++existing company/unit/plan fields, formModal, company forms and existing UI styles
++are reused. No new persistent tables, endpoints, framework or dependencies are added.
++Hosting settings, web.config, appsettings, authentication keys and CI/CD workflow files
++are unchanged. Existing header/mobile files receive version-label updates only.
++
++SAFE CONFIGURATION CHANGES
++Counts cannot fall below retained company/unit details. Used project/company modules
++cannot be removed. Imported plan row IDs and their company/module/task links cannot
++be discarded by a Project Master update. Business units referenced by saved work cannot
++move to a different company. Name/code edits and unused configuration remain editable.
++Turning tracking off retains company IDs and records. Turning it on checks scoped
++work for resolvable company mappings; a single-company implicit legacy reference is
++supported. Standalone project-level meetings need no company selection.
++
++TRANSACTION LINKS
++Activities with allocations, sessions, status history, actual dates or imported-plan
++links retain their project, company, module and master activity identity. Create a new
++activity for different work scope. Dates, instructions, permitted status/actual updates
++and billing corrections keep existing permissions. Existing explicit deletion flows
++are not changed; the new checks protect configuration edits, not unrelated modules.
++Older project clients that omit configuration arrays/counts/flag/imported plan rows
++retain the saved values. A legacy default company may initialize only with the same
++canonical project-derived ID and project module defaults. Missing legacy module/master
++identities may be materialized only with their existing implicit meaning. No bulk
++remapping, truncation, transaction reset or account/password change is performed.
++Client form checks mirror the safeguards for visible records; server checks use the
++full workspace snapshot and remain authoritative for records not visible to a client.
++
++SQL MIGRATION — database/20-Project-Configuration-v59.sql
++The existing schema already supports these fields. The optional metadata migration
++adds only missing/null project tracking/count values inside WorkspaceRecords.Payload.
++Missing tracking defaults to false, matching v53-v58.1; explicit valid choices/counts
++are not overwritten. Counts derive from retained details. Company/unit/plan JSON arrays
++and all task/meeting/session/actual/billing/CR records are untouched. Workspace revision
++increments once per affected workspace on apply, preserving shared-save concurrency.
++The script uses a transaction, workspace-first locks, snapshot-hash checks, explicit
++collations for JSON comparisons, rollback on failure, and mapping-preservation checks.
++Reruns after successful apply should update zero records/revisions. No persistent
++schema, database permission, compatibility level, hosting or security setting is changed.
++SQL temporary staging tables are removed at completion. Run outside other transactions.
++
++By default @Apply=0: PREVIEW ONLY, no persistent changes. It lists proposed metadata
++changes and unresolved historical task mappings for review; it never repairs mappings
++by guessing. Invalid JSON/configuration aborts without overwriting explicit values.
++Use a backup/staging copy of MyProjectManagement on SQL Server 2022/2025 first. Inspect
++preview output. Only after approval change @Apply to 1 in a separately reviewed copy.
++Do not run initial owner/database setup on an existing workspace. The application does
++not execute this script automatically, and normal operation remains compatible with
++existing metadata when it has not been run.
++
++VALIDATION / LIMITS
++Automated tests cover real Policy.Apply rejection and permitted edits, legacy clients,
++company/module/unit/plan links, tracking toggles, permitted actual corrections, client
++form locks, preserved legacy module options, and existing allocation/monitoring/login/
++change-request workflows. SQL is parsed using the SQL Server 2022 ScriptDom parser.
++This environment has not executed the migration against a real SQL Server instance;
++runtime staging validation and preview inspection remain required before production.
++
++DELIVERABLE / DEPLOYMENT HOLD
++The review ZIP is a delta from v58.1: changed publish files, changed source/tests/docs,
++the SQL migration and a SHA-256 manifest. Publish configs and protected keys are excluded.
++Source diff and checksums are supplied separately. No full application rebuild from a
++new design is included. No production deployment, database migration execution, main
++branch merge or CI/CD setting change is part of this review. Production remains v58.1.
++
++After approval: back up the site/database, stop the IIS pool, copy only publish CONTENTS
++into the existing folder, preserve configuration/keys, restart and refresh. Confirm
++Version 59 / health 59.0.0 and validate in staging before a production cutover. SQL is
++preview-first and separately approved. To revert app files, restore the prior publish
++backup. Additive metadata is understood by v58.1; do not delete existing records/fields.
++The earlier v52 rollback remains paused.
+diff --git a/source/VERSION.txt b/source/VERSION.txt
+index 96a62ad..9b68d97 100644
+--- a/source/VERSION.txt
++++ b/source/VERSION.txt
+@@ -1,5 +1,5 @@
+-My Project Management v58.1
+-Application version: 58.1.0
+-Previous application: v58
+-Release: 27 November 2026 (Qatar)
+-Company-wise and consolidated project monitoring.
++My Project Management v59
++Application version: 59.0.0
++Previous application: v58.1
++Prepared: 27 November 2026 (Qatar)
++Review candidate. No production deployment is authorized by this package.
+diff --git a/source/database/20-Project-Configuration-v59.sql b/source/database/20-Project-Configuration-v59.sql
+new file mode 100644
+index 0000000..46759a1
+--- /dev/null
++++ b/source/database/20-Project-Configuration-v59.sql
+@@ -0,0 +1,118 @@
++/* My Project Management v59 REVIEW migration — SQL Server 2022/2025.
++   NOT executed by the application. No persistent table/column/index/security/hosting changes.
++   Back up the database, use a staging copy first, and obtain production approval.
++   Default is PREVIEW ONLY. Set @Apply = 1 only for an approved execution.
++   Adds missing/null configuration metadata; never rewrites company/unit/plan arrays
++   or task, allocation, meeting, session, actual, billing or change-request records.
++   Idempotent: rerunning after success changes zero records/revisions.
++*/
++USE [MyProjectManagement];
++GO
++IF @@TRANCOUNT<>0
++BEGIN
++ RAISERROR('Run this migration in a fresh query window outside an existing transaction.',16,1);
++ RETURN;
++END;
++SET NOCOUNT ON;
++SET XACT_ABORT ON;
++DECLARE @Apply bit = 0; -- 0 = preview; 1 = explicitly approved apply
++BEGIN TRY
++ IF TRY_CONVERT(int,SERVERPROPERTY('ProductMajorVersion')) < 16
++  THROW 50000,'This reviewed script targets SQL Server 2022 or later.',1;
++ IF OBJECT_ID(N'dbo.Workspaces',N'U') IS NULL OR OBJECT_ID(N'dbo.WorkspaceRecords',N'U') IS NULL
++  THROW 50001,'Install the existing application tables first. No changes were made.',1;
++ IF COL_LENGTH(N'dbo.Workspaces',N'Revision') IS NULL OR COL_LENGTH(N'dbo.WorkspaceRecords',N'Payload') IS NULL
++  THROW 50002,'The existing workspace schema is incomplete. No changes were made.',1;
++ IF (SELECT compatibility_level FROM sys.databases WHERE database_id=DB_ID()) < 130
++  THROW 50003,'JSON support requires compatibility level 130 or later. This script does not change database settings.',1;
++ BEGIN TRANSACTION;
++ -- Use the application's workspace-first lock order, preserving revision concurrency.
++ SELECT Id INTO #MPM59LockedWorkspaces FROM dbo.Workspaces WITH(UPDLOCK,HOLDLOCK);
++ SELECT WorkspaceId,RecordId,Payload AS OldPayload,CONVERT(nvarchar(max),Payload) AS NextPayload
++ INTO #MPM59Candidates FROM dbo.WorkspaceRecords WITH(UPDLOCK,HOLDLOCK) WHERE Kind='project';
++ IF EXISTS(SELECT 1 FROM #MPM59Candidates WHERE ISJSON(OldPayload,OBJECT)<>1)
++  THROW 50004,'Invalid project JSON. Review the project data; no changes committed.',1;
++ IF EXISTS(SELECT 1 FROM #MPM59Candidates c CROSS APPLY OPENJSON(c.OldPayload) j
++  WHERE j.[key] COLLATE Latin1_General_BIN2 IN(N'companies',N'businessUnits',N'implementationPlanRows') AND j.[type] NOT IN(0,4))
++  THROW 50005,'Project collections must be arrays. No existing records will be replaced.',1;
++ IF EXISTS(SELECT 1 FROM #MPM59Candidates c CROSS APPLY OPENJSON(c.OldPayload) j
++  CROSS APPLY OPENJSON(CASE WHEN j.[type]=4 THEN j.value ELSE N'[]' END) item
++  WHERE j.[key] COLLATE Latin1_General_BIN2 IN(N'companies',N'businessUnits',N'implementationPlanRows') AND item.[type]<>5)
++  THROW 50012,'Project collections contain non-object entries. Review the data; no records were rewritten.',1;
++ IF EXISTS(SELECT 1 FROM #MPM59Candidates c CROSS APPLY OPENJSON(c.OldPayload) j
++  WHERE j.[key] COLLATE Latin1_General_BIN2 IN(N'companyWiseProjectTrackingRequired',N'companyCount',N'businessUnitCount',N'companies',N'businessUnits',N'implementationPlanRows')
++  GROUP BY c.WorkspaceId,c.RecordId,j.[key] COLLATE Latin1_General_BIN2 HAVING COUNT(*)>1)
++  THROW 50006,'Duplicate project configuration keys are ambiguous. No changes committed.',1;
++ IF EXISTS(SELECT 1 FROM #MPM59Candidates c CROSS APPLY OPENJSON(c.OldPayload) j
++  WHERE j.[key] COLLATE Latin1_General_BIN2=N'companyWiseProjectTrackingRequired' AND j.[type] NOT IN(0,3))
++  THROW 50007,'An explicit tracking flag is not a JSON boolean. Review it; no value was overwritten.',1;
++ IF EXISTS(SELECT 1 FROM #MPM59Candidates c CROSS APPLY OPENJSON(c.OldPayload) j
++  WHERE j.[key] COLLATE Latin1_General_BIN2 IN(N'companyCount',N'businessUnitCount') AND j.[type]<>0
++   AND (j.[type]<>2 OR TRY_CONVERT(int,j.value) IS NULL
++    OR TRY_CONVERT(int,j.value)<CASE WHEN j.[key] COLLATE Latin1_General_BIN2=N'companyCount' THEN 1 ELSE 0 END
++    OR TRY_CONVERT(int,j.value)<CASE WHEN j.[key] COLLATE Latin1_General_BIN2=N'companyCount'
++      THEN (SELECT COUNT(*) FROM OPENJSON(c.OldPayload,'$.companies'))
++      ELSE (SELECT COUNT(*) FROM OPENJSON(c.OldPayload,'$.businessUnits')) END))
++  THROW 50008,'A configured count is invalid or below retained details. Review it; no explicit count was overwritten.',1;
++ -- Missing/null tracking remains false, matching v53-v58.1 behavior. Do not infer
++ -- tracking from company count: existing explicit choices/mappings remain untouched.
++ UPDATE c SET NextPayload=JSON_MODIFY(c.NextPayload,'$.companyWiseProjectTrackingRequired',CAST(0 AS bit))
++ FROM #MPM59Candidates c WHERE JSON_VALUE(c.OldPayload,'$.companyWiseProjectTrackingRequired') IS NULL;
++ UPDATE c SET NextPayload=JSON_MODIFY(c.NextPayload,'$.companyCount',CASE WHEN n.CompanyCount<1 THEN 1 ELSE n.CompanyCount END)
++ FROM #MPM59Candidates c CROSS APPLY(SELECT COUNT(*) AS CompanyCount FROM OPENJSON(c.OldPayload,'$.companies')) n
++ WHERE JSON_VALUE(c.OldPayload,'$.companyCount') IS NULL;
++ UPDATE c SET NextPayload=JSON_MODIFY(c.NextPayload,'$.businessUnitCount',n.UnitCount)
++ FROM #MPM59Candidates c CROSS APPLY(SELECT COUNT(*) AS UnitCount FROM OPENJSON(c.OldPayload,'$.businessUnits')) n
++ WHERE JSON_VALUE(c.OldPayload,'$.businessUnitCount') IS NULL;
++ -- Defensive assertion: this migration can never rewrite any existing mappings/plans.
++ IF EXISTS(SELECT 1 FROM #MPM59Candidates WHERE
++  ISNULL(JSON_QUERY(OldPayload,'$.companies'),N'null') COLLATE Latin1_General_BIN2<>ISNULL(JSON_QUERY(NextPayload,'$.companies'),N'null') COLLATE Latin1_General_BIN2 OR
++  ISNULL(JSON_QUERY(OldPayload,'$.businessUnits'),N'null') COLLATE Latin1_General_BIN2<>ISNULL(JSON_QUERY(NextPayload,'$.businessUnits'),N'null') COLLATE Latin1_General_BIN2 OR
++  ISNULL(JSON_QUERY(OldPayload,'$.implementationPlanRows'),N'null') COLLATE Latin1_General_BIN2<>ISNULL(JSON_QUERY(NextPayload,'$.implementationPlanRows'),N'null') COLLATE Latin1_General_BIN2)
++  THROW 50009,'Mapping-preservation assertion failed. No changes committed.',1;
++ SELECT WorkspaceId,RecordId AS ProjectId,
++  JSON_VALUE(OldPayload,'$.companyWiseProjectTrackingRequired') AS PreviousTracking,
++  JSON_VALUE(NextPayload,'$.companyWiseProjectTrackingRequired') AS ProposedTracking,
++  JSON_VALUE(NextPayload,'$.companyCount') AS CompanyCount,
++  JSON_VALUE(NextPayload,'$.businessUnitCount') AS BusinessUnitCount
++ FROM #MPM59Candidates WHERE HASHBYTES('SHA2_256',CONVERT(varbinary(max),OldPayload))<>HASHBYTES('SHA2_256',CONVERT(varbinary(max),NextPayload));
++ -- Read-only diagnostics: unresolved historical mappings are listed, never repaired.
++ SELECT r.WorkspaceId,r.RecordId AS TaskId,JSON_VALUE(r.Payload,'$.project') AS ProjectId,
++  JSON_VALUE(r.Payload,'$.companyId') AS CompanyId,
++  CASE WHEN p.RecordId IS NULL THEN N'Project not found'
++       WHEN ISNULL(JSON_VALUE(r.Payload,'$.companyId'),N'')=N'' THEN N'Ambiguous missing company mapping'
++       ELSE N'Company mapping not found' END AS ReviewReason
++ FROM dbo.WorkspaceRecords r LEFT JOIN dbo.WorkspaceRecords p ON p.WorkspaceId=r.WorkspaceId AND p.Kind='project'
++  AND p.RecordId COLLATE Latin1_General_BIN2=JSON_VALUE(r.Payload,'$.project') COLLATE Latin1_General_BIN2
++ WHERE r.Kind='task' AND (p.RecordId IS NULL OR
++  (NOT EXISTS(SELECT 1 FROM OPENJSON(p.Payload,'$.companies') c
++    WHERE JSON_VALUE(c.value,'$.id') COLLATE Latin1_General_BIN2=JSON_VALUE(r.Payload,'$.companyId') COLLATE Latin1_General_BIN2)
++   AND NOT(ISNULL(JSON_VALUE(r.Payload,'$.companyId'),N'')=N'' AND (SELECT COUNT(*) FROM OPENJSON(p.Payload,'$.companies'))=1)));
++ DECLARE @Expected int=(SELECT COUNT(*) FROM #MPM59Candidates WHERE HASHBYTES('SHA2_256',CONVERT(varbinary(max),OldPayload))<>HASHBYTES('SHA2_256',CONVERT(varbinary(max),NextPayload)));
++ IF @Apply=1
++ BEGIN
++  DECLARE @ChangedWorkspaces TABLE(WorkspaceId uniqueidentifier);
++  UPDATE r SET Payload=c.NextPayload OUTPUT inserted.WorkspaceId INTO @ChangedWorkspaces
++  FROM dbo.WorkspaceRecords r JOIN #MPM59Candidates c ON c.WorkspaceId=r.WorkspaceId AND c.RecordId=r.RecordId
++  WHERE r.Kind='project' AND HASHBYTES('SHA2_256',CONVERT(varbinary(max),r.Payload))=HASHBYTES('SHA2_256',CONVERT(varbinary(max),c.OldPayload))
++   AND HASHBYTES('SHA2_256',CONVERT(varbinary(max),c.OldPayload))<>HASHBYTES('SHA2_256',CONVERT(varbinary(max),c.NextPayload));
++  IF @@ROWCOUNT<>@Expected THROW 50010,'Concurrent project change detected. No changes committed.',1;
++  UPDATE w SET Revision=Revision+1 FROM dbo.Workspaces w WHERE EXISTS(SELECT 1 FROM @ChangedWorkspaces c WHERE c.WorkspaceId=w.Id);
++  COMMIT TRANSACTION;
++  SELECT N'Applied' AS MigrationMode,@Expected AS ProjectsUpdated;
++ END
++ ELSE
++ BEGIN
++  ROLLBACK TRANSACTION;
++  SELECT N'Preview only: no persistent changes' AS MigrationMode,@Expected AS ProposedProjectUpdates;
++ END;
++ DROP TABLE IF EXISTS #MPM59Candidates;
++ DROP TABLE IF EXISTS #MPM59LockedWorkspaces;
++END TRY
++BEGIN CATCH
++ IF @@TRANCOUNT>0 ROLLBACK TRANSACTION;
++ DROP TABLE IF EXISTS #MPM59Candidates;
++ DROP TABLE IF EXISTS #MPM59LockedWorkspaces;
++ THROW;
++END CATCH;
++GO
+diff --git a/source/wwwroot/amc-monitoring.js b/source/wwwroot/amc-monitoring.js
+index fcf5fe6..5b4909e 100644
+--- a/source/wwwroot/amc-monitoring.js
++++ b/source/wwwroot/amc-monitoring.js
+@@ -1,5 +1,5 @@
+ /* Release v24: AMC contract cycles, session compliance and weekly suggestions. */
+-window.APP_RELEASE={version:'58.1.0',label:'v58.1',date:'2026-11-27'};
++window.APP_RELEASE={version:'59.0.0',label:'v59',date:'2026-11-27'};
+ permissionLabels.viewAmcCompliance='View AMC visit/hour compliance and alerts';for(const role of ['Project manager','Project lead','ERP consultant'])defaultPermissions[role].viewAmcCompliance=role!=='ERP consultant';
+ function syncAmcPermissions(d=data){for(const r of ['Project manager','Project lead','ERP consultant']){d.rolePermissions[r]??={};if(d.rolePermissions[r].viewAmcCompliance===undefined)d.rolePermissions[r].viewAmcCompliance=r!=='ERP consultant';}}
+ const amcSnapshot=applySharedSnapshot;applySharedSnapshot=function(s){syncAmcPermissions(s.data);return amcSnapshot(s);};
+@@ -42,7 +42,7 @@ const amcDailyView=dailyView;dailyView=function(){return amcDailyView()+`<div id
+ const amcTimesheets=timesheetsView;timesheetsView=function(){return amcTimesheets()+`<div id="amcAlertsPanel">${amcWarningPanel()}</div>`;};
+ const amcDetail=detailView;detailView=function(){let p=project(state.project),html=amcDetail();if(p&&projectType(p)==='amc')html=`<div class="notice">AMC: ${dateText(p.amc?.start)} – ${dateText(p.amc?.end)} · ${esc(amcCycles.find(c=>c.id===p.amc?.cycle)?.name||'Contract not configured')} · ${p.amc?.visits||'—'} visits/cycle · ${p.amc?.hours||'—'} hours/visit ${roleAllows('viewAmcCompliance')?'<button class="btn small" data-nav="amc-monitor">AMC monitoring</button>':''}</div>`+html;return html;};
+ const amcShell=shell;shell=function(){syncAmcPermissions();let html=amcShell().replace('</nav>',`${roleAllows('viewAmcCompliance')?`<button data-nav="amc-monitor" class="${state.page==='amc-monitor'?'active':''}">${icon('alert')} AMC monitoring</button>`:''}</nav>`);return html;};
+-const amcRender=renderView;renderView=function(){syncAmcPermissions();if(state.page==='amc-monitor'){$('#view').innerHTML=(roleAllows('viewAmcCompliance')?amcMonitorView():denied())+footer();let crumb=$('.crumb b');if(crumb)crumb.textContent='AMC monitoring';}else amcRender();let top=$('.topright');if(top&&!$('#appVersion'))top.insertAdjacentHTML('beforeend','<span id="appVersion" class="sub">Version 58.1</span>');if(['amc-monitor','weekly-plan','overview','detail','daily','employee-timesheets'].includes(state.page))requestAmcStatus();};
++const amcRender=renderView;renderView=function(){syncAmcPermissions();if(state.page==='amc-monitor'){$('#view').innerHTML=(roleAllows('viewAmcCompliance')?amcMonitorView():denied())+footer();let crumb=$('.crumb b');if(crumb)crumb.textContent='AMC monitoring';}else amcRender();let top=$('.topright');if(top&&!$('#appVersion'))top.insertAdjacentHTML('beforeend','<span id="appVersion" class="sub">Version 59</span>');if(['amc-monitor','weekly-plan','overview','detail','daily','employee-timesheets'].includes(state.page))requestAmcStatus();};
+ const amcCloudBanner=cloudBanner;cloudBanner=function(){amcCloudBanner();if(cloud.active&&!cloud.dirty&&!cloud.saving&&!cloud.error&&['amc-monitor','weekly-plan','overview','detail','daily','employee-timesheets'].includes(state.page))queueMicrotask(()=>requestAmcStatus());};
+ document.addEventListener('change',e=>{if(e.target.id==='amcWeek'){weeklyState.week=weekStart(e.target.value);renderView();}if(e.target.closest('[data-weekly-row]')){let node=$('#amcDraftWarnings');if(node)node.innerHTML=amcDraftWarnings();}});
+ document.addEventListener('click',e=>{let b=e.target.closest('button');if(!b)return;if(b.dataset.amcDaily){let [id,date]=b.dataset.amcDaily.split('|');Object.assign(planState,{project:id,date,employee:'all',status:'all'});navigate('daily');}if(b.dataset.amcProject){state.project=b.dataset.amcProject;editProjectPlan(b.dataset.amcProject);}if(b.dataset.amcAction==='suggest-week')prepareAmcSuggestions();if(b.dataset.amcAction==='export'&&can('exportReports'))downloadExcel('AMC-Compliance-v46-'+weeklyState.week,[{name:'AMC cycle compliance',rows:[['Project code','Project name','Cycle start','Cycle end','Required visits','Required hours','Attended visits','Qualified visits','Onsite hours once','Visits gap','Hours gap','Closed cycle'],...amcSummaries().flatMap(s=>s.periods.map(p=>[s.projectCode,s.projectName,p.start,p.end,p.requiredVisits,p.requiredHours,p.attendedVisits,p.qualifiedVisits,p.actualHours,p.visitsGap,p.hoursGap,p.closed?'Yes':'No']))]}]);});
+diff --git a/source/wwwroot/cloud.js b/source/wwwroot/cloud.js
+index 0562f36..80098c8 100644
+--- a/source/wwwroot/cloud.js
++++ b/source/wwwroot/cloud.js
+@@ -11,7 +11,7 @@ async function cloudRpc(name,args){await refreshCloudSession();let r=await fetch
+ function cloudRecords(d){let rows=new Map();for(const [key,kind] of [['projects','project'],['tasks','task'],['meetings','meeting'],['activity','activity']])for(const item of d[key]||[])rows.set(kind+':'+item.id,{kind,id:item.id,payload:item});return rows;}
+ function cloudDiff(base,next){let old=cloudRecords(base),current=cloudRecords(next),changes={records:[],members:[]};for(const [id,row]of current)if(!old.has(id)||JSON.stringify(row.payload)!==JSON.stringify(old.get(id).payload))changes.records.push(row);for(const [id,row]of old)if(!current.has(id))changes.records.push({kind:row.kind,id:row.id,payload:null});let oldMembers=new Map((base.members||[]).map(m=>[m.id,m]));for(const member of next.members||[])if(JSON.stringify(member)!==JSON.stringify(oldMembers.get(member.id)))changes.members.push({id:member.id,payload:member});if(JSON.stringify(base.rolePermissions)!==JSON.stringify(next.rolePermissions))changes.settings={rolePermissions:next.rolePermissions,moduleMaster:next.moduleMaster,activityMaster:next.activityMaster,roleMaster:next.roleMaster,activityTypes:next.activityTypes,customers:next.customers};if(JSON.stringify(base.moduleMaster)!==JSON.stringify(next.moduleMaster))changes.settings={rolePermissions:next.rolePermissions,moduleMaster:next.moduleMaster,activityMaster:next.activityMaster,roleMaster:next.roleMaster,activityTypes:next.activityTypes,customers:next.customers};if(JSON.stringify(base.activityMaster)!==JSON.stringify(next.activityMaster))changes.settings={rolePermissions:next.rolePermissions,moduleMaster:next.moduleMaster,activityMaster:next.activityMaster,roleMaster:next.roleMaster,activityTypes:next.activityTypes,customers:next.customers};if(JSON.stringify(base.roleMaster)!==JSON.stringify(next.roleMaster))changes.settings={rolePermissions:next.rolePermissions,moduleMaster:next.moduleMaster,activityMaster:next.activityMaster,roleMaster:next.roleMaster,activityTypes:next.activityTypes,customers:next.customers};if(JSON.stringify(base.activityTypes)!==JSON.stringify(next.activityTypes))changes.settings={rolePermissions:next.rolePermissions,moduleMaster:next.moduleMaster,activityMaster:next.activityMaster,roleMaster:next.roleMaster,activityTypes:next.activityTypes,customers:next.customers};if(JSON.stringify(base.customers)!==JSON.stringify(next.customers))changes.settings={rolePermissions:next.rolePermissions,moduleMaster:next.moduleMaster,activityMaster:next.activityMaster,roleMaster:next.roleMaster,activityTypes:next.activityTypes,customers:next.customers};return changes;}
+ function cloudChanged(c){return Boolean(c.records.length||c.members.length||c.settings);}
+-function cloudBanner(){let old=$('#cloudState');if(old)old.remove();let el=document.createElement('div');el.id='cloudState';el.className='cloudbanner';el.innerHTML=cloud.error?`<strong>Shared save needs attention:</strong> ${esc(cloud.error)} <button class="textlink" data-cloud-action="export-pending">Download unsaved backup</button> <button class="textlink" data-cloud-action="reload">Reload shared records</button>`:cloud.saving||cloud.dirty?'Saving to the shared database…':'Shared database connected · '+esc(cloud.session?.user?.email||'Signed in')+' · updates checked every 10 seconds';el.innerHTML+=' <span id="erpSaveVersion" style="margin-left:12px;font-weight:650">Save fix 2</span> <span>Version 58.1 · Project monitoring</span>';$('.main')?.prepend(el);}
++function cloudBanner(){let old=$('#cloudState');if(old)old.remove();let el=document.createElement('div');el.id='cloudState';el.className='cloudbanner';el.innerHTML=cloud.error?`<strong>Shared save needs attention:</strong> ${esc(cloud.error)} <button class="textlink" data-cloud-action="export-pending">Download unsaved backup</button> <button class="textlink" data-cloud-action="reload">Reload shared records</button>`:cloud.saving||cloud.dirty?'Saving to the shared database…':'Shared database connected · '+esc(cloud.session?.user?.email||'Signed in')+' · updates checked every 10 seconds';el.innerHTML+=' <span id="erpSaveVersion" style="margin-left:12px;font-weight:650">Save fix 2</span> <span>Version 59 · Project monitoring</span>';$('.main')?.prepend(el);}
+ function applySharedSnapshot(snapshot){data=snapshot.data;data.members=data.members||[];members=data.members;data.rolePermissions={...JSON.parse(JSON.stringify(defaultPermissions)),...data.rolePermissions};roleNames.forEach(r=>{if(data.rolePermissions[r].correctActualTimes===undefined)data.rolePermissions[r].correctActualTimes=r==='Project manager';});normalizePlanning();cloud.viewer=snapshot.viewer;cloud.revision=snapshot.revision;cloud.base=JSON.parse(JSON.stringify(data));if(cloud.viewer.isOwner)state.role='manager';else{state.role='consultant';state.consultant=cloud.viewer.memberId;}cloud.dirty=false;cloud.error='';cloud.active=true;cloud.applyingSnapshot=true;try{render();cloud.base=JSON.parse(JSON.stringify(data));}finally{cloud.applyingSnapshot=false;}cloudBanner();let task=new URLSearchParams(location.search).get('task');if(task&&!cloud.openedTask){cloud.openedTask=task;let t=data.tasks.find(t=>t.id===task);if(t){state.page='tasks';render();taskDetail(task);}else toast('This task is unavailable or is not assigned to your account.');}}
+ async function loadShared(){let snapshot=await cloudRpc('erp_load',{w:cloud.config.workspace});applySharedSnapshot(snapshot);}
+ async function flushShared(){let securityGeneration=typeof sqlGeneration==='number'?sqlGeneration:0;if(!cloud.active||cloud.saving||cloud.error)return;let captured=JSON.parse(JSON.stringify(data)),diff=cloudDiff(cloud.base,captured);if(!cloudChanged(diff)){cloud.dirty=false;cloudBanner();return;}cloud.saving=true;cloudBanner();try{let result=await cloudRpc('erp_commit',{w:cloud.config.workspace,expected_revision:cloud.revision,changes:diff});if(typeof sqlGeneration==='number'&&securityGeneration!==sqlGeneration)return;cloud.revision=result.revision;cloud.base=captured;cloud.dirty=cloudChanged(cloudDiff(cloud.base,data));sessionStorage.removeItem('implement.cloud.pending');}catch(e){if(typeof sqlGeneration==='number'&&securityGeneration!==sqlGeneration)return;cloud.error=e.message;sessionStorage.setItem('implement.cloud.pending',JSON.stringify({workspace:cloud.config.workspace,data:captured,at:new Date().toISOString()}));}finally{if(typeof sqlGeneration!=='number'||securityGeneration===sqlGeneration){cloud.saving=false;cloudBanner();if(cloud.dirty&&!cloud.error)cloud.timer=setTimeout(flushShared,300);}}}
+diff --git a/source/wwwroot/index.html b/source/wwwroot/index.html
+index b9603a7..2537752 100644
+--- a/source/wwwroot/index.html
++++ b/source/wwwroot/index.html
+@@ -1,2 +1,2 @@
+ <!doctype html>
+-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#153b32"><title>My Project Management · ERP Delivery</title><link rel="stylesheet" href="styles.css?v=37"><link rel="stylesheet" href="enterprise-theme.css?v=52"><script src="appearance-init.js?v=48"></script></head><body><div id="app"></div><dialog id="modal"></dialog><div id="toast" role="status"></div><script src="app.js?v=58"></script><script src="planner.js?v=58"></script><script src="cloud-config.js"></script><script src="cloud.js?v=58.1"></script><script src="module-master.js?v=20261120-master1"></script><script src="time-allocation.js?v=37"></script><script src="mssql.js?v=48"></script><script src="employee-dashboard.js?v=43"></script><script src="user-role-master.js?v=51"></script><script src="activity-types-reports.js?v=58"></script><script src="excel-export.js?v=20261121-workforce1"></script><script src="workforce-planning.js?v=57"></script><script src="amc-monitoring.js?v=58.1"></script><script src="project-module-owners.js?v=58"></script><script src="project-psr.js?v=37"></script><script src="simple-hours.js?v=57"></script><script src="user-guide.js?v=37"></script><script src="grouped-navigation.js?v=37"></script><script src="enterprise-theme.js?v=37"></script><script src="change-requests.js?v=55.1"></script><script src="spreadsheet-import.js?v=57"></script><script src="weekly-spreadsheet-import.js?v=57"></script><script src="project-plan-scope.js?v=40"></script><script src="amc-plan-actual.js?v=41"></script><script src="office-direct-work.js?v=58"></script><script src="quick-work.js?v=57"></script><script src="completion-tasks.js?v=57"></script><script src="master-spreadsheet-import.js?v=57"></script><script src="amc-period-edit.js?v=45"></script><script src="implementation-template.js?v=46"></script><script src="implementation-plan.js?v=55"></script><script src="change-request-form.js?v=52"></script><script src="cr-point-reviews.js?v=52"></script><script src="authority.js?v=50"></script><script src="user-credentials.js?v=51"></script><script src="project-company-master.js?v=56"></script><script src="planning-company-mode.js?v=55"></script><script src="allocation-company-mode.js?v=57"></script><script src="project-monitoring.js?v=58.1"></script></body></html>
++<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#153b32"><title>My Project Management · ERP Delivery</title><link rel="stylesheet" href="styles.css?v=37"><link rel="stylesheet" href="enterprise-theme.css?v=52"><script src="appearance-init.js?v=48"></script></head><body><div id="app"></div><dialog id="modal"></dialog><div id="toast" role="status"></div><script src="app.js?v=58"></script><script src="planner.js?v=58"></script><script src="cloud-config.js"></script><script src="cloud.js?v=59"></script><script src="module-master.js?v=20261120-master1"></script><script src="time-allocation.js?v=37"></script><script src="mssql.js?v=48"></script><script src="employee-dashboard.js?v=43"></script><script src="user-role-master.js?v=51"></script><script src="activity-types-reports.js?v=58"></script><script src="excel-export.js?v=20261121-workforce1"></script><script src="workforce-planning.js?v=57"></script><script src="amc-monitoring.js?v=59"></script><script src="project-module-owners.js?v=58"></script><script src="project-psr.js?v=37"></script><script src="simple-hours.js?v=57"></script><script src="user-guide.js?v=37"></script><script src="grouped-navigation.js?v=37"></script><script src="enterprise-theme.js?v=37"></script><script src="change-requests.js?v=55.1"></script><script src="spreadsheet-import.js?v=57"></script><script src="weekly-spreadsheet-import.js?v=57"></script><script src="project-plan-scope.js?v=40"></script><script src="amc-plan-actual.js?v=41"></script><script src="office-direct-work.js?v=58"></script><script src="quick-work.js?v=57"></script><script src="completion-tasks.js?v=57"></script><script src="master-spreadsheet-import.js?v=57"></script><script src="amc-period-edit.js?v=45"></script><script src="implementation-template.js?v=46"></script><script src="implementation-plan.js?v=55"></script><script src="change-request-form.js?v=52"></script><script src="cr-point-reviews.js?v=52"></script><script src="authority.js?v=50"></script><script src="user-credentials.js?v=51"></script><script src="project-company-master.js?v=56"></script><script src="planning-company-mode.js?v=55"></script><script src="allocation-company-mode.js?v=57"></script><script src="project-monitoring.js?v=58.1"></script><script src="project-configuration-guard.js?v=59"></script></body></html>
+diff --git a/source/wwwroot/mobile-app.js b/source/wwwroot/mobile-app.js
+index f071c6d..bb448aa 100644
+--- a/source/wwwroot/mobile-app.js
++++ b/source/wwwroot/mobile-app.js
+@@ -17,7 +17,7 @@ if(ms.screen==='hours'){timesheetState.employee=staff();let sheet=employeeTimesh
+ if(ms.screen==='meetings'){let list=data.meetings.filter(canViewMeeting).filter(m=>(staff()==='all'||m.assignee===staff())&&m.date>=planState.date).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));html=`<label class="field">From date<input id="mobileWorkDate" type="date" value="${planState.date}"></label>${roleAllows('scheduleMeetings')?'<button class="btn primary" data-action="new-meeting">Schedule meeting</button>':''}`+(list.map(m=>`<article class="m-card"><div class="m-card-top"><span>${dateText(m.date)} · ${m.hoursOnly?'Hours only':esc(m.time)+' Qatar'}</span>${badge(m.type)}</div><h2>${esc(m.title)}</h2><p>${esc(project(m.project)?.name||'')} · ${esc(person(m.assignee).name)}</p><p>${esc(m.location||'')}</p><button class="btn" data-meeting="${m.id}">Meeting details / calendar</button></article>`).join('')||empty('No meetings from this date.'));}
+ if(ms.screen==='projects')html=projects();
+ if(ms.screen==='status'){let p=project(ms.project);html=!p||!canViewProject(p)?empty('Project is unavailable.'):'<button class="btn" data-mobile-screen="projects">All projects</button>'+projectMonitoringView(p,true);if(p&&canViewProject(p)&&projectType(p)==='amc'){html+=amcProjectPlanBody(p);requestAmcStatus();}}
+-if(ms.screen==='more')html=`<div class="m-menu">${roleAllows('viewExecutiveDashboard')?'<button data-mobile-screen="executive-dashboard">Executive dashboard</button>':''}<button data-mobile-screen="authority-delegation">Authority delegation</button>${['createChangeRequests','reviewChangeRequestsPM','reviewChangeRequestsCTO','viewAllChangeRequests'].some(roleAllows)?'<button data-mobile-screen="change-requests">Change requests / approvals</button>':''}<button data-mobile-screen="meetings">Meetings</button><button data-mobile-screen="projects">Project status</button><button data-mobile-install>Install on this phone</button><button data-cloud-action="password">Change password</button><button data-cloud-action="signout">Sign out</button><a href="./">Open desktop application</a><a href="./manual/">User manual</a></div><section class="m-card"><h2>My Project Management</h2><p>Version 58.1 · Mobile companion</p><p>Company email/password login. Online connection required to load or save work. Actual updates feed the same daily allocations and timesheets.</p></section>`;
++if(ms.screen==='more')html=`<div class="m-menu">${roleAllows('viewExecutiveDashboard')?'<button data-mobile-screen="executive-dashboard">Executive dashboard</button>':''}<button data-mobile-screen="authority-delegation">Authority delegation</button>${['createChangeRequests','reviewChangeRequestsPM','reviewChangeRequestsCTO','viewAllChangeRequests'].some(roleAllows)?'<button data-mobile-screen="change-requests">Change requests / approvals</button>':''}<button data-mobile-screen="meetings">Meetings</button><button data-mobile-screen="projects">Project status</button><button data-mobile-install>Install on this phone</button><button data-cloud-action="password">Change password</button><button data-cloud-action="signout">Sign out</button><a href="./">Open desktop application</a><a href="./manual/">User manual</a></div><section class="m-card"><h2>My Project Management</h2><p>Version 59 · Mobile companion</p><p>Company email/password login. Online connection required to load or save work. Actual updates feed the same daily allocations and timesheets.</p></section>`;
+ view.innerHTML=html;document.querySelectorAll('[data-mobile-screen]').forEach(b=>b.classList.toggle('active',b.dataset.mobileScreen===ms.screen));mobileStatus();}
+ shell=function(){return `<div class="shell m-shell"><main class="main"><header class="m-header"><a class="m-brand" href="mobile.html"><span>MP</span><b>My Project<br>Management</b></a><button class="btn small" data-mobile-screen="more" aria-label="Account and settings">Account</button></header><div id="mobileStatus" class="m-sync" role="status"></div><div class="m-toolbar"><h1>${title()}</h1><button class="btn small" data-mobile-refresh>Refresh</button></div>${teamAllowed()&&ms.screen!=='change-requests'?`<label class="m-staff">Work for<select id="mobileStaff"><option value="self" ${ms.staff==='self'?'selected':''}>${actorId()==='workspace-owner'?'Accessible team':'Me'}</option><option value="all" ${ms.staff==='all'?'selected':''}>All accessible staff</option>${options(activeMembers(),ms.staff)}</select></label>`:''}<label class="m-search" ${ms.screen==='change-requests'?'hidden':''}><input type="search" id="mobileSearch" placeholder="Search activity or project" value="${esc(ms.search)}" aria-label="Search activity or project"></label><div id="view"></div><nav class="m-nav" aria-label="Mobile navigation">${[['home','Today'],['work','Work'],['visits','Visits'],['hours','Hours'],['more','More']].map(([id,label])=>`<button data-mobile-screen="${id}" class="${ms.screen===id?'active':''}">${label}</button>`).join('')}</nav></main></div>`;};
+ renderView=function(){renderMobile();};
+diff --git a/source/wwwroot/mobile-sw.js b/source/wwwroot/mobile-sw.js
+index 1fdc20c..7a9cca9 100644
+--- a/source/wwwroot/mobile-sw.js
++++ b/source/wwwroot/mobile-sw.js
+@@ -1,4 +1,4 @@
+-const CACHE='mpm-mobile-public-v58.1';
++const CACHE='mpm-mobile-public-v59';
+ self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(['./mobile-offline.html','./mobile-icon-192.png','./mobile-icon-512.png'])));self.skipWaiting();});
+ self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('mpm-mobile-public-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
+ self.addEventListener('fetch',event=>{let url=new URL(event.request.url);if(event.request.method!=='GET'||url.origin!==self.location.origin)return;if(event.request.mode==='navigate'&&url.pathname.endsWith('/mobile.html'))event.respondWith(fetch(event.request,{cache:'no-store'}).catch(()=>caches.match('./mobile-offline.html')));});
+diff --git a/source/wwwroot/mobile.html b/source/wwwroot/mobile.html
+index e7d5832..f8fd17e 100644
+--- a/source/wwwroot/mobile.html
++++ b/source/wwwroot/mobile.html
+@@ -1,2 +1,2 @@
+ <!doctype html>
+-<html lang="en" data-mobile="true"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#153b32"><title>My Project Management · Mobile</title><link rel="manifest" href="mobile-manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="My Projects"><link rel="stylesheet" href="styles.css?v=37"><link rel="stylesheet" href="enterprise-theme.css?v=52"><script src="appearance-init.js?v=48"></script><link rel="stylesheet" href="mobile.css?v=43"></head><body><div id="app"></div><dialog id="modal"></dialog><div id="toast" role="status"></div><script src="app.js?v=58"></script><script src="planner.js?v=58"></script><script src="cloud-config.js"></script><script src="cloud.js?v=58.1"></script><script src="module-master.js?v=20261120-master1"></script><script src="time-allocation.js?v=37"></script><script src="mssql.js?v=48"></script><script src="employee-dashboard.js?v=43"></script><script src="user-role-master.js?v=51"></script><script src="activity-types-reports.js?v=58"></script><script src="excel-export.js?v=20261121-workforce1"></script><script src="workforce-planning.js?v=57"></script><script src="amc-monitoring.js?v=58.1"></script><script src="project-module-owners.js?v=58"></script><script src="project-psr.js?v=37"></script><script src="simple-hours.js?v=57"></script><script src="user-guide.js?v=37"></script><script src="grouped-navigation.js?v=37"></script><script src="enterprise-theme.js?v=37"></script><script src="change-requests.js?v=55.1"></script><script src="spreadsheet-import.js?v=57"></script><script src="weekly-spreadsheet-import.js?v=57"></script><script src="project-plan-scope.js?v=40"></script><script src="amc-plan-actual.js?v=41"></script><script src="office-direct-work.js?v=58"></script><script src="quick-work.js?v=57"></script><script src="completion-tasks.js?v=57"></script><script src="master-spreadsheet-import.js?v=57"></script><script src="amc-period-edit.js?v=45"></script><script src="implementation-template.js?v=46"></script><script src="implementation-plan.js?v=55"></script><script src="change-request-form.js?v=52"></script><script src="cr-point-reviews.js?v=52"></script><script src="authority.js?v=50"></script><script src="user-credentials.js?v=51"></script><script src="project-company-master.js?v=56"></script><script src="planning-company-mode.js?v=55"></script><script src="allocation-company-mode.js?v=57"></script><script src="project-monitoring.js?v=58.1"></script><script src="mobile-app.js?v=58.1"></script></body></html>
++<html lang="en" data-mobile="true"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#153b32"><title>My Project Management · Mobile</title><link rel="manifest" href="mobile-manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="My Projects"><link rel="stylesheet" href="styles.css?v=37"><link rel="stylesheet" href="enterprise-theme.css?v=52"><script src="appearance-init.js?v=48"></script><link rel="stylesheet" href="mobile.css?v=43"></head><body><div id="app"></div><dialog id="modal"></dialog><div id="toast" role="status"></div><script src="app.js?v=58"></script><script src="planner.js?v=58"></script><script src="cloud-config.js"></script><script src="cloud.js?v=59"></script><script src="module-master.js?v=20261120-master1"></script><script src="time-allocation.js?v=37"></script><script src="mssql.js?v=48"></script><script src="employee-dashboard.js?v=43"></script><script src="user-role-master.js?v=51"></script><script src="activity-types-reports.js?v=58"></script><script src="excel-export.js?v=20261121-workforce1"></script><script src="workforce-planning.js?v=57"></script><script src="amc-monitoring.js?v=59"></script><script src="project-module-owners.js?v=58"></script><script src="project-psr.js?v=37"></script><script src="simple-hours.js?v=57"></script><script src="user-guide.js?v=37"></script><script src="grouped-navigation.js?v=37"></script><script src="enterprise-theme.js?v=37"></script><script src="change-requests.js?v=55.1"></script><script src="spreadsheet-import.js?v=57"></script><script src="weekly-spreadsheet-import.js?v=57"></script><script src="project-plan-scope.js?v=40"></script><script src="amc-plan-actual.js?v=41"></script><script src="office-direct-work.js?v=58"></script><script src="quick-work.js?v=57"></script><script src="completion-tasks.js?v=57"></script><script src="master-spreadsheet-import.js?v=57"></script><script src="amc-period-edit.js?v=45"></script><script src="implementation-template.js?v=46"></script><script src="implementation-plan.js?v=55"></script><script src="change-request-form.js?v=52"></script><script src="cr-point-reviews.js?v=52"></script><script src="authority.js?v=50"></script><script src="user-credentials.js?v=51"></script><script src="project-company-master.js?v=56"></script><script src="planning-company-mode.js?v=55"></script><script src="allocation-company-mode.js?v=57"></script><script src="project-monitoring.js?v=58.1"></script><script src="project-configuration-guard.js?v=59"></script><script src="mobile-app.js?v=59"></script></body></html>
+diff --git a/source/wwwroot/project-configuration-guard.js b/source/wwwroot/project-configuration-guard.js
+new file mode 100644
+index 0000000..21210cc
+--- /dev/null
++++ b/source/wwwroot/project-configuration-guard.js
+@@ -0,0 +1,8 @@
++/* v59 review: mirror configuration safeguards; the server remains authoritative for hidden records. */
++function configurationReferences(p){return [...data.tasks.filter(t=>t.project===p.id),...data.meetings.filter(m=>m.project===p.id),...(p.implementationPlanRows||[])];}
++function configurationLinked(t){return !!((t.allocations||[]).length||(t.sessions||[]).length||(t.history||[]).length||t.actualStart||t.actualFinish||t.implementationPlanRowId||t.planImportReference);}
++function configurationEnableError(p){if(companyTrackingEnabled(p))return '';let companies=p.companies||[],refs=[...data.tasks.filter(t=>t.project===p.id),...data.meetings.filter(m=>m.project===p.id&&(m.companyId||m.calendarSource==='daily-allocation')),...(p.implementationPlanRows||[])],bad=refs.some(r=>!companies.some(c=>c.id===r.companyId)&&!(companies.length===1&&!r.companyId));return bad?'Cannot enable company-wise tracking: saved work has an unresolved company mapping. Review the mapping first.':'';}
++const configurationFormModal=formModal;formModal=function(title,intro,body,submit,callback){if(title==='Edit project plan'){let code=body.match(/name="code"[^>]*value="([^"]*)"/),p=data.projects.find(p=>esc(p.code)===code?.[1]),original=callback;callback=f=>{if(p&&f.get('companyWiseProjectTrackingRequired')==='on'){let error=configurationEnableError(p);if(error){toast(error);return false;}}return original(f);};}return configurationFormModal(title,intro,body,submit,callback);};
++const configurationCompanyForm=companyForm;companyForm=function(pid,cid){configurationCompanyForm(pid,cid);let p=project(pid),c=p?.companies.find(c=>c.id===cid),form=$('#editForm');if(!c||!form||!form.querySelector('.companyedit')||!$('#modal').open)return;let refs=configurationReferences(p),locked=[];for(const row of form.querySelectorAll('.companyedit')){let box=row.querySelector('input[type="checkbox"]'),label=row.querySelector('label.check'),name=label?.textContent.trim();if(box&&name&&refs.some(r=>r.companyId===cid&&r.module===name)){locked.push({box,name});box.addEventListener('change',()=>{if(!box.checked){box.checked=true;toast('Saved work uses '+name+'. Retain this company module.');}});let hint=document.createElement('span');hint.className='helper';hint.textContent='Used by saved work; module cannot be removed.';row.append(hint);}}let handler=form.onsubmit;if(handler)form.onsubmit=e=>{let missing=locked.find(x=>!x.box.checked);if(missing){e.preventDefault();toast('Cannot remove '+missing.name+': saved work uses this company module.');return;}handler(e);};};
++const configurationActivityForm=plannedActivityForm;plannedActivityForm=function(id,...args){configurationActivityForm(id,...args);let t=data.tasks.find(t=>t.id===id),form=$('#editForm');if(!t||!configurationLinked(t)||!form||!form.querySelector('#activityProject')||!$('#modal').open)return;for(const name of ['companyId','module','title']){let el=form.elements.namedItem(name);if(!el)continue;let retained=name==='companyId'?t.companyId:name==='module'?t.module:t.title;if(el instanceof HTMLSelectElement&&!Array.from(el.options).some(o=>o.value===retained)){let option=document.createElement('option');option.value=retained;option.textContent=retained+' (retained)';el.append(option);}el.value=retained;el.disabled=true;let hidden=document.createElement('input');hidden.type='hidden';hidden.name=name;hidden.value=el.value;form.append(hidden);}let hint=document.createElement('p');hint.className='notice';hint.textContent='This activity has saved allocations, history or work. Its project, company, module and master activity links are retained. Create a new activity to change scope; dates, notes and permitted outcomes remain editable.';form.querySelector('.formgrid').prepend(hint);let handler=form.onsubmit;if(handler)form.onsubmit=e=>{let values=new FormData(form),company=values.get('companyId'),module=values.get('module'),title=values.get('title');if(company!==t.companyId||module!==t.module||title!==t.title){e.preventDefault();toast('Saved work mappings are locked. Reopen the activity or create a new one.');return;}handler(e);};};
++const configurationUnitForm=businessUnitForm;businessUnitForm=function(pid,id){configurationUnitForm(pid,id);let p=project(pid),u=p?.businessUnits?.find(u=>u.id===id),form=$('#editForm');if(!u||!form||!form.elements.namedItem('code')||!form.elements.namedItem('active')||!$('#modal').open||!configurationReferences(p).some(r=>r.businessUnitId===id))return;let select=form.elements.namedItem('companyId');if(!select)return;select.disabled=true;let hidden=document.createElement('input');hidden.type='hidden';hidden.name='companyId';hidden.value=u.companyId;form.append(hidden);let hint=document.createElement('p');hint.className='notice';hint.textContent='Saved work uses this business unit. Its company link is retained; its code, name, status and notes remain editable.';form.querySelector('.formgrid').prepend(hint);let handler=form.onsubmit;if(handler)form.onsubmit=e=>{if(new FormData(form).get('companyId')!==u.companyId){e.preventDefault();toast('Cannot move a business unit used by saved work to another company.');return;}handler(e);};};
+diff --git a/source/wwwroot/release.json b/source/wwwroot/release.json
+index 2450315..b83cbcd 100644
+--- a/source/wwwroot/release.json
++++ b/source/wwwroot/release.json
+@@ -1,8 +1,9 @@
+ {
+-  "version": "58.1.0",
+-  "label": "v58.1",
+-  "previous_application": "v58",
++  "version": "59.0.0",
++  "label": "v59",
++  "previous_application": "v58.1",
+   "required_database_patch": "v35",
++  "optional_database_migration": "database/20-Project-Configuration-v59.sql",
+   "date": "2026-11-27",
+-  "features": "Company-wise and consolidated project monitoring; project-level views/reports/exports without company fields when tracking is disabled; shared mobile monitoring; immediate monitoring navigation on initial load"
++  "features": "Configuration and transaction mapping safeguards; backward-compatible legacy field preservation; preview-first non-destructive metadata migration"
+ }
+diff --git a/tests/ChangeRequestTests/ChangeRequestTests.csproj b/tests/ChangeRequestTests/ChangeRequestTests.csproj
+index 0845f33..6e858fb 100644
+--- a/tests/ChangeRequestTests/ChangeRequestTests.csproj
++++ b/tests/ChangeRequestTests/ChangeRequestTests.csproj
+@@ -1 +1 @@
+-<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net10.0</TargetFramework><OutputType>Exe</OutputType><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup><ItemGroup><ProjectReference Include="../../source/MyProjectManagement.csproj" /><None Include="Fixtures/*.docx" CopyToOutputDirectory="PreserveNewest" /><PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" Version="180.154.0" /><None Include="../../source/database/18-Mapped-ChangeRequests-v49.sql" Link="Fixtures/Database-ChangeRequests-v49.sql" CopyToOutputDirectory="PreserveNewest" /><None Include="../../source/database/19-Executive-Delegation-v50.sql" Link="Fixtures/Database-Executive-Delegation-v50.sql" CopyToOutputDirectory="PreserveNewest" /><None Include="../../source/database/Database-Upgrade-v50.sql" Link="Fixtures/Database-Upgrade-v50.sql" CopyToOutputDirectory="PreserveNewest" /><None Include="../../source/database/Database-Full-Setup-v50.sql" Link="Fixtures/Database-Full-Setup-v50.sql" CopyToOutputDirectory="PreserveNewest" /></ItemGroup></Project>
++<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net10.0</TargetFramework><OutputType>Exe</OutputType><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup><ItemGroup><ProjectReference Include="../../source/MyProjectManagement.csproj" /><None Include="Fixtures/*.docx" CopyToOutputDirectory="PreserveNewest" /><PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" Version="180.154.0" /><None Include="../../source/database/18-Mapped-ChangeRequests-v49.sql" Link="Fixtures/Database-ChangeRequests-v49.sql" CopyToOutputDirectory="PreserveNewest" /><None Include="../../source/database/19-Executive-Delegation-v50.sql" Link="Fixtures/Database-Executive-Delegation-v50.sql" CopyToOutputDirectory="PreserveNewest" /><None Include="../../source/database/Database-Upgrade-v50.sql" Link="Fixtures/Database-Upgrade-v50.sql" CopyToOutputDirectory="PreserveNewest" /><None Include="../../source/database/Database-Full-Setup-v50.sql" Link="Fixtures/Database-Full-Setup-v50.sql" CopyToOutputDirectory="PreserveNewest" /><None Include="../../source/database/20-Project-Configuration-v59.sql" Link="Fixtures/Project-Configuration-v59.sql" CopyToOutputDirectory="PreserveNewest" /></ItemGroup></Project>
+diff --git a/tests/ChangeRequestTests/ConfigurationGuardTests.cs b/tests/ChangeRequestTests/ConfigurationGuardTests.cs
+new file mode 100644
+index 0000000..08b2561
+--- /dev/null
++++ b/tests/ChangeRequestTests/ConfigurationGuardTests.cs
+@@ -0,0 +1,23 @@
++using MyProjectManagement;
++using System.Text.Json.Nodes;
++using Microsoft.SqlServer.TransactSql.ScriptDom;
++public static class ConfigurationGuardTests {
++ static void Check(bool b,string m){if(!b)throw new Exception(m);}static void Deny(Action f){try{f();}catch(ApiError){return;}throw new Exception("Expected configuration guard denial");}
++ public static void Run(){var s=new Snapshot{Id=Guid.NewGuid(),Owner=Guid.NewGuid()};Authority.Seed(s.Settings);s.Settings["moduleMaster"]=new JsonArray(new JsonObject{["id"]="fin",["code"]="FIN",["name"]="Finance",["active"]=true},new JsonObject{["id"]="inv",["code"]="INV",["name"]="Inventory",["active"]=true});s.Settings["activityMaster"]=new JsonArray(new JsonObject{["id"]="a",["name"]="Work",["code"]="ACT",["typeId"]="implementation",["active"]=true},new JsonObject{["id"]="b",["name"]="Other work",["code"]="OTHER",["typeId"]="implementation",["active"]=true});s.Members["pm"]=new JsonObject{["id"]="pm",["name"]="Planner",["role"]="Project manager",["active"]=true};var p=new JsonObject{["id"]="p",["name"]="Project",["code"]="P",["stageType"]="implementation",["projectManager"]="pm",["lead"]="pm",["companyCount"]=2,["businessUnitCount"]=1,["companyWiseProjectTrackingRequired"]=true,["modules"]=new JsonObject{["Finance"]="pm",["Inventory"]="pm"},["companies"]=new JsonArray(new JsonObject{["id"]="c1",["name"]="Alpha",["modules"]=new JsonObject{["Finance"]="pm",["Inventory"]="pm"}},new JsonObject{["id"]="c2",["name"]="Beta",["modules"]=new JsonObject{["Finance"]="pm"}}),["businessUnits"]=new JsonArray(new JsonObject{["id"]="bu1",["companyId"]="c1",["code"]="BU",["name"]="Unit",["active"]=true}),["implementationPlanRows"]=new JsonArray(new JsonObject{["id"]="row",["companyId"]="c1",["module"]="Finance",["taskId"]="t"})};s.Records["project:p"]=p;
++ var task=new JsonObject{["id"]="t",["project"]="p",["companyId"]="c1",["businessUnitId"]="bu1",["module"]="Finance",["activityId"]="a",["title"]="Work",["typeId"]="implementation",["assignee"]="pm",["status"]="In progress",["completion"]=50,["plannedSessions"]=.5m,["sessions"]=new JsonArray(),["history"]=new JsonArray(),["allocations"]=new JsonArray(new JsonObject{["id"]="alloc",["assignee"]="pm",["date"]=J.Today.ToString("yyyy-MM-dd"),["plannedHours"]=2m,["actualHours"]=1m,["actualWorkDate"]=J.Today.ToString("yyyy-MM-dd"),["completionRemarks"]="Delivered",["actualHistory"]=new JsonArray(),["typeId"]="implementation",["workMode"]="Onsite",["chargeType"]="Client",["status"]="In progress"})};s.Records["task:t"]=task;var owner=new Policy(s,new AppUser(s.Owner,s.Id,"","",true,null,false,false,0,null,""));
++ void Save(string kind,JsonObject row)=>owner.Apply(new JsonObject{["records"]=new JsonArray(new JsonObject{["kind"]=kind,["id"]=J.S(row,"id"),["payload"]=row.DeepClone()})});
++ var oldCompany=p["companies"]!.ToJsonString();var oldTask=task.ToJsonString();var legacy=J.Clone(p);foreach(var field in new[]{"companies","businessUnits","companyCount","businessUnitCount","companyWiseProjectTrackingRequired","implementationPlanRows"})legacy.Remove(field);legacy["name"]="Edited by older client";Save("project",legacy);p=s.Records["project:p"];Check(J.B(p,"companyWiseProjectTrackingRequired")&&p["companies"]!.ToJsonString()==oldCompany&&p["implementationPlanRows"]!.AsArray().Count==1,"Older metadata clients retain config/companies/units/imported rows");Check(s.Records["task:t"].ToJsonString()==oldTask,"Project metadata edit does not rewrite transactions");
++ var bad=J.Clone(p);bad["businessUnitCount"]=0;Deny(()=>Save("project",bad));bad=J.Clone(p);bad["companies"]![0]!["modules"]!.AsObject().Remove("Finance");Deny(()=>Save("project",bad));bad=J.Clone(p);bad["modules"]!.AsObject().Remove("Finance");Deny(()=>Save("project",bad));bad=J.Clone(p);bad["businessUnits"]![0]!["companyId"]="c2";Deny(()=>Save("project",bad));bad=J.Clone(p);bad["implementationPlanRows"]!.AsArray().Clear();Deny(()=>Save("project",bad));bad=J.Clone(p);bad["implementationPlanRows"]![0]!["companyId"]="c2";Deny(()=>Save("project",bad));
++ s.Records["meeting:project-meeting"]=new JsonObject{["id"]="project-meeting",["project"]="p",["companyId"]="",["title"]="All-project meeting"};
++ var good=J.Clone(p);good["companies"]![0]!["name"]="Renamed Alpha";good["companies"]![0]!["modules"]!.AsObject().Remove("Inventory");good["modules"]!.AsObject().Remove("Inventory");Save("project",good);p=s.Records["project:p"];Check(J.S(p["companies"]![0],"name")=="Renamed Alpha","Labels and unused module configuration remain editable");
++ good=J.Clone(p);good["companyWiseProjectTrackingRequired"]=false;Save("project",good);good=J.Clone(s.Records["project:p"]);good["companyWiseProjectTrackingRequired"]=true;Save("project",good);Check(s.Records["task:t"].ToJsonString()==oldTask,"Tracking toggles retain existing transaction IDs and actuals");
++ bad=J.Clone(task);bad["companyId"]="c2";Deny(()=>Save("task",bad));bad=J.Clone(task);bad["module"]="General";Deny(()=>Save("task",bad));bad=J.Clone(task);bad["activityId"]="b";bad["title"]="Other work";Deny(()=>Save("task",bad));var other=J.Clone(s.Records["project:p"]);other["id"]="other";other["code"]="OTHER";s.Records["project:other"]=other;bad=J.Clone(task);bad["project"]="other";Deny(()=>Save("task",bad));
++ good=J.Clone(task);good["notes"]="Permitted instructions edit";Save("task",good);good=J.Clone(s.Records["task:t"]);var a=good["allocations"]![0]!.AsObject();a["actualHours"]=1.5m;a["actualSavedBy"]="workspace-owner";a["actualHistory"]!.AsArray().Add(new JsonObject{["by"]="workspace-owner",["at"]=DateTimeOffset.UtcNow.ToString("O"),["hours"]=1.5m});Save("task",good);Check(J.N(s.Records["task:t"]["allocations"]![0],"actualHours")==1.5m,"Authorized actual correction remains available with stable mappings");
++ var copy=s.Copy();var cp=copy.Records["project:p"];cp["companyWiseProjectTrackingRequired"]=false;copy.Records["task:t"]["companyId"]="unknown";var enabled=J.Clone(cp);enabled["companyWiseProjectTrackingRequired"]=true;Deny(()=>ProjectConfigurationGuard.Project(copy,enabled,cp));cp["companyWiseProjectTrackingRequired"]=true;ProjectConfigurationGuard.Project(copy,J.Clone(cp),cp);Check(J.S(copy.Records["task:t"],"companyId")=="unknown","Legacy unknown mappings are retained; unrelated edits remain compatible");
++ // Legacy implicit defaults can be materialized without changing the meaning of old work.
++ cp["companies"]!.AsArray().RemoveAt(1);cp["companyCount"]=1;var prior=J.Clone(task);prior["companyId"]="";prior["module"]="";prior["activityId"]="";var normalized=J.Clone(prior);normalized["companyId"]="c1";normalized["module"]="General";normalized["activityId"]="a";ProjectConfigurationGuard.Task(copy,normalized,prior);
++ var legacyProject=J.Clone(s.Records["project:p"]);legacyProject["id"]="legacy-project";legacyProject["name"]="Legacy project";legacyProject["code"]="LEGACY";foreach(var field in new[]{"companies","businessUnits","businessUnitCount","companyCount","companyWiseProjectTrackingRequired","implementationPlanRows"})legacyProject.Remove(field);s.Records["project:legacy-project"]=legacyProject;var initialized=J.Clone(legacyProject);initialized["companyCount"]=1;initialized["companyWiseProjectTrackingRequired"]=false;initialized["companies"]=new JsonArray(new JsonObject{["id"]="company-legacy-project",["name"]="Legacy project",["modules"]=legacyProject["modules"]!.DeepClone(),["actualGoLive"]="",["goLiveStatus"]="Not ready",["notes"]=""});Save("project",initialized);Check(J.S(s.Records["project:legacy-project"]["companies"]![0],"id")=="company-legacy-project","Legacy implicit single-company initialization remains compatible without remapping work");
++ using var sql=new StreamReader(Path.Combine(AppContext.BaseDirectory,"Fixtures/Project-Configuration-v59.sql"));new TSql160Parser(true).Parse(sql,out var errors);Check(errors.Count==0,"SQL Server 2022 migration syntax: "+string.Join(";",errors.Select(e=>e.Message)));
++ Console.WriteLine("PASS v59: legacy field preservation, referenced-module/unit/plan guards, immutable transaction scope, safe tracking toggles, permitted labels/unused modules/actual corrections and SQL migration syntax.");
++ }
++}
+diff --git a/tests/ChangeRequestTests/Program.cs b/tests/ChangeRequestTests/Program.cs
+index 33b60e2..fcddbcb 100644
+--- a/tests/ChangeRequestTests/Program.cs
++++ b/tests/ChangeRequestTests/Program.cs
+@@ -5,7 +5,7 @@ public static class CrFormTests {
+  static void Check(bool value,string message){if(!value)throw new Exception(message);}static void Deny(Action action){try{action();}catch(ApiError){return;}throw new Exception("Expected validation denial");}
+  static AppUser User(Guid workspace,string member)=>new(Guid.NewGuid(),workspace,member+"@test.invalid","",false,member,false,false,0,null,Guid.NewGuid().ToString());
+  static void Act(Snapshot s,Policy p,JsonObject row,string action,JsonObject b){if(action=="review"&&ChangeRequests.Latest(row)["header"] is JsonObject){var points=J.A(ChangeRequests.Latest(row),"points").ToList();b["pointDecisions"]=new JsonArray(points.Select((point,i)=>(JsonNode)new JsonObject{["point"]=J.S(point,"id"),["status"]=J.S(b,"decision")=="Approve"||i>0?"Proceed":"Revision required",["remarks"]=J.S(b,"decision")=="Approve"||i>0?"":J.A(b,"comments").FirstOrDefault(c=>J.S(c,"point")==J.S(point,"id"))?["text"]?.ToString()??(J.S(b,"comment")==""?"Revision requested":J.S(b,"comment"))}).ToArray());}ChangeRequests.Act(s,p,row,action,b);}
+- public static void Main(){AuthorityTests.Run();UserProvisioningTests.Run();PointReviewTests.Run();ProjectConfigurationTests.Run();CompanyUnitsTests.Run();PlanningCompanyTests.Run();var bytes=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Fixtures/CR-Format-Synthetic.docx"));var parsed=ChangeRequestWord.Read(bytes);Check(J.S(parsed["header"],"externalNumber")=="TEST/CR001/26","Base CR number parsed separately from revision");Check(J.S(parsed["header"],"documentRevision")=="2.0","Document revision parsed");Check(J.S(parsed["header"],"date")=="2026-11-24","Header date parsed");Check(J.A(parsed,"points").Count()==2,"Two module/form rows extracted");var first=J.A(parsed,"points").First();Check(J.S(first,"module")=="Projects"&&J.S(first,"formName")=="Project Invoice"&&J.S(first,"text")=="Change revenue posting\nAdd advance booking","Module, form and multiline changes preserved");Check(J.S(first,"remarks")=="Client to confirm posting rules","Remarks extracted");
++ public static void Main(){AuthorityTests.Run();UserProvisioningTests.Run();PointReviewTests.Run();ProjectConfigurationTests.Run();CompanyUnitsTests.Run();PlanningCompanyTests.Run();ConfigurationGuardTests.Run();var bytes=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Fixtures/CR-Format-Synthetic.docx"));var parsed=ChangeRequestWord.Read(bytes);Check(J.S(parsed["header"],"externalNumber")=="TEST/CR001/26","Base CR number parsed separately from revision");Check(J.S(parsed["header"],"documentRevision")=="2.0","Document revision parsed");Check(J.S(parsed["header"],"date")=="2026-11-24","Header date parsed");Check(J.A(parsed,"points").Count()==2,"Two module/form rows extracted");var first=J.A(parsed,"points").First();Check(J.S(first,"module")=="Projects"&&J.S(first,"formName")=="Project Invoice"&&J.S(first,"text")=="Change revenue posting\nAdd advance booking","Module, form and multiline changes preserved");Check(J.S(first,"remarks")=="Client to confirm posting rules","Remarks extracted");
+  var header=J.Clone(parsed["header"]!.AsObject());header["requestedBy"]="Updated requester";var points=parsed["points"]!.DeepClone().AsArray();points[0]!["formName"]="Renamed invoice";points[0]!["text"]="Updated requirement\nSecond updated requirement";points[0]!["remarks"]="Updated remarks";points.Add(new JsonObject{["id"]="Padded",["module"]="Finance",["formName"]="Ledger",["text"]="Add audit column",["remarks"]=""});var output=ChangeRequestWord.Rewrite(bytes,header,points);var reread=ChangeRequestWord.Read(output,points);Check(J.S(reread["header"],"requestedBy")=="Updated requester"&&J.A(reread,"points").Count()==3,"Header edits and dynamic added form written back to Word");Check(J.S(J.A(reread,"points").First(),"formName")=="Renamed invoice"&&J.S(J.A(reread,"points").First(),"text").StartsWith("Updated requirement"),"Word/form round trip");Check(J.S(J.A(reread,"points").First(),"id")==J.S(points[0],"id"),"Point identity retained across synchronization");Check(ChangeRequestWord.PreviewHtml(output).Contains("Prepared By: Test Initiator"),"Unmapped Word content retained");
+  header["requestedBy"]="<script>alert(1)</script>";var escaped=ChangeRequestWord.PreviewHtml(ChangeRequestWord.Rewrite(bytes,header,points));Check(!escaped.Contains("<script>")&&escaped.Contains("&lt;script&gt;"),"Word preview HTML escaped");
+  var workspace=Guid.NewGuid();var owner=Guid.NewGuid();var snapshot=new Snapshot{Id=workspace,Owner=owner,Settings=new JsonObject{["rolePermissions"]=new JsonObject()}};ChangeRequests.Seed(snapshot.Settings);foreach(var (id,role) in new[]{("worker","ERP consultant"),("pm","Project manager"),("cto","CTO"),("other","ERP consultant")})snapshot.Members[id]=new JsonObject{["id"]=id,["name"]=id,["role"]=role,["active"]=true};snapshot.Records["project:p"]=new JsonObject{["id"]="p",["code"]="P-TEST",["name"]="Test ERP Project",["customerId"]="customer",["projectManager"]="pm",["modules"]=new JsonObject{["Projects"]="worker"}};var worker=new Policy(snapshot,User(workspace,"worker"));var pm=new Policy(snapshot,User(workspace,"pm"));var cto=new Policy(snapshot,User(workspace,"cto"));var other=new Policy(snapshot,User(workspace,"other"));var body=StructuredChangeRequest.DraftBody(new JsonObject{["projectId"]="p",["ctoId"]="cto",["reason"]="Initial test"},parsed);var row=ChangeRequests.Create(snapshot,worker,body);var revision=ChangeRequests.Latest(row);string point=J.S(J.A(revision,"points").First(),"id");ChangeRequests.Upload(snapshot,worker,row,new JsonObject{["id"]="doc1",["paragraphCount"]=100});Act(snapshot,worker,row,"submit",new JsonObject());Deny(()=>Act(snapshot,cto,row,"review",new JsonObject{["decision"]="Approve"}));Deny(()=>Act(snapshot,other,row,"review",new JsonObject{["decision"]="Approve"}));Act(snapshot,pm,row,"review",new JsonObject{["decision"]="Amendment",["comment"]="Clarify scope",["comments"]=new JsonArray(new JsonObject{["point"]=point,["text"]="Confirm revised posting"})});string old=revision.ToJsonString();Act(snapshot,worker,row,"revise",new JsonObject{["reason"]="Address PM comments"});revision=ChangeRequests.Latest(row);Check(revision["header"] is JsonObject&&J.S(revision,"sourceDocumentId")=="doc1","New revision carries mapped fields and source document reference");Check(StructuredChangeRequest.PriorNotes(row,"pm").Count==2,"Own previous general/point comments retained");var edit=StructuredChangeRequest.DraftBody(new JsonObject{["ctoId"]="cto",["reason"]="Revised requirement"},revision);edit["points"]![0]!["text"]="Posting clarified";Act(snapshot,worker,row,"save",edit);ChangeRequests.Upload(snapshot,worker,row,new JsonObject{["id"]="doc2",["paragraphCount"]=100});Deny(()=>Act(snapshot,worker,row,"submit",new JsonObject()));edit["amendmentResponses"]=new JsonArray(StructuredChangeRequest.PriorNotes(row).Select(n=>(JsonNode)new JsonObject{["key"]=J.S(n,"key"),["reply"]="Updated as requested"}).ToArray());Act(snapshot,worker,row,"save",edit);Act(snapshot,worker,row,"submit",new JsonObject());Deny(()=>Act(snapshot,pm,row,"review",new JsonObject{["decision"]="Approve"}));Act(snapshot,pm,row,"review",new JsonObject{["decision"]="Approve",["checkedPrevious"]=true});Check(J.S(revision,"state")=="Pending CTO","PM approval routes to CTO");Act(snapshot,cto,row,"review",new JsonObject{["decision"]="Amendment",["comment"]="Update the second form wording"});string secondRevision=revision.ToJsonString();Act(snapshot,worker,row,"revise",new JsonObject{["reason"]="Address CTO comment"});revision=ChangeRequests.Latest(row);var third=StructuredChangeRequest.DraftBody(new JsonObject{["ctoId"]="cto",["reason"]="CTO amendment completed"},revision);third["points"]![1]!["text"]="Second form wording updated";third["amendmentResponses"]=new JsonArray(StructuredChangeRequest.PriorNotes(row).Where(n=>J.N(n,"revision")==2&&J.S(n,"decision")!="Approve").Select(n=>(JsonNode)new JsonObject{["key"]=J.S(n,"key"),["reply"]="Updated second form"}).ToArray());Act(snapshot,worker,row,"save",third);ChangeRequests.Upload(snapshot,worker,row,new JsonObject{["id"]="doc3",["paragraphCount"]=100});Act(snapshot,worker,row,"submit",new JsonObject());Act(snapshot,pm,row,"review",new JsonObject{["decision"]="Approve",["checkedPrevious"]=true});Deny(()=>Act(snapshot,cto,row,"review",new JsonObject{["decision"]="Approve"}));Act(snapshot,cto,row,"review",new JsonObject{["decision"]="Approve",["checkedPrevious"]=true});Check(J.S(revision,"state")=="Technically feasible","Both stages approve after CTO amendment cycle");Check(row["revisions"]![1]!.ToJsonString()==secondRevision,"CTO-returned revision history immutable");Check(row["revisions"]![0]!.ToJsonString()==old,"Previous submitted revision, comments and document references immutable");
+diff --git a/tests/browser/configuration-guard.cjs b/tests/browser/configuration-guard.cjs
+new file mode 100644
+index 0000000..f0db365
+--- /dev/null
++++ b/tests/browser/configuration-guard.cjs
+@@ -0,0 +1,23 @@
++const fs=require('fs'),vm=require('vm'),assert=require('assert/strict'),{JSDOM}=require('jsdom');
++const dom=new JSDOM('<div id="app"></div><dialog id="modal"></dialog><div id="toast"></div>',{url:'https://company.test',runScripts:'outside-only'}),w=dom.window,c=dom.getInternalVMContext(),run=s=>vm.runInContext(s,c),$=s=>w.document.querySelector(s);w.TextEncoder=TextEncoder;w.TextDecoder=TextDecoder;w.Blob=Blob;w.DecompressionStream=DecompressionStream;w.scrollTo=()=>{};w.setInterval=()=>0;w.HTMLDialogElement.prototype.showModal=function(){this.open=true};w.HTMLDialogElement.prototype.close=function(){this.open=false;this.dispatchEvent(new w.Event('close'));};
++for(const f of ['app.js','planner.js','cloud-config.js','cloud.js','module-master.js','time-allocation.js','employee-dashboard.js','user-role-master.js','activity-types-reports.js','excel-export.js','workforce-planning.js','amc-monitoring.js','project-module-owners.js','project-psr.js','simple-hours.js','user-guide.js','grouped-navigation.js','enterprise-theme.js','change-requests.js','spreadsheet-import.js','weekly-spreadsheet-import.js','project-plan-scope.js','amc-plan-actual.js','office-direct-work.js','quick-work.js','completion-tasks.js','master-spreadsheet-import.js','amc-period-edit.js','implementation-template.js','implementation-plan.js','project-company-master.js','planning-company-mode.js','allocation-company-mode.js','project-monitoring.js','project-configuration-guard.js'])run(fs.readFileSync(require('path').join(process.env.MPM_TEST_SOURCE||require('path').resolve(__dirname,'../../source'),'wwwroot',f),'utf8'));
++
++
++
++
++
++function submit(){ $('#editForm').dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true})); }
++run(`state.role='manager';state.page='planning';let p59=data.projects.find(p=>projectType(p)==='implementation'),staff59=activeMembers()[0];data.projects=[p59];data.tasks=[];data.meetings=[];data.customers=[{id:'customer59',code:'C59',name:'Customer59',active:true}];p59.customerId='customer59';p59.projectManager=staff59.id;p59.lead=staff59.id;p59.companyWiseProjectTrackingRequired=true;p59.companyCount=1;p59.businessUnitCount=0;p59.modules={Finance:staff59.id,Inventory:staff59.id};p59.companies=[{id:'c59',name:'Company59',code:'CO59',modules:{Finance:staff59.id,Inventory:staff59.id},plannedGoLive:p59.due,goLiveStatus:'Not ready',actualGoLive:'',notes:''}];let act59=data.activityMaster.find(a=>a.active!==false&&activityType(a)==='implementation');let work59={id:'work59',project:p59.id,companyId:'c59',module:'Finance',activityId:act59.id,title:act59.name,typeId:'implementation',assignee:staff59.id,plannedStart:today(),plannedFinish:today(),due:today(),plannedSessions:1,status:'In progress',completion:50,sessions:[],history:[],allocations:[{id:'alloc59',assignee:staff59.id,date:today(),plannedHours:4,actualHours:1,typeId:'implementation',workMode:'Onsite',chargeType:'Internal',status:'In progress',completionRemarks:'Work',actualHistory:[]}],followupNote:''};data.tasks=[work59];planState.project=p59.id;planState.company='all';companyForm(p59.id,'c59')`);
++let finance=[...w.document.querySelectorAll('.companyedit')].find(r=>r.querySelector('label.check').textContent.trim()==='Finance').querySelector('input[type="checkbox"]');assert(finance.checked);finance.checked=false;finance.dispatchEvent(new w.Event('change',{bubbles:true}));assert(finance.checked);assert($('#toast').textContent.includes('Retain'));finance.checked=false;let before=run('JSON.stringify(p59.companies)');submit();assert($('#modal').open);assert.equal(run('JSON.stringify(p59.companies)'),before);finance.checked=true;
++let inventory=[...w.document.querySelectorAll('.companyedit')].find(r=>r.querySelector('label.check').textContent.trim()==='Inventory').querySelector('input[type="checkbox"]');inventory.checked=false;submit();assert.equal($('#modal').open,false);assert.equal(run('Object.hasOwn(p59.companies[0].modules,"Inventory")'),false);assert.equal(run('work59.companyId'),'c59');
++// Allocated activity scope is visibly locked, but permitted instructions remain editable.
++run('plannedActivityForm(work59.id,p59.id)');assert($('#activityCompany').disabled);assert($('#activityModule').disabled);assert($('#editForm select[name="title"]').disabled);assert.equal($('#editForm input[type="hidden"][name="companyId"]').value,'c59');$('#editForm [name="notes"]').value='Updated instructions';submit();assert.equal($('#modal').open,false);assert.equal(run('work59.notes'),'Updated instructions');assert.equal(run('actualHours(work59.allocations[0])'),1);
++// A tampered hidden mapping is rejected before any mutation.
++run('plannedActivityForm(work59.id,p59.id)');$('#editForm input[type="hidden"][name="companyId"]').value='different';submit();assert($('#modal').open);assert.equal(run('work59.companyId'),'c59');run("$('#modal').close()");
++// Enabling tracking checks references conditionally; disabling preserves saved links.
++run("p59.companyWiseProjectTrackingRequired=false;work59.companyId='unknown';editProjectPlan(p59.id)");$('#editForm [name="companyWiseProjectTrackingRequired"]').checked=true;submit();assert($('#modal').open);assert.equal(run('p59.companyWiseProjectTrackingRequired'),false);assert($('#toast').textContent.includes('unresolved company mapping'));run("work59.companyId='c59';data.meetings=[{id:'meeting59',project:p59.id,companyId:'',title:'All-project meeting'}]");submit();assert.equal($('#modal').open,false);assert.equal(run('p59.companyWiseProjectTrackingRequired'),true);
++run('editProjectPlan(p59.id)');$('#editForm [name="companyWiseProjectTrackingRequired"]').checked=false;submit();assert.equal(run('p59.companyWiseProjectTrackingRequired'),false);assert.equal(run('work59.companyId'),'c59');assert.equal(run('actualHours(work59.allocations[0])'),1);
++// Legacy module options remain available read-only while editing existing work.
++run("delete p59.modules.Finance;plannedActivityForm(work59.id,p59.id)");assert.equal($('#activityModule').value,'Finance');$('#editForm [name="notes"]').value='Legacy note';submit();assert.equal($('#modal').open,false);assert.equal(run('work59.module'),'Finance');assert.equal(run('work59.notes'),'Legacy note');
++run("p59.companyWiseProjectTrackingRequired=true;p59.businessUnitCount=1;p59.businessUnits=[{id:'unit59',companyId:'c59',code:'BU59',name:'Unit59',active:true,notes:''}];work59.businessUnitId='unit59';businessUnitForm(p59.id,'unit59')");assert($('#editForm select[name="companyId"]').disabled);$('#editForm [name="name"]').value='Unit label updated';submit();assert.equal(run('p59.businessUnits[0].name'),'Unit label updated');assert.equal(run('p59.businessUnits[0].companyId'),'c59');
++console.log('PASS v59 client safeguards: used module removal blocked, unused configuration editable, activity mappings locked, notes/actuals retained, tracking enable validation and legacy module compatibility.');dom.window.close();
+diff --git a/tests/browser/package.json b/tests/browser/package.json
+index 34d199d..7c2c788 100644
+--- a/tests/browser/package.json
++++ b/tests/browser/package.json
+@@ -3,7 +3,7 @@
+   "version": "49.0.0",
+   "private": true,
+   "scripts": {
+-    "test": "node logout.cjs && node change-request-form.cjs && node project-company-master.cjs && node planning-company-mode.cjs && node allocation-company-mode.cjs && node project-monitoring.cjs"
++    "test": "node logout.cjs && node change-request-form.cjs && node project-company-master.cjs && node planning-company-mode.cjs && node allocation-company-mode.cjs && node project-monitoring.cjs && node configuration-guard.cjs"
+   },
+   "devDependencies": {
+     "jsdom": "31.0.1"
