@@ -3,7 +3,7 @@
   "version": "49.0.0",
   "private": true,
   "scripts": {
-    "test": "node logout.cjs && node change-request-form.cjs && node project-company-master.cjs"
+    "test": "node logout.cjs && node change-request-form.cjs && node project-company-master.cjs && node planning-company-mode.cjs"
   },
   "devDependencies": {
     "jsdom": "31.0.1"

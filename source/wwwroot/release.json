@@ -1,8 +1,8 @@
 {
-  "version": "54.0.0",
-  "label": "v54",
-  "previous_application": "v53",
+  "version": "55.0.0",
+  "label": "v55",
+  "previous_application": "v54",
   "required_database_patch": "v35",
   "date": "2026-11-26",
-  "features": "Tracking-gated Project Company Master, project-wide business units linked to companies, validated counts without auto-growing Project Master limits"
+  "features": "Company-aware project planning templates/import validation/forms based on the project tracking checkbox; project-wide imports without company details"
 }

@@ -1,5 +1,5 @@
-My Project Management v54
-Application version: 54.0.0
-Previous application: v53
+My Project Management v55
+Application version: 55.0.0
+Previous application: v54
 Release: 26 November 2026 (Qatar)
-Tracking-gated company and business unit maintenance with project limits.
+Project planning/import company requirements follow the project tracking setting.
