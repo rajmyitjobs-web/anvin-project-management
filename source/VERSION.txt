@@ -1,5 +1,5 @@
-My Project Management v53
-Application version: 53.0.0
-Previous application: v52
-Release: 26 November 2026 (Qatar)
-Project master counts/tracking configuration and separate Project company master.
+My Project Management v52
+Application version: 52.0.0
+Previous application: v51
+Release: 24 November 2026 (Qatar)
+Word serial preservation and PM/CTO point approval tracker. No physical database schema changes.
