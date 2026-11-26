@@ -1,4 +1,6 @@
-Current release: **v56 / 56.0.0**. [Project and company masters: update guide](docs/RELEASE-v56.md).
+Current release: **v57 / 57.0.0**. [Allocation tracking modes and installation](docs/RELEASE-v57.md).
+
+Previous release: **v56 / 56.0.0**. [Project and company masters: update guide](docs/RELEASE-v56.md).
 
 Previous release: **v55.1 / 55.1.0**. [Planning modes and compatibility guide](docs/RELEASE-v55.1.md).
 

@@ -1,5 +1,5 @@
-My Project Management v56
-Application version: 56.0.0
-Previous application: v55.1
+My Project Management v57
+Application version: 57.0.0
+Previous application: v56
 Release: 26 November 2026 (Qatar)
-Project editing and separated company/business unit maintenance.
+Company-wise and project-level activity/task allocations.

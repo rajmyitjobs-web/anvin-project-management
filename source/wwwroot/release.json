@@ -1,8 +1,8 @@
 {
-  "version": "56.0.0",
-  "label": "v56",
-  "previous_application": "v55.1",
+  "version": "57.0.0",
+  "label": "v57",
+  "previous_application": "v56",
   "required_database_patch": "v35",
   "date": "2026-11-26",
-  "features": "Explicit Project Master editing; only tracking-enabled projects in Project Company Master; company and business unit detail editing on their dedicated master"
+  "features": "Company-aware daily/activity/task, self-work, follow-up and weekly allocation; direct project-level work without company selection when tracking is disabled"
 }
