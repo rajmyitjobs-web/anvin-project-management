@@ -1,3 +1,5 @@
+Current release: **v55 / 55.0.0**. [Planning modes, templates and installation](docs/RELEASE-v55.md).
+
 Current release: **v54 / 54.0.0**. [Company/business unit setup and installation](docs/RELEASE-v54.md).
 
 Current release: **v53 / 53.0.0**. [Project/company master and installation](docs/RELEASE-v53.md).
