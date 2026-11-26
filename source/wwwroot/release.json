@@ -1,8 +1,9 @@
 {
-  "version": "58.1.0",
-  "label": "v58.1",
-  "previous_application": "v58",
+  "version": "59.0.0",
+  "label": "v59",
+  "previous_application": "v58.1",
   "required_database_patch": "v35",
+  "optional_database_migration": "database/20-Project-Configuration-v59.sql",
   "date": "2026-11-27",
-  "features": "Company-wise and consolidated project monitoring; project-level views/reports/exports without company fields when tracking is disabled; shared mobile monitoring; immediate monitoring navigation on initial load"
+  "features": "Configuration and transaction mapping safeguards; backward-compatible legacy field preservation; preview-first non-destructive metadata migration"
 }

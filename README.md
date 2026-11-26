@@ -1,3 +1,5 @@
+Prepared for review: **v59 / 59.0.0**. [Safeguards and SQL migration review](docs/REVIEW-v59.md). Not deployed; production approval is required.
+
 Current release: **v58.1 / 58.1.0**. [Project monitoring and first-load fix](docs/RELEASE-v58.1.md).
 
 Previous release: **v58 / 58.0.0**. [Project monitoring and installation](docs/RELEASE-v58.md).
