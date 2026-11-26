@@ -1,5 +1,5 @@
-My Project Management v58
-Application version: 58.0.0
-Previous application: v57
+My Project Management v58.1
+Application version: 58.1.0
+Previous application: v58
 Release: 27 November 2026 (Qatar)
 Company-wise and consolidated project monitoring.

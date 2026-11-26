@@ -34,3 +34,5 @@ const monitoringReportsView=projectReportsView;projectReportsView=function(){let
 const monitoringReportBody=projectReportBody;projectReportBody=function(rows){let company=monitoringReportScope(),p=project(reportState.project);return (p&&companyTrackingEnabled(p)?'<p><b>Scope: '+esc(company==='all'?'Consolidated project · all companies':p.companies.find(c=>c.id===company)?.name)+'</b></p>':'')+monitoringReportBody(rows);};
 const monitoringPsrRows=psrRows;psrRows=function(from,to){let company=reportState.company;reportState.company='all';try{return monitoringPsrRows(from,to);}finally{reportState.company=company;}};
 document.addEventListener('change',e=>{if(e.target.id==='reportProject'){reportState.company='all';renderView();}if(e.target.id==='reportCompany'){reportState.company=e.target.value;monitoringReportScope();renderView();}});
+// Show the new navigation immediately, while preserving the existing SQL sign-in/password gate.
+if(typeof sqlSession==='function'&&!cloud.active){if(typeof sqlMustChange!=='undefined'&&sqlMustChange)showSqlPassword(true);else showCloudLogin();}else render();
