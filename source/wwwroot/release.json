@@ -1,8 +1,8 @@
 {
-  "version": "53.0.0",
-  "label": "v53",
-  "previous_application": "v52",
+  "version": "54.0.0",
+  "label": "v54",
+  "previous_application": "v53",
   "required_database_patch": "v35",
   "date": "2026-11-26",
-  "features": "Project-level company/business-unit counts and tracking checkbox; separate project company master with retained company identities"
+  "features": "Tracking-gated Project Company Master, project-wide business units linked to companies, validated counts without auto-growing Project Master limits"
 }
