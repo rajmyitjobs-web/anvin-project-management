@@ -46,7 +46,7 @@ function person(id){if(id==='workspace-owner')return {id,name:'Rajesh’s work s
 function avatar(id,large=false){const m=person(id);return `<span class="avatar ${m.color} ${large?'large':''}" title="${esc(m.name)}">${esc(m.initials)}</span>`;}
 function tasksFor(p){return data.tasks.filter(t=>t.project===p);}
 function progress(p){const ts=tasksFor(p);return ts.length?Math.round(ts.filter(t=>t.status==='Completed').length/ts.length*100):0;}
-function projectIsComplete(p){return tasksFor(p.id).length>0&&progress(p.id)===100&&(!p.companies?.length||p.companies.every(c=>c.goLiveStatus==='Live'));}
+function projectIsComplete(p){return tasksFor(p.id).length>0&&progress(p.id)===100&&(p.companyWiseProjectTrackingRequired!==true||!p.companies?.length||p.companies.every(c=>c.goLiveStatus==='Live'));}
 function risk(p){return tasksFor(p).some(t=>t.status==='More visits needed');}
 function badge(s){return `<span class="badge ${s==='At risk'||s==='More visits needed'||s==='More sessions needed'||s==='Awaiting client confirmation'||s==='Open — update manager later'||s==='On hold'?'amber':s==='In progress'?'blue':s==='To do'||s==='Not ready'?'gray':''}">${esc(s)}</span>`;}
 function fmt(d,opts={day:'numeric',month:'short'}){return new Date(d+'T12:00:00').toLocaleDateString('en-GB',opts);}
