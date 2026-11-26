@@ -33,7 +33,7 @@ app.MapPost("/api/rpc/{method}",async(string method,HttpContext ctx,Db db)=>{var
 SpreadsheetImports.Map(app,(ctx,db)=>Current(ctx,db));
 Authority.Map(app,(ctx,db)=>Current(ctx,db));
 ChangeRequestApi.Map(app,(ctx,db)=>Current(ctx,db));
-app.MapGet("/api/health",()=>Results.Json(new{status="running",version="55.0.0",database="Microsoft SQL Server",databaseCheck="Not performed by this endpoint"}));
+app.MapGet("/api/health",()=>Results.Json(new{status="running",version="55.1.0",database="Microsoft SQL Server",databaseCheck="Not performed by this endpoint"}));
 app.Run();
 static async Task<JsonObject> Body(HttpContext c)=>(await JsonNode.ParseAsync(c.Request.Body))?.AsObject()??throw new ApiError(400,"JSON object required");
 static Task<AppUser> Current(HttpContext c,Db db,bool allowPasswordChange=false)=>AuthEndpoints.Current(c,c.RequestServices.GetRequiredService<IAccountStore>(),allowPasswordChange);
