@@ -1,0 +1,3 @@
+497ddd1d7732863e79953df2bfe80fb9bc8d7c04c878da94ac2329990a200d25  INSTALL-v55-PLANNING-COMPANY-MODE.txt
+1690ebe843207d23e6ff99103fe8dc092e3f1fb47c6afacbcaa00fd80f2c3008  MyProjectManagement-Full-v55.zip
+599cb53f5ac7c7b277a09425cb744e3cedcad618e7458034792cc0b86c79687f  MyProjectManagement-Update-v55-from-v54.zip
