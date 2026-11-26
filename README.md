@@ -1,3 +1,5 @@
+Current release: **v54 / 54.0.0**. [Company/business unit setup and installation](docs/RELEASE-v54.md).
+
 Current release: **v53 / 53.0.0**. [Project/company master and installation](docs/RELEASE-v53.md).
 
 Current release: **v52 / 52.0.0**. [CR point decisions and installation](docs/RELEASE-v52.md).
