@@ -1,8 +1,8 @@
 {
-  "version": "57.0.0",
-  "label": "v57",
-  "previous_application": "v56",
+  "version": "58.0.0",
+  "label": "v58",
+  "previous_application": "v57",
   "required_database_patch": "v35",
-  "date": "2026-11-26",
-  "features": "Company-aware daily/activity/task, self-work, follow-up and weekly allocation; direct project-level work without company selection when tracking is disabled"
+  "date": "2026-11-27",
+  "features": "Company-wise and consolidated project monitoring; project-level views/reports/exports without company fields when tracking is disabled; shared mobile monitoring"
 }

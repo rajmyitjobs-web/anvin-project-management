@@ -1,5 +1,5 @@
-My Project Management v57
-Application version: 57.0.0
-Previous application: v56
-Release: 26 November 2026 (Qatar)
-Company-wise and project-level activity/task allocations.
+My Project Management v58
+Application version: 58.0.0
+Previous application: v57
+Release: 27 November 2026 (Qatar)
+Company-wise and consolidated project monitoring.
