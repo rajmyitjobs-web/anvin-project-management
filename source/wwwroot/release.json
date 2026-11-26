@@ -1,8 +1,8 @@
 {
-  "version": "55.1.0",
-  "label": "v55.1",
-  "previous_application": "v55",
+  "version": "56.0.0",
+  "label": "v56",
+  "previous_application": "v55.1",
   "required_database_patch": "v35",
   "date": "2026-11-26",
-  "features": "Company-aware project planning templates/import validation/forms based on the project tracking checkbox; project-wide imports without company details; weekly preview name compatibility retained"
+  "features": "Explicit Project Master editing; only tracking-enabled projects in Project Company Master; company and business unit detail editing on their dedicated master"
 }
