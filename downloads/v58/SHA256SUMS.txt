@@ -1,0 +1,3 @@
+0c311de61cb6e44a8b213f8caa4d805548ace4678f3b36ac9d96b4bea9d3a188  INSTALL-v58-PROJECT-MONITORING.txt
+5cc698eaf662d3bd39cd0749826ec70825fba24ad7af6a3cd65898f5de12fad6  MyProjectManagement-Full-v58.zip
+2055d42947d692e155f37515cd0ec9e677a2183cf13e20cb39190a8693818a70  MyProjectManagement-Update-v58-from-v57.zip
