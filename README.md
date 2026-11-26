@@ -1,18 +1,20 @@
-Current release: **v55.1 / 55.1.0**. [Planning modes and compatibility guide](docs/RELEASE-v55.1.md).
+Current release: **v56 / 56.0.0**. [Project and company masters: update guide](docs/RELEASE-v56.md).
 
-Current release: **v55 / 55.0.0**. [Planning modes, templates and installation](docs/RELEASE-v55.md).
+Previous release: **v55.1 / 55.1.0**. [Planning modes and compatibility guide](docs/RELEASE-v55.1.md).
 
-Current release: **v54 / 54.0.0**. [Company/business unit setup and installation](docs/RELEASE-v54.md).
+Previous release: **v55 / 55.0.0**. [Planning modes, templates and installation](docs/RELEASE-v55.md).
 
-Current release: **v53 / 53.0.0**. [Project/company master and installation](docs/RELEASE-v53.md).
+Previous release: **v54 / 54.0.0**. [Company/business unit setup and installation](docs/RELEASE-v54.md).
 
-Current release: **v52 / 52.0.0**. [CR point decisions and installation](docs/RELEASE-v52.md).
+Previous release: **v53 / 53.0.0**. [Project/company master and installation](docs/RELEASE-v53.md).
 
-Current release: **v51 / 51.0.0**. [User master logins and installation](docs/RELEASE-v51.md).
+Previous release: **v52 / 52.0.0**. [CR point decisions and installation](docs/RELEASE-v52.md).
 
-Current release: **v50.1 / 50.1.0**. [Shared save recovery and installation](docs/RELEASE-v50.1.md).
+Previous release: **v51 / 51.0.0**. [User master logins and installation](docs/RELEASE-v51.md).
 
-Current release: **v50 / 50.0.0**. [Upgrade and delegation guide](docs/RELEASE-v50.md).
+Previous release: **v50.1 / 50.1.0**. [Shared save recovery and installation](docs/RELEASE-v50.1.md).
+
+Previous release: **v50 / 50.0.0**. [Upgrade and delegation guide](docs/RELEASE-v50.md).
 
 # My Project Management v49
 
